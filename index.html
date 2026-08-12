@@ -1,0 +1,1361 @@
+<title>Playbook de Atendimento — Dionísio</title>
+<style>
+  /* ============ TOKENS ============ */
+  :root {
+    color-scheme: light;
+    --wine:#7A1F3D; --wine-soft:#F2E4E9; --wine-line:#D9BCC6;
+    --ground:#F5F2F2; --surface:#FFFFFF; --surface-2:#FAF8F8;
+    --ink:#1B1518; --ink-2:#574B50; --ink-3:#8A7C81;
+    --line:#E2DBDD; --line-strong:#CFC5C8;
+    --crit:#A81E17; --crit-bg:#FAE7E5;
+    --warn:#8A5A00; --warn-bg:#FAF0DC;
+    --calm:#1B6248; --calm-bg:#E3F1EB;
+    --info:#2A4C7D; --info-bg:#E7EDF6;
+    --on-wine:#FFFFFF;
+    --font-ui:"Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+    --font-mono:"Cascadia Mono","Cascadia Code",Consolas,"SF Mono",ui-monospace,Menlo,monospace;
+    --r:3px;
+    --shadow:0 1px 2px rgba(27,21,24,.05), 0 6px 20px -12px rgba(27,21,24,.18);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+      --wine:#E58AA6; --wine-soft:#35181F; --wine-line:#5A2D39;
+      --ground:#141013; --surface:#1D181B; --surface-2:#241E21;
+      --ink:#F2ECEE; --ink-2:#B9ACB1; --ink-3:#8A7B81;
+      --line:#322A2E; --line-strong:#4A3F44;
+      --crit:#FF9C93; --crit-bg:#3A1815;
+      --warn:#E8B860; --warn-bg:#33260E;
+      --calm:#7FCFAE; --calm-bg:#12281F;
+      --info:#9CBBE8; --info-bg:#16233A;
+      --on-wine:#2A1218;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 6px 20px -12px rgba(0,0,0,.7);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --wine:#E58AA6; --wine-soft:#35181F; --wine-line:#5A2D39;
+    --ground:#141013; --surface:#1D181B; --surface-2:#241E21;
+    --ink:#F2ECEE; --ink-2:#B9ACB1; --ink-3:#8A7B81;
+    --line:#322A2E; --line-strong:#4A3F44;
+    --crit:#FF9C93; --crit-bg:#3A1815; --warn:#E8B860; --warn-bg:#33260E;
+    --calm:#7FCFAE; --calm-bg:#12281F; --info:#9CBBE8; --info-bg:#16233A;
+    --on-wine:#2A1218;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 6px 20px -12px rgba(0,0,0,.7);
+  }
+  :root[data-theme="light"] {
+    color-scheme: light;
+    --wine:#7A1F3D; --wine-soft:#F2E4E9; --wine-line:#D9BCC6;
+    --ground:#F5F2F2; --surface:#FFFFFF; --surface-2:#FAF8F8;
+    --ink:#1B1518; --ink-2:#574B50; --ink-3:#8A7C81;
+    --line:#E2DBDD; --line-strong:#CFC5C8;
+    --crit:#A81E17; --crit-bg:#FAE7E5; --warn:#8A5A00; --warn-bg:#FAF0DC;
+    --calm:#1B6248; --calm-bg:#E3F1EB; --info:#2A4C7D; --info-bg:#E7EDF6;
+    --on-wine:#FFFFFF;
+    --shadow:0 1px 2px rgba(27,21,24,.05), 0 6px 20px -12px rgba(27,21,24,.18);
+  }
+
+  /* ============ BASE ============ */
+  * { box-sizing:border-box; }
+  body {
+    margin:0; background:var(--ground); color:var(--ink);
+    font-family:var(--font-ui); font-size:15px; line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  :focus-visible { outline:2px solid var(--wine); outline-offset:2px; border-radius:2px; }
+  @media (prefers-reduced-motion: reduce) { * { animation:none !important; transition:none !important; } }
+  .eyebrow {
+    font-family:var(--font-mono); font-size:10.5px; letter-spacing:.13em;
+    text-transform:uppercase; color:var(--ink-3); font-weight:600;
+  }
+  .shell { max-width:1240px; margin:0 auto; padding:0 20px 72px; }
+
+  /* ============ TOPBAR ============ */
+  .topbar { border-bottom:1px solid var(--line); background:var(--surface); position:sticky; top:0; z-index:30; }
+  .topbar-in { max-width:1240px; margin:0 auto; padding:14px 20px; display:flex; align-items:baseline; gap:16px; flex-wrap:wrap; }
+  .brand { display:flex; align-items:baseline; gap:10px; }
+  .brand-mark {
+    font-family:var(--font-mono); font-size:12px; font-weight:700;
+    color:var(--on-wine); background:var(--wine);
+    padding:3px 7px; border-radius:2px; letter-spacing:.04em;
+  }
+  h1 { font-size:17px; font-weight:650; margin:0; letter-spacing:-.01em; }
+  .topbar .sub { color:var(--ink-3); font-size:13px; margin-left:auto; }
+
+  /* ============ SPINE ============ */
+  .spine { background:var(--surface-2); border-bottom:1px solid var(--line); position:sticky; top:53px; z-index:29; }
+  .spine-in { max-width:1240px; margin:0 auto; padding:11px 20px; display:flex; overflow-x:auto; }
+  .mo {
+    display:flex; align-items:baseline; gap:7px; padding:4px 15px 4px 0; margin-right:15px;
+    border-right:1px solid var(--line); white-space:nowrap; flex:0 0 auto;
+  }
+  .mo:last-child { border-right:0; margin-right:0; }
+  .mo-n {
+    font-family:var(--font-mono); font-size:10px; font-weight:700; color:var(--ink-3);
+    border:1px solid var(--line-strong); width:17px; height:17px;
+    display:inline-grid; place-items:center; border-radius:50%; flex:0 0 auto;
+  }
+  .mo-t { font-size:12.5px; color:var(--ink-3); }
+  .mo.on .mo-n { color:var(--on-wine); background:var(--wine); border-color:var(--wine); }
+  .mo.on .mo-t { color:var(--ink); font-weight:600; }
+  .mo.ok .mo-n { color:var(--calm); background:var(--calm-bg); border-color:color-mix(in srgb, var(--calm) 40%, transparent); }
+  .mo.ok .mo-t { color:var(--ink-2); }
+
+  /* ============ LAYOUT ============ */
+  .grid { display:grid; grid-template-columns:268px minmax(0,1fr); gap:26px; padding-top:24px; align-items:start; }
+  @media (max-width:900px) { .grid { grid-template-columns:1fr; gap:18px; } }
+  .rail { position:sticky; top:150px; display:flex; flex-direction:column; gap:14px; }
+  @media (max-width:900px) { .rail { position:static; } }
+  main { display:flex; flex-direction:column; gap:22px; min-width:0; }
+
+  .panel { background:var(--surface); border:1px solid var(--line); border-radius:var(--r); box-shadow:var(--shadow); }
+  .panel-h { padding:12px 14px 0; }
+  .panel-b { padding:11px 14px 14px; display:flex; flex-direction:column; gap:13px; }
+  .field { display:flex; flex-direction:column; gap:6px; }
+  .field > label { font-size:12.5px; color:var(--ink-2); font-weight:600; }
+  .field .hint { font-size:11.5px; color:var(--ink-3); line-height:1.4; }
+
+  .chips { display:flex; flex-wrap:wrap; gap:5px; }
+  .chip {
+    font:inherit; font-size:12.5px; cursor:pointer;
+    background:var(--surface-2); color:var(--ink-2);
+    border:1px solid var(--line-strong); border-radius:2px; padding:5px 9px;
+    transition:background .12s, color .12s, border-color .12s;
+  }
+  .chip:hover { border-color:var(--wine); color:var(--ink); }
+  .chip[aria-pressed="true"] { background:var(--wine); border-color:var(--wine); color:var(--on-wine); font-weight:600; }
+
+  .search input {
+    width:100%; font:inherit; font-size:13px; padding:8px 10px;
+    background:var(--surface-2); color:var(--ink);
+    border:1px solid var(--line-strong); border-radius:2px;
+  }
+  .search input::placeholder { color:var(--ink-3); }
+  .results { list-style:none; margin:6px 0 0; padding:0; display:flex; flex-direction:column; gap:3px; max-height:300px; overflow-y:auto; }
+  .results li button {
+    width:100%; text-align:left; font:inherit; font-size:12.5px; cursor:pointer;
+    background:transparent; border:1px solid transparent; border-radius:2px;
+    padding:6px 8px; color:var(--ink); line-height:1.35;
+  }
+  .results li button:hover { background:var(--wine-soft); border-color:var(--wine-line); }
+  .rmod { display:block; font-family:var(--font-mono); font-size:9.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3); margin-top:2px; }
+  .nores { font-size:12px; color:var(--ink-3); padding:6px 2px; display:block; }
+
+  /* ============ ETAPAS SEQUENCIAIS ============ */
+  .flow { display:flex; flex-direction:column; gap:8px; }
+  .stage {
+    background:var(--surface); border:1px solid var(--line);
+    border-left:3px solid var(--line-strong); border-radius:var(--r);
+    box-shadow:var(--shadow); overflow:hidden;
+  }
+  .stage.is-active { border-left-color:var(--wine); border-color:var(--wine-line); }
+  .stage.is-done { border-left-color:var(--calm); box-shadow:none; background:var(--surface-2); }
+  .stage.is-locked { opacity:.5; box-shadow:none; background:var(--surface-2); }
+
+  .st-head { display:flex; align-items:center; gap:11px; padding:12px 15px; width:100%; text-align:left; }
+  button.st-head { font:inherit; background:transparent; border:0; cursor:pointer; color:inherit; }
+  button.st-head:hover .st-title { color:var(--wine); }
+  .st-n {
+    font-family:var(--font-mono); font-size:11px; font-weight:700;
+    width:22px; height:22px; flex:0 0 auto; display:grid; place-items:center;
+    border-radius:2px; border:1px solid var(--line-strong); color:var(--ink-3); background:var(--surface);
+  }
+  .stage.is-active .st-n { background:var(--wine); border-color:var(--wine); color:var(--on-wine); }
+  .stage.is-done .st-n { background:var(--calm-bg); border-color:color-mix(in srgb, var(--calm) 40%, transparent); color:var(--calm); }
+  .st-title { font-size:14.5px; font-weight:650; letter-spacing:-.005em; }
+  .st-sub { font-size:12.5px; color:var(--ink-3); margin-left:auto; text-align:right; }
+
+  .st-body { padding:0 15px 15px 48px; display:flex; flex-direction:column; gap:14px; }
+  .st-body > .lead { margin:0; font-size:13.5px; color:var(--ink-2); max-width:70ch; }
+
+  .checklist { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:6px; }
+  .checklist li { display:flex; gap:9px; font-size:13.5px; color:var(--ink-2); line-height:1.5; }
+  .checklist li::before {
+    content:""; flex:0 0 auto; width:13px; height:13px; margin-top:4px;
+    border:1px solid var(--line-strong); border-radius:2px; background:var(--surface);
+  }
+  .checklist li strong { color:var(--ink); font-weight:600; }
+
+  .callout { border:1px solid; border-radius:var(--r); padding:10px 12px; display:flex; flex-direction:column; gap:5px; }
+  .callout .ch { font-family:var(--font-mono); font-size:10px; font-weight:700; letter-spacing:.11em; text-transform:uppercase; }
+  .callout p { margin:0; font-size:13px; line-height:1.45; }
+  .callout ul { margin:0; padding-left:15px; font-size:12.5px; color:var(--ink-2); display:flex; flex-direction:column; gap:3px; }
+  .c-mode { background:var(--wine-soft); border-color:var(--wine-line); }
+  .c-mode .ch { color:var(--wine); }
+  .c-mode p { color:var(--ink); }
+  .c-stop { background:var(--crit-bg); border-color:color-mix(in srgb, var(--crit) 30%, transparent); }
+  .c-stop .ch { color:var(--crit); }
+  .c-say { background:var(--info-bg); border-color:color-mix(in srgb, var(--info) 28%, transparent); }
+  .c-say .ch { color:var(--info); }
+  .c-say p { color:var(--ink); font-style:italic; }
+
+  .advance { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .btn {
+    font:inherit; font-size:13.5px; font-weight:600; cursor:pointer;
+    background:var(--wine); color:var(--on-wine); border:1px solid var(--wine);
+    border-radius:2px; padding:7px 14px; display:inline-flex; align-items:center; gap:7px;
+  }
+  .btn:hover { filter:brightness(1.08); }
+  .btn.ghost { background:transparent; color:var(--ink-2); border-color:var(--line-strong); font-weight:500; }
+  .btn.ghost:hover { border-color:var(--wine); color:var(--wine); filter:none; }
+  .btn.sm { font-size:12.5px; padding:5px 10px; }
+  .advance .why { font-size:12px; color:var(--ink-3); }
+
+  /* ============ CARDS DOS EIXOS ============ */
+  .step { display:flex; flex-direction:column; gap:10px; }
+  .step-h { display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; }
+  .step-h h2 { font-size:15px; font-weight:650; margin:0; letter-spacing:-.005em; }
+  .step-h .note { font-size:12.5px; color:var(--ink-3); }
+  .cards { display:grid; grid-template-columns:repeat(auto-fill, minmax(168px,1fr)); gap:8px; }
+  .card {
+    font:inherit; text-align:left; cursor:pointer;
+    background:var(--surface); border:1px solid var(--line); border-left:3px solid var(--line-strong);
+    border-radius:var(--r); padding:10px 12px; display:flex; flex-direction:column; gap:3px;
+    transition:border-color .12s, transform .12s, box-shadow .12s;
+  }
+  .card:hover { border-left-color:var(--wine); transform:translateY(-1px); box-shadow:var(--shadow); }
+  .card[aria-pressed="true"] { border-color:var(--wine-line); border-left-color:var(--wine); background:var(--wine-soft); }
+  .card .cn { font-size:14px; font-weight:600; color:var(--ink); }
+  .card .cd { font-size:11.5px; color:var(--ink-3); line-height:1.35; }
+  .card .ct { font-family:var(--font-mono); font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-3); }
+
+  /* ============ RESULTADO ============ */
+  .result { background:var(--surface); border:1px solid var(--line); border-radius:var(--r); box-shadow:var(--shadow); overflow:hidden; }
+  .rhead { padding:15px 18px; border-bottom:1px solid var(--line); display:flex; flex-direction:column; gap:9px; }
+  .rtitle { font-size:19px; font-weight:650; margin:0; letter-spacing:-.015em; text-wrap:balance; }
+  .rtitle .sep { color:var(--ink-3); font-weight:400; }
+  .rprazo { margin:0; font-size:13px; color:var(--ink-2); }
+  .pills { display:flex; flex-wrap:wrap; gap:6px; }
+  .pill {
+    font-family:var(--font-mono); font-size:10.5px; font-weight:600;
+    letter-spacing:.06em; text-transform:uppercase; padding:3px 8px;
+    border-radius:2px; border:1px solid; display:inline-flex; align-items:center; gap:5px;
+  }
+  .p-crit { color:var(--crit); background:var(--crit-bg); border-color:color-mix(in srgb, var(--crit) 35%, transparent); }
+  .p-warn { color:var(--warn); background:var(--warn-bg); border-color:color-mix(in srgb, var(--warn) 35%, transparent); }
+  .p-calm { color:var(--calm); background:var(--calm-bg); border-color:color-mix(in srgb, var(--calm) 35%, transparent); }
+  .p-info { color:var(--info); background:var(--info-bg); border-color:color-mix(in srgb, var(--info) 35%, transparent); }
+  .p-line { color:var(--ink-2); background:var(--surface-2); border-color:var(--line-strong); }
+
+  .rbody { display:grid; grid-template-columns:minmax(0,1.35fr) minmax(0,1fr); }
+  @media (max-width:780px) { .rbody { grid-template-columns:1fr; } }
+  .rcol { padding:16px 18px; display:flex; flex-direction:column; gap:18px; }
+  .rcol + .rcol { border-left:1px solid var(--line); background:var(--surface-2); }
+  @media (max-width:780px) { .rcol + .rcol { border-left:0; border-top:1px solid var(--line); } }
+
+  .block { display:flex; flex-direction:column; gap:7px; }
+  .block > h3 { font-size:13px; font-weight:650; margin:0; color:var(--ink); }
+  .block > p.txt { margin:0; font-size:13px; color:var(--ink-2); }
+  .steps { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:7px; counter-reset:s; }
+  .steps li { display:flex; gap:9px; font-size:13.5px; color:var(--ink-2); line-height:1.5; counter-increment:s; }
+  .steps li::before {
+    content:counter(s); flex:0 0 auto;
+    font-family:var(--font-mono); font-size:10px; font-weight:700; color:var(--wine);
+    background:var(--wine-soft); border:1px solid var(--wine-line);
+    width:18px; height:18px; display:grid; place-items:center; border-radius:2px; margin-top:2px;
+  }
+  .steps li strong { color:var(--ink); font-weight:600; }
+  .bul { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:5px; }
+  .bul li { font-size:13px; color:var(--ink-2); padding-left:13px; position:relative; line-height:1.45; }
+  .bul li::before { content:""; position:absolute; left:0; top:8px; width:5px; height:1px; background:var(--line-strong); }
+  .bul li strong { color:var(--ink); font-weight:600; }
+
+  .kv { display:flex; flex-direction:column; gap:8px; }
+  .kv-row { display:grid; grid-template-columns:82px minmax(0,1fr); gap:10px; align-items:baseline; }
+  .kv-k { font-family:var(--font-mono); font-size:9.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3); }
+  .kv-v { font-size:13px; color:var(--ink); }
+
+  .doclist { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px; }
+  .doclist a {
+    display:block; font-size:12.5px; color:var(--ink-2); text-decoration:none;
+    padding:4px 7px; border-radius:2px; border:1px solid transparent; line-height:1.35;
+  }
+  .doclist a:hover { color:var(--wine); background:var(--wine-soft); border-color:var(--wine-line); text-decoration:underline; text-underline-offset:2px; }
+  .doclist a::before { content:"↗ "; color:var(--ink-3); font-size:11px; }
+
+  .cases { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:6px; }
+  .case { border:1px solid var(--line); border-radius:var(--r); background:var(--surface); padding:9px 11px; display:flex; flex-direction:column; gap:4px; }
+  .case-s { font-size:13px; font-weight:600; color:var(--ink); }
+  .case-c { font-size:12.5px; color:var(--ink-2); line-height:1.45; }
+  .case-c em { color:var(--ink-3); font-style:normal; font-family:var(--font-mono); font-size:10px; letter-spacing:.09em; text-transform:uppercase; }
+  .case a { font-size:12px; color:var(--wine); text-decoration:none; }
+  .case a:hover { text-decoration:underline; text-underline-offset:2px; }
+
+  .tags { display:flex; flex-wrap:wrap; gap:4px; }
+  .tag { font-family:var(--font-mono); font-size:11px; color:var(--ink-2); background:var(--ground); border:1px solid var(--line); border-radius:2px; padding:2px 6px; }
+  .microhint { font-size:11.5px; color:var(--ink-3); line-height:1.4; }
+
+  /* ============ FUP ============ */
+  .fup { display:flex; flex-direction:column; gap:0; }
+  .fnode { border:1px solid var(--line); border-left:3px solid var(--line-strong); border-radius:var(--r); background:var(--surface); padding:12px 14px; display:flex; flex-direction:column; gap:9px; }
+  .fnode.on { border-left-color:var(--wine); border-color:var(--wine-line); }
+  .fnode.spent { opacity:.55; }
+  .fnode-h { display:flex; align-items:baseline; gap:9px; flex-wrap:wrap; }
+  .fnode-h .ft { font-size:14px; font-weight:650; }
+  .fnode-h .fw { font-family:var(--font-mono); font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3); }
+  .branches { display:grid; grid-template-columns:repeat(auto-fit, minmax(210px,1fr)); gap:7px; }
+  .branch { border:1px solid var(--line); border-radius:var(--r); background:var(--surface-2); padding:9px 11px; display:flex; flex-direction:column; gap:6px; }
+  .branch .bl { font-family:var(--font-mono); font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3); }
+  .branch .bt { font-size:13px; color:var(--ink-2); line-height:1.45; }
+  .branch .bt strong { color:var(--ink); font-weight:600; }
+  .branch.yes { border-color:color-mix(in srgb, var(--calm) 30%, transparent); background:var(--calm-bg); }
+  .branch.yes .bl { color:var(--calm); }
+  .branch.no { border-color:color-mix(in srgb, var(--warn) 30%, transparent); background:var(--warn-bg); }
+  .branch.no .bl { color:var(--warn); }
+  .fconn { align-self:center; color:var(--line-strong); font-size:15px; line-height:1; padding:5px 0; }
+  .clock { font-family:var(--font-mono); font-size:12px; font-variant-numeric:tabular-nums; color:var(--ink); background:var(--surface); border:1px solid var(--line-strong); border-radius:2px; padding:2px 7px; display:inline-block; }
+
+  /* ============ LOCK / EMPTY ============ */
+  .lock { border:1px dashed var(--line-strong); border-radius:var(--r); padding:22px 20px; background:var(--surface-2); display:flex; flex-direction:column; gap:11px; align-items:flex-start; }
+  .lock p { margin:0; font-size:13.5px; color:var(--ink-2); max-width:64ch; }
+  .lock ol { margin:0; padding-left:18px; font-size:13px; color:var(--ink-3); display:flex; flex-direction:column; gap:3px; }
+  .empty { border:1px dashed var(--line-strong); border-radius:var(--r); padding:26px 20px; text-align:center; color:var(--ink-3); font-size:13.5px; background:var(--surface-2); }
+
+  .foot { margin-top:30px; padding-top:16px; border-top:1px solid var(--line); display:flex; flex-direction:column; gap:9px; align-items:flex-start; }
+  .foot p { margin:0; font-size:12px; color:var(--ink-3); line-height:1.5; max-width:70ch; }
+  .foot strong { color:var(--ink-2); }
+</style>
+
+<header class="topbar">
+  <div class="topbar-in">
+    <div class="brand">
+      <span class="brand-mark">DIO</span>
+      <h1>Playbook de Atendimento</h1>
+    </div>
+    <span class="sub">Uso interno — time de Atendimentos</span>
+  </div>
+</header>
+
+<nav class="spine" aria-label="Etapas do atendimento">
+  <div class="spine-in" id="spine"></div>
+</nav>
+
+<div class="shell">
+  <div class="grid">
+
+    <aside class="rail">
+      <section class="panel">
+        <div class="panel-h"><span class="eyebrow">Contexto do cliente</span></div>
+        <div class="panel-b">
+          <div class="field">
+            <label id="lbl-tempo">Tempo de casa</label>
+            <div class="chips" role="group" aria-labelledby="lbl-tempo" id="chips-tempo"></div>
+            <span class="hint">Define quem executa a ação, não o que fazer.</span>
+          </div>
+          <div class="field">
+            <label id="lbl-oper">A loja está em operação agora?</label>
+            <div class="chips" role="group" aria-labelledby="lbl-oper" id="chips-oper"></div>
+            <span class="hint">Confirme isso na etapa 2. Casa cheia sobe a severidade e cancela o modo de ensino.</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-h"><span class="eyebrow">Busca por sintoma</span></div>
+        <div class="panel-b">
+          <div class="search">
+            <input type="search" id="q" placeholder="ex: pedido não chega, cupom, NPS" aria-label="Buscar sintoma ou módulo" autocomplete="off">
+          </div>
+          <ul class="results" id="results"></ul>
+        </div>
+      </section>
+    </aside>
+
+    <main>
+      <section class="flow" id="flow"></section>
+      <section id="axes"></section>
+      <section id="out" aria-live="polite"></section>
+      <section id="fup"></section>
+
+      <div class="foot">
+        <button class="btn ghost sm" id="reset" type="button">Reiniciar atendimento</button>
+        <p><strong>Rascunho v2 para revisão.</strong> Severidade, prazos, cortes de tempo de casa (30 / 90 dias) e os tempos de follow-up são propostas a calibrar. Os links apontam para a documentação real da plataforma.</p>
+      </div>
+    </main>
+
+  </div>
+</div>
+
+<script>
+"use strict";
+
+const D = "https://dionisio.gitbook.io/documentacao-dionisio";
+
+/* ================= ETAPAS 1 A 3: portões sequenciais ================= */
+const PORTOES = [
+  {
+    id: "ia",
+    titulo: "Ler a conversa da IA",
+    lead: "A IA atendeu primeiro. Você está entrando no meio de uma conversa — leia antes de escrever qualquer coisa.",
+    itens: [
+      "Leia do <strong>teste</strong>, não só a última mensagem.",
+      "Anote <strong>o que a IA já respondeu e já prometeu</strong>. Não repita e nunca contradiga sem explicar a correção.",
+      "Verifique se a IA <strong>errou</strong>: informação desatualizada ou fora da validade é ajuste de conteúdo no módulo IA, não bug.",
+      "Anote <strong>o que o cliente já tentou</strong> e quais dados ele já forneceu.",
+      "Conte <strong>quantas vezes ele voltou ao mesmo assunto</strong>. Reincidência muda a prioridade e o tom.",
+      "Identifique <strong>qual loja</strong> e <strong>qual usuário</strong> está falando."
+    ],
+    nunca: [
+      "Abrir a conversa pela última mensagem e responder no escuro.",
+      "Pedir informação que o cliente já deu para a IA — é a principal causa de irritação em atendimento herdado.",
+      "Assumir que o assunto é o rótulo que a IA deu."
+    ],
+    cta: "Li a conversa inteira",
+    why: "Sem isso você repete pergunta e o cliente reinicia a explicação."
+  },
+  {
+    id: "problema",
+    titulo: "Entender o problema do cliente",
+    lead: "O cliente descreve uma solução. Você precisa do problema por trás dela — é isso que determina a categoria.",
+    itens: [
+      "Separe <strong>o pedido</strong> do <strong>problema</strong>: ele pede &ldquo;mudar o botão X&rdquo;, o problema é &ldquo;o consumidor não consegue finalizar&rdquo;.",
+      "Confirme o entendimento em <strong>uma frase</strong> e espere o &ldquo;isso&rdquo; antes de agir.",
+      "Pergunte <strong>quando começou</strong> e <strong>quanto afetou</strong>: quantos pedidos, reservas ou disparos.",
+      "Peça <strong>print ou vídeo</strong> sempre que envolver tela.",
+      "Confirme se a <strong>loja está em operação agora</strong> e marque no painel à esquerda — isso define a severidade.",
+      "Confirme o <strong>tempo de casa</strong> e marque no painel — isso define quem executa."
+    ],
+    nunca: [
+      "Começar a resolver antes de o cliente confirmar que você entendeu.",
+      "Diagnosticar por cima da hipótese do cliente sem verificar."
+    ],
+    cta: "Entendi e confirmei com o cliente",
+    why: "Categoria errada aqui contamina todo o resto do atendimento."
+  },
+  {
+    id: "ticket",
+    titulo: "Criar o ticket",
+    lead: "O ticket vem antes da solução, não depois. Ticket criado no fim vira medição perdida.",
+    itens: [
+      "<strong>Título</strong>: o sintoma na linguagem do cliente, não a sua hipótese técnica.",
+      "Vincule <strong>loja</strong>, <strong>usuário</strong> e <strong>canal</strong> de entrada.",
+      "Cole o <strong>trecho relevante da conversa da IA</strong> e o identificador dela.",
+      "Anexe as <strong>evidências</strong>: prints, IDs de pedido, reserva, disparo ou cupom.",
+      "Marque <strong>categoria e módulo iniciais</strong> — você pode reclassificar depois sem penalidade.",
+      "Registre se a <strong>loja está em operação</strong> e o <strong>tempo de casa</strong>."
+    ],
+    nunca: [
+      "Resolver primeiro e criar o ticket depois — &ldquo;foi rápido, não precisa&rdquo; é como problema recorrente fica invisível.",
+      "Deixar o título como &ldquo;dúvida do cliente&rdquo; ou &ldquo;erro&rdquo;: título vago não agrupa e não vira estatística."
+    ],
+    cta: "Ticket criado",
+    why: "É o ticket que libera a verificação por tema."
+  }
+];
+
+/* ================= EIXO 3: escada de autonomia ================= */
+const TEMPOS = [
+  { id:"novo",  rot:"Até 30 dias", modo:"Executo pelo cliente",
+    txt:"Cliente em implantação. Faça a alteração você mesmo, avise o que fez e mande o link da documentação para consulta futura. Não transfira a tarefa agora." },
+  { id:"rampa", rot:"30 a 90 dias", modo:"Faço junto e mostro",
+    txt:"Cliente aprendendo. Conduza na tela — chamada ou passo a passo com print — e deixe o cliente clicar. Confirme no fim que ele sabe repetir sozinho." },
+  { id:"velho", rot:"Mais de 90 dias", modo:"Oriento e ele executa",
+    txt:"Cliente maduro. Mande o caminho na plataforma e o link da documentação. Só assuma a execução se ele pedir explicitamente ou estiver bloqueado." }
+];
+const OPER = [ { id:"sim", rot:"Sim, casa aberta" }, { id:"nao", rot:"Não / fora do horário" } ];
+
+/* ================= EIXO 1: as 7 naturezas ================= */
+const CATEGORIAS = [
+  {
+    id:"ajuste", nome:"Ajuste", trilha:"Solicitação", dono:"Atendimentos",
+    desc:"Nada quebrado — o cliente quer algo mudado na configuração.",
+    fluxo:[
+      "Confirme <strong>qual loja</strong> e <strong>qual tela</strong> exatamente, com print quando houver dúvida.",
+      "Verifique se o ajuste é reversível. Se mexe em preço, cobertura de entrega, política de pagamento ou permissão de membro, <strong>peça confirmação explícita por escrito</strong> antes de aplicar.",
+      "Aplique o ajuste conforme o modo de entrega indicado acima.",
+      "Valide o resultado <strong>na visão do cliente final</strong> — link público, cardápio, app — não só no painel.",
+      "Registre no ticket o que foi alterado, de qual valor para qual valor."
+    ],
+    escalar:[
+      "A ação não existe na interface → <strong>Tech</strong>",
+      "O ajuste depende de mudança de plano ou contrato → <strong>Comercial</strong>",
+      "O ajuste tem efeito em cobrança → <strong>Financeiro</strong> antes de aplicar"
+    ],
+    nunca:["Alterar preço, taxa ou política sem confirmação escrita do cliente","Aplicar em loja diferente da que foi pedida"],
+    tags:["tipo:ajuste"]
+  },
+  {
+    id:"duvida", nome:"Dúvida", trilha:"Orientação", dono:"Atendimentos",
+    desc:"Como funciona, onde clico, o que esse número significa.",
+    fluxo:[
+      "Responda em <strong>uma frase direta</strong> e só depois mande o link da documentação. Link sem resposta parece descaso.",
+      "Se a resposta tem mais de três passos, mande o <strong>caminho na plataforma</strong> e o artigo.",
+      "Se a IA já tinha respondido certo e o cliente não entendeu, <strong>reformule</strong> — não repita a mesma frase.",
+      "Confirme que resolveu antes de encerrar. Dúvida fechada sem confirmação volta como reclamação."
+    ],
+    escalar:[
+      "Não existe artigo cobrindo a dúvida → responda e <strong>sinalize a lacuna de documentação</strong>",
+      "A dúvida revela que a plataforma não faz o que ele precisa → registre como <strong>Sugestão</strong> e avise Comercial"
+    ],
+    nunca:["Mandar só o link sem responder","Inventar comportamento do sistema — se não sabe, confirme com Tech"],
+    tags:["tipo:duvida"]
+  },
+  {
+    id:"reclamacao", nome:"Reclamação", trilha:"Incidente", dono:"Atendimentos",
+    desc:"O cliente está insatisfeito. A causa ainda é desconhecida.",
+    fluxo:[
+      "<strong>Acolha antes de diagnosticar.</strong> Reconheça o impacto na operação dele em uma frase, sem se justificar e sem culpar outro time — inclusive sem culpar a IA.",
+      "Separe <strong>fato</strong> de <strong>percepção</strong>: o que aconteceu, quando, em quantos pedidos ou reservas.",
+      "Identifique a raiz e reclassifique: falha do sistema → <strong>Bug</strong>; configuração errada → <strong>Ajuste</strong>; expectativa não atendida → segue como reclamação.",
+      "Dê um <strong>prazo concreto</strong> mesmo que seja só para o próximo retorno. Silêncio é o que transforma reclamação em cancelamento.",
+      "Cumpra o retorno mesmo sem novidade."
+    ],
+    escalar:[
+      "Menção a cancelar, rescindir ou &ldquo;vou avaliar outra ferramenta&rdquo; → <strong>Comercial imediatamente</strong>, no mesmo turno",
+      "Reclamação sobre conduta do atendimento ou da IA → <strong>liderança de Atendimentos</strong>",
+      "Terceira reclamação do mesmo cliente em 30 dias → <strong>Comercial</strong>, mesmo que cada uma esteja resolvida"
+    ],
+    nunca:["Prometer compensação, desconto ou crédito — isso é Financeiro/Comercial","Encerrar sem retorno cumprido"],
+    tags:["tipo:reclamacao","risco:churn?"]
+  },
+  {
+    id:"bug", nome:"Bug", trilha:"Incidente", dono:"Tech",
+    desc:"O sistema não faz o que deveria fazer.",
+    fluxo:[
+      "<strong>Reproduza antes de escalar.</strong> Bug que Tech não consegue reproduzir volta para você e o cliente espera o dobro.",
+      "Colete o pacote mínimo: <strong>loja, usuário, horário, o que se esperava, o que aconteceu, print ou vídeo</strong> e o ID do pedido / reserva / disparo.",
+      "Verifique se é configuração antes de chamar de bug — confira o card do módulo ao lado.",
+      "Dê um <strong>contorno ao cliente agora</strong> se existir, mesmo manual, e diga que é temporário.",
+      "Escale para Tech com o pacote completo e informe ao cliente que foi escalado, com prazo do próximo retorno."
+    ],
+    escalar:[
+      "Sempre para <strong>Tech</strong> — mas só com o pacote mínimo reproduzido",
+      "Afeta várias lojas ao mesmo tempo → <strong>Tech em caráter crítico</strong> e avise a liderança: pode ser incidente geral, não ticket individual"
+    ],
+    nunca:["Escalar sem tentar reproduzir","Prometer prazo de correção — quem dá prazo de deploy é Tech"],
+    tags:["tipo:bug","reproduzido:sim/nao"]
+  },
+  {
+    id:"sugestao", nome:"Sugestão", trilha:"Solicitação", dono:"Comercial",
+    desc:"Pedido de algo que a plataforma não faz hoje.",
+    fluxo:[
+      "Agradeça e registre <strong>o problema por trás do pedido</strong>, não a solução que o cliente imaginou.",
+      "Verifique se já existe forma de resolver com o que hoje existe — muitas sugestões são dúvidas disfarçadas.",
+      "Registre com o nome da loja e a frequência com que ele tropeça nisso.",
+      "Encerre o ticket. Sugestão não fica aberta esperando produto."
+    ],
+    escalar:["Encaminhe o registro para <strong>Comercial</strong>, que consolida com produto"],
+    nunca:["Prometer que vai ser feito, ou dar qualquer prazo","Deixar o ticket aberto aguardando desenvolvimento"],
+    tags:["tipo:sugestao"]
+  },
+  {
+    id:"financeiro", nome:"Financeiro", trilha:"Solicitação", dono:"Financeiro",
+    desc:"Cobrança, fatura, plano, pagamento, recebimento.",
+    fluxo:[
+      "Identifique se é <strong>cobrança da Dionísio ao cliente</strong> ou <strong>recebimento do cliente pelos consumidores dele</strong> — são fluxos completamente diferentes.",
+      "Se for recebimento pela plataforma (reserva paga, pedido pago), trate como Ajuste ou Bug no módulo correspondente.",
+      "Se for a nossa cobrança, colete CNPJ, competência e print do que ele recebeu, e encaminhe para Financeiro.",
+      "Informe ao cliente que Financeiro assume, com prazo do próximo retorno."
+    ],
+    escalar:["Cobrança, fatura, nota, reembolso → <strong>Financeiro</strong>","Mudança de plano ou renegociação → <strong>Comercial</strong>"],
+    nunca:["Negociar valor, prazo ou desconto","Confirmar estorno ou baixa de pagamento sem o Financeiro"],
+    tags:["tipo:financeiro"]
+  },
+  {
+    id:"outro", nome:"Outro", trilha:"Triagem", dono:"Atendimentos",
+    desc:"Porta de entrada. Não deve sobreviver até o fechamento.",
+    fluxo:[
+      "Use apenas enquanto você ainda não sabe o que é.",
+      "Faça <strong>uma pergunta aberta</strong>: o que o cliente estava tentando fazer quando isso aconteceu?",
+      "Reclassifique para uma das seis categorias antes de encerrar.",
+      "Se realmente não couber em nenhuma, escreva o motivo no ticket — é insumo para revisar a taxonomia."
+    ],
+    escalar:["Se não conseguir classificar em 2 interações → <strong>liderança de Atendimentos</strong>"],
+    nunca:["Encerrar um ticket com a categoria &ldquo;Outro&rdquo;"],
+    tags:["tipo:outro","revisar:taxonomia"]
+  }
+];
+
+/* ================= EIXO 2: os 13 módulos ================= */
+const MODULOS = [
+  {
+    id:"relatorios", nome:"Relatórios", area:"Desempenho",
+    onde:"Relatórios → abas Vendas, Operação e Financeiro.",
+    coletar:["Período e filtros aplicados","Qual métrica divergiu e contra qual fonte o cliente está comparando","Print da tela com os filtros visíveis"],
+    docs:[
+      {t:"Relatórios — visão geral", u:"/relatorios/relatorios"},
+      {t:"Dicionário de métricas", u:"/relatorios/relatorios/metricas"},
+      {t:"Origem e atribuição de canais", u:"/referencia/origem-atribuicao"}
+    ],
+    casos:[
+      {s:"Número não bate com o sistema do cliente", c:"Quase sempre diferença de recorte: período, fuso, status considerado ou regra de atribuição. Confira o dicionário de métricas antes de tratar como bug.", d:"/relatorios/relatorios/metricas", cat:"duvida"},
+      {s:"Métrica não aparece na aba", c:"Parte dos indicadores só aparece sob condições específicas de plano ou módulo ativo.", d:"/relatorios/relatorios/metricas", cat:"duvida"}
+    ]
+  },
+  {
+    id:"reserva", nome:"Reserva", area:"Operações",
+    onde:"Operações → Reservas. Verifique áreas e mesas, horários, bloqueios, datas especiais e política de pagamento.",
+    coletar:["Data, horário e número de pessoas da tentativa","Área ou experiência escolhida","Se a reserva exige pagamento","ID da reserva quando existir"],
+    docs:[
+      {t:"Reservas — visão geral", u:"/operacoes/reservas/visao-geral"},
+      {t:"Ciclo de vida da reserva", u:"/operacoes/reservas/ciclo-de-vida-da-reserva"},
+      {t:"Agir sobre uma reserva", u:"/operacoes/reservas/agir-sobre-uma-reserva"},
+      {t:"Áreas e mesas", u:"/operacoes/reservas/areas-e-mesas"},
+      {t:"Bloqueios", u:"/operacoes/reservas/bloqueios"},
+      {t:"Políticas e pagamentos", u:"/operacoes/reservas/politicas-e-pagamentos"}
+    ],
+    casos:[
+      {s:"Consumidor não consegue reservar", c:"Percorra na ordem: horário configurado, bloqueio ativo, capacidade da área, data especial.", d:"/operacoes/reservas/cliente-nao-consegue-reservar", cat:"bug"},
+      {s:"Reserva paga não confirma", c:"Envolve recebimento — confirme a configuração de recebimento antes de escalar.", d:"/operacoes/reservas/reserva-paga-nao-confirma", cat:"bug"},
+      {s:"Consumidor não consegue cancelar ou reagendar", c:"Normalmente é a política de cancelamento ou reagendamento restringindo a janela.", d:"/operacoes/reservas/cliente-nao-consegue-cancelar-ou-reagendar", cat:"duvida"}
+    ]
+  },
+  {
+    id:"fila", nome:"Fila", area:"Operações",
+    onde:"Operações → Filas. Verifique se a fila está ativa, o link público e as notificações.",
+    coletar:["Nome da fila e se está aberta","Como o consumidor tentou entrar: link, QR ou balcão","Se o problema é entrar na fila ou receber o aviso"],
+    docs:[
+      {t:"Filas — visão geral", u:"/operacoes/filas"},
+      {t:"Chamar e acomodar", u:"/operacoes/filas/chamar-e-acomodar"},
+      {t:"Link público da fila", u:"/operacoes/filas/link-publico"},
+      {t:"Notificações da fila", u:"/operacoes/filas/notificacoes"},
+      {t:"Atendimento prioritário", u:"/operacoes/filas/atendimento-prioritario"},
+      {t:"Limpar e reativar", u:"/operacoes/filas/limpar-e-reativar"}
+    ],
+    casos:[
+      {s:"Consumidor não consegue entrar na fila", c:"Confira se a fila está ativa e se o link público é o vigente.", d:"/operacoes/filas/cliente-nao-consegue-entrar-na-fila", cat:"bug"},
+      {s:"Consumidor não recebe a notificação", c:"Cheque a conexão de WhatsApp antes de tratar como problema da fila — a causa costuma estar em Conexão.", d:"/operacoes/filas/cliente-nao-recebe-notificacao", cat:"bug"}
+    ]
+  },
+  {
+    id:"delivery", nome:"Delivery", area:"Operações",
+    onde:"Operações → Pedidos e Configurações → Entrega. Verifique cobertura, horários de entrega, pausas e formas de pagamento.",
+    coletar:["ID do pedido e horário","Endereço de entrega e taxa exibida","Status atual do pedido","Se a loja está aberta para entrega neste momento"],
+    docs:[
+      {t:"Pedidos — visão geral", u:"/operacoes/pedidos"},
+      {t:"Acompanhar pedidos", u:"/operacoes/pedidos/acompanhar-pedidos"},
+      {t:"Status do pedido", u:"/operacoes/pedidos/status-do-pedido"},
+      {t:"Cobertura de entrega", u:"/configuracoes/configuracao-entrega/cobertura-de-entrega"},
+      {t:"Horários de entrega", u:"/configuracoes/configuracao-entrega/horarios-de-entrega"},
+      {t:"Pausas de entrega", u:"/configuracoes/horarios/pausas-de-entrega"}
+    ],
+    casos:[
+      {s:"Pedidos novos não chegam ao painel", c:"Crítico se a loja está aberta. Contorno imediato: acompanhar pedidos por outra via enquanto Tech investiga.", d:"/operacoes/pedidos/pedidos-novos-nao-chegam", cat:"bug"},
+      {s:"Consumidor não consegue finalizar o pedido", c:"Percorra: loja aberta, cobertura do endereço, forma de pagamento habilitada, item disponível.", d:"/operacoes/pedidos/cliente-nao-consegue-finalizar-pedido", cat:"bug"},
+      {s:"Taxa de entrega errada", c:"Configuração de cobertura, não bug. Confira as faixas cadastradas.", d:"/configuracoes/configuracao-entrega/taxa-de-entrega-errada", cat:"ajuste"},
+      {s:"Endereço fora da área de entrega", c:"Cobertura cadastrada. Ajuste a faixa ou explique o limite ao cliente.", d:"/configuracoes/configuracao-entrega/cliente-fora-da-area-de-entrega", cat:"ajuste"},
+      {s:"Não consigo cancelar o pedido", c:"Depende do status atual do pedido.", d:"/operacoes/pedidos/nao-consigo-cancelar-pedido", cat:"duvida"},
+      {s:"Feriado não fechou o delivery", c:"Datas especiais e pausas de funcionamento.", d:"/configuracoes/horarios/feriado-nao-fecha-o-delivery", cat:"ajuste"}
+    ]
+  },
+  {
+    id:"cardapio", nome:"Cardápio", area:"Operações",
+    onde:"Operações → Cardápios. Verifique categorias, itens, complementos e disponibilidade.",
+    coletar:["Nome do item ou categoria","Se está publicado e dentro do horário da categoria","Em qual canal não aparece: link, delivery ou stories"],
+    docs:[
+      {t:"Cardápios — visão geral", u:"/operacoes/cardapios"},
+      {t:"Criar cardápio", u:"/operacoes/cardapios/criar-cardapio"},
+      {t:"Categorias", u:"/operacoes/cardapios/categorias"},
+      {t:"Itens", u:"/operacoes/cardapios/itens"},
+      {t:"Complementos", u:"/operacoes/cardapios/complementos"},
+      {t:"Pizza", u:"/operacoes/cardapios/pizza"},
+      {t:"Traduções", u:"/operacoes/cardapios/traducoes-do-cardapio"},
+      {t:"Modo stories", u:"/operacoes/cardapios/modo-stories"}
+    ],
+    casos:[
+      {s:"Item não aparece no cardápio", c:"O caso mais comum do módulo. Percorra: item ativo, categoria ativa, horário da categoria, cardápio publicado no canal certo.", d:"/operacoes/cardapios/item-nao-aparece", cat:"ajuste"}
+    ]
+  },
+  {
+    id:"conexao", nome:"Conexão", area:"Comunicação",
+    onde:"Comunicação → WhatsApp e Instagram. Verifique o status da conexão antes de qualquer outro diagnóstico.",
+    coletar:["Canal: WhatsApp Meta, WhatsApp Web ou Instagram","Status exibido na tela de conexão","Quando parou de funcionar","Se alguém trocou senha ou removeu acesso na Meta"],
+    docs:[
+      {t:"Conectar WhatsApp", u:"/comunicacao/whatsapp/conectar"},
+      {t:"Meta x Web — qual usar", u:"/comunicacao/whatsapp/meta-vs-web"},
+      {t:"Conectar Instagram", u:"/comunicacao/instagram/conectar"},
+      {t:"Números habilitados", u:"/configuracoes/configuracao-ia/numeros-habilitados"}
+    ],
+    casos:[
+      {s:"Problemas na conexão Meta", c:"Raiz frequente de falhas em IA, disparos, fila e satisfação. Verifique aqui antes de abrir bug nos outros módulos.", d:"/comunicacao/whatsapp/conexao-meta-problemas", cat:"bug"},
+      {s:"Não consigo conectar o Instagram", c:"Costuma ser permissão da conta ou tipo de perfil.", d:"/comunicacao/instagram/nao-consigo-conectar", cat:"bug"},
+      {s:"Mensagem não enviada", c:"Confirme a conexão, depois o template e a janela de envio.", d:"/comunicacao/whatsapp/mensagem-nao-enviada", cat:"bug"}
+    ]
+  },
+  {
+    id:"ia", nome:"IA", area:"Configurações",
+    onde:"Configurações → Configuração de IA. Verifique comportamento, informações cadastradas, validade e números habilitados.",
+    coletar:["Print da conversa com a resposta errada","Canal: WhatsApp ou DM do Instagram","O que o cliente esperava que a IA respondesse","Se a informação está cadastrada e dentro da validade"],
+    docs:[
+      {t:"Configuração de IA — visão geral", u:"/configuracoes/configuracao-ia"},
+      {t:"Comportamento", u:"/configuracoes/configuracao-ia/comportamento"},
+      {t:"Informações", u:"/configuracoes/configuracao-ia/informacoes"},
+      {t:"Validade das informações", u:"/configuracoes/configuracao-ia/validade-de-informacoes"},
+      {t:"Testes", u:"/configuracoes/configuracao-ia/testes"},
+      {t:"Follow-up", u:"/configuracoes/configuracao-ia/follow-up"}
+    ],
+    casos:[
+      {s:"Assistente não responde", c:"Verifique primeiro Conexão e números habilitados. Só depois trate como falha da IA.", d:"/configuracoes/configuracao-ia/assistente-nao-responde", cat:"bug"},
+      {s:"Assistente responde errado", c:"Quase sempre informação ausente, desatualizada ou fora da validade — é ajuste de conteúdo, não bug. Use a tela de testes para comprovar.", d:"/configuracoes/configuracao-ia/assistente-responde-errado", cat:"ajuste"},
+      {s:"IA não responde as DMs do Instagram", c:"Trate como conexão do Instagram até provar o contrário.", d:"/comunicacao/instagram/ia-nao-responde-as-dms", cat:"bug"}
+    ]
+  },
+  {
+    id:"crm", nome:"CRM", area:"Clientes",
+    onde:"Clientes e Fidelidade → Clientes. Verifique perfil, grupos e regras de grupo automático.",
+    coletar:["Nome do grupo e as regras configuradas","Quantos contatos a base tem no total","Se o grupo é manual ou automático"],
+    docs:[
+      {t:"Clientes — visão geral", u:"/clientes-e-fidelidade/clientes/visao-geral"},
+      {t:"Perfil do cliente", u:"/clientes-e-fidelidade/clientes/perfil"},
+      {t:"Grupos", u:"/clientes-e-fidelidade/clientes/grupos"},
+      {t:"Criar grupo", u:"/clientes-e-fidelidade/clientes/grupos/criar-grupo"},
+      {t:"Gerenciar grupos", u:"/clientes-e-fidelidade/clientes/grupos/gerenciar-grupos"}
+    ],
+    casos:[
+      {s:"Grupo automático está vazio", c:"Regras restritivas demais para a base atual. Revise os critérios com o cliente.", d:"/clientes-e-fidelidade/clientes/grupos/grupo-automatico-vazio", cat:"ajuste"},
+      {s:"Não consigo criar grupo", c:"Verifique permissão do usuário e os campos obrigatórios.", d:"/clientes-e-fidelidade/clientes/grupos/nao-consigo-criar-grupo", cat:"bug"}
+    ]
+  },
+  {
+    id:"disparos", nome:"Disparos", area:"Comunicação",
+    onde:"Comunicação → WhatsApp → Disparos e Campanhas. Verifique template, público e conexão.",
+    coletar:["Nome do disparo ou campanha e horário do envio","Grupo de destino e tamanho","Template usado e status de aprovação","Quantos enviaram e quantos falharam"],
+    docs:[
+      {t:"Disparos", u:"/comunicacao/whatsapp/disparos"},
+      {t:"Disparos inteligentes", u:"/comunicacao/whatsapp/disparos-inteligentes"},
+      {t:"Campanhas", u:"/comunicacao/whatsapp/campanhas"},
+      {t:"Templates", u:"/comunicacao/whatsapp/templates"},
+      {t:"Histórico de mensagens", u:"/comunicacao/whatsapp/historico-mensagens"}
+    ],
+    casos:[
+      {s:"Mensagem não enviada", c:"Ordem de verificação: conexão ativa, template aprovado, público não vazio, janela de envio permitida.", d:"/comunicacao/whatsapp/mensagem-nao-enviada", cat:"bug"},
+      {s:"Disparo saiu para menos gente que o esperado", c:"Normalmente o grupo de destino, não o envio. Confira o CRM.", d:"/clientes-e-fidelidade/clientes/grupos/gerenciar-grupos", cat:"duvida"}
+    ]
+  },
+  {
+    id:"cupom", nome:"Cupom", area:"Clientes",
+    onde:"Clientes e Fidelidade → Cupons. Verifique validade, regras de uso e canais habilitados.",
+    coletar:["Código do cupom","Regras: validade, valor mínimo, limite de uso, canal","Onde o consumidor tentou aplicar"],
+    docs:[
+      {t:"Cupons — visão geral", u:"/clientes-e-fidelidade/cupons"},
+      {t:"Criar cupom", u:"/clientes-e-fidelidade/cupons/criar-cupom"},
+      {t:"Validar cupom", u:"/clientes-e-fidelidade/cupons/validar-cupom"},
+      {t:"Criar promoção", u:"/clientes-e-fidelidade/cupons/criar-promocao"}
+    ],
+    casos:[
+      {s:"Consumidor não consegue resgatar o cupom", c:"Confira validade, valor mínimo e limite de uso antes de tratar como falha.", d:"/clientes-e-fidelidade/cupons/cliente-nao-consegue-resgatar-cupom", cat:"duvida"},
+      {s:"Cupom de delivery não aplica", c:"Regra de canal ou de valor mínimo do pedido.", d:"/clientes-e-fidelidade/cupons/cupom-de-delivery-nao-aplica", cat:"ajuste"}
+    ]
+  },
+  {
+    id:"satisfacao", nome:"Satisfação", area:"Clientes",
+    onde:"Clientes e Fidelidade → Satisfação. Verifique pesquisa ativa, perguntas e envio automático.",
+    coletar:["Nome da pesquisa e se está ativa","Canal de envio configurado","Quantos envios e quantas respostas no período"],
+    docs:[
+      {t:"Satisfação — visão geral", u:"/clientes-e-fidelidade/satisfacao"},
+      {t:"O que é NPS", u:"/clientes-e-fidelidade/satisfacao/o-que-e-nps"},
+      {t:"Criar pesquisa", u:"/clientes-e-fidelidade/satisfacao/criar-pesquisa"},
+      {t:"Envio automático por WhatsApp", u:"/clientes-e-fidelidade/satisfacao/envio-automatico-whatsapp"},
+      {t:"Analisar resultados", u:"/clientes-e-fidelidade/satisfacao/analisar-resultados"}
+    ],
+    casos:[
+      {s:"Pesquisa não enviada", c:"Verifique conexão de WhatsApp e a configuração de envio automático.", d:"/clientes-e-fidelidade/satisfacao/pesquisa-nao-enviada", cat:"bug"},
+      {s:"Cliente não entende a nota de NPS", c:"Dúvida conceitual — explique o cálculo e mande o artigo.", d:"/clientes-e-fidelidade/satisfacao/o-que-e-nps", cat:"duvida"}
+    ]
+  },
+  {
+    id:"atendimento", nome:"Atendimento", area:"Clientes",
+    onde:"Clientes e Fidelidade → Pós-venda, e Comunicação → Conversas. É o módulo de SAC que o próprio cliente usa com os consumidores dele.",
+    coletar:["Se o problema é na pergunta de SAC, na resposta ou no ticket","ID do ticket ou da conversa","Print do erro"],
+    docs:[
+      {t:"Pós-venda — visão geral", u:"/clientes-e-fidelidade/pos-venda"},
+      {t:"Perguntas do SAC", u:"/clientes-e-fidelidade/pos-venda/perguntas-do-sac"},
+      {t:"Respostas do SAC", u:"/clientes-e-fidelidade/pos-venda/respostas-do-sac"},
+      {t:"Tickets de atendimento", u:"/clientes-e-fidelidade/pos-venda/tickets-de-atendimento"},
+      {t:"Conversas no WhatsApp", u:"/comunicacao/whatsapp/conversas"}
+    ],
+    casos:[
+      {s:"Não consigo registrar resposta de SAC", c:"Confira permissão do usuário e o estado da pergunta.", d:"/clientes-e-fidelidade/pos-venda/nao-consigo-registrar-resposta-de-sac", cat:"bug"},
+      {s:"Erro ao criar pergunta de SAC", c:"Verifique campos obrigatórios antes de escalar.", d:"/clientes-e-fidelidade/pos-venda/erro-ao-criar-pergunta-de-sac", cat:"bug"}
+    ]
+  },
+  {
+    id:"config", nome:"Configurações gerais", area:"Configurações",
+    onde:"Configurações → Minha Loja, Horários, Pessoas e Integrações.",
+    coletar:["Qual tela e qual campo","Print antes e depois da tentativa de salvar","Papel e permissão do usuário que tentou"],
+    docs:[
+      {t:"Minha loja", u:"/configuracoes/minha-loja/loja"},
+      {t:"Horário da loja", u:"/configuracoes/horarios/horario-da-loja"},
+      {t:"Pausas de funcionamento", u:"/configuracoes/horarios/pausas-de-funcionamento"},
+      {t:"Formas de pagamento", u:"/configuracoes/minha-loja/formas-de-pagamento"},
+      {t:"Impressoras", u:"/configuracoes/minha-loja/impressoras"},
+      {t:"Funções e permissões", u:"/configuracoes/pessoas/funcoes-e-permissoes"},
+      {t:"Histórico de ações", u:"/configuracoes/pessoas/consultar-historico-de-acoes"},
+      {t:"Integrações", u:"/configuracoes/integracoes"}
+    ],
+    casos:[
+      {s:"Alterações não salvam", c:"Verifique campo obrigatório em branco e permissão do usuário.", d:"/configuracoes/minha-loja/alteracoes-nao-salvam", cat:"bug"},
+      {s:"Loja abre ou fecha na hora errada", c:"Horário da loja, pausas de funcionamento e fuso.", d:"/configuracoes/horarios/loja-abre-ou-fecha-na-hora-errada", cat:"ajuste"},
+      {s:"Não consigo convidar membro", c:"Limite do plano ou e-mail já vinculado.", d:"/configuracoes/pessoas/nao-consigo-convidar-membro", cat:"bug"},
+      {s:"Não consigo editar ou remover membro", c:"Hierarquia de permissão — confira funções e permissões.", d:"/configuracoes/pessoas/nao-consigo-editar-ou-remover-membro", cat:"duvida"}
+    ]
+  }
+];
+
+/* ================= SEVERIDADE ================= */
+const SEV = {
+  P1:{ rot:"P1 — operação parada", cls:"p-crit", prazo:"Assuma agora. Contorno em até 15 min e Tech acionado no mesmo momento." },
+  P2:{ rot:"P2 — degradado", cls:"p-warn", prazo:"Resolver ou encaminhar dentro do turno." },
+  P3:{ rot:"P3 — sem impacto imediato", cls:"p-calm", prazo:"Resolver em até 24h úteis." }
+};
+const MATRIZ_SEV = {
+  sim:{ bug:"P1", ajuste:"P1", reclamacao:"P2", financeiro:"P2", duvida:"P2", outro:"P2", sugestao:"P3" },
+  nao:{ bug:"P2", ajuste:"P2", reclamacao:"P2", financeiro:"P3", duvida:"P3", outro:"P3", sugestao:"P3" }
+};
+
+/* ================= ETAPA 6: follow-up ================= */
+const FUP_ESPERA_H = 2;   // intervalo até o segundo FUP
+const FUP_LIMITE_H = 1;   // tolerância de silêncio após o segundo FUP
+
+/* ================= ESTADO ================= */
+const state = {
+  tempo:"rampa", oper:"nao",
+  feito:{ ia:false, problema:false, ticket:false },
+  aberta:"ia",
+  pulou:false,
+  cat:null, mod:null,
+  fup:"pendente",      // pendente | fup1_sem_resposta | encerrado_confirmado | encerrado_inatividade
+  fup2_em:null,
+  fup2_limite:null
+};
+
+/* ================= HELPERS ================= */
+const el = (t,c,h) => { const n = document.createElement(t); if (c) n.className = c; if (h !== undefined) n.innerHTML = h; return n; };
+const cat = id => CATEGORIAS.find(c => c.id === id);
+const mod = id => MODULOS.find(m => m.id === id);
+const portoesOk = () => state.feito.ia && state.feito.problema && state.feito.ticket;
+const hhmm = d => String(d.getHours()).padStart(2,"0") + ":" + String(d.getMinutes()).padStart(2,"0");
+
+function etapaAtual() {
+  if (!portoesOk()) {
+    if (!state.feito.ia) return 1;
+    if (!state.feito.problema) return 2;
+    return 3;
+  }
+  if (!state.cat || !state.mod) return 4;
+  if (state.fup === "pendente") return 5;
+  return 6;
+}
+
+/* ================= SPINE ================= */
+const ETAPAS = [
+  "Ler a conversa da IA",
+  "Entender o problema",
+  "Criar o ticket",
+  "Verificar o tema",
+  "Agir e explicar",
+  "Follow-up e encerrar"
+];
+function renderSpine() {
+  const atual = etapaAtual(), host = document.getElementById("spine");
+  host.textContent = "";
+  ETAPAS.forEach((t,i) => {
+    const n = i + 1;
+    const cls = n === atual ? "mo on" : (n < atual ? "mo ok" : "mo");
+    const node = el("div", cls);
+    node.append(el("span","mo-n", n < atual ? "✓" : String(n)), el("span","mo-t", t));
+    host.append(node);
+  });
+}
+
+/* ================= RAIL ================= */
+function renderChips() {
+  const t = document.getElementById("chips-tempo");
+  t.textContent = "";
+  TEMPOS.forEach(o => {
+    const b = el("button","chip",o.rot);
+    b.type = "button";
+    b.setAttribute("aria-pressed", String(state.tempo === o.id));
+    b.onclick = () => { state.tempo = o.id; render(); };
+    t.append(b);
+  });
+  const p = document.getElementById("chips-oper");
+  p.textContent = "";
+  OPER.forEach(o => {
+    const b = el("button","chip",o.rot);
+    b.type = "button";
+    b.setAttribute("aria-pressed", String(state.oper === o.id));
+    b.onclick = () => { state.oper = o.id; render(); };
+    p.append(b);
+  });
+}
+
+/* ================= ETAPAS 1-3 ================= */
+function renderFlow() {
+  const host = document.getElementById("flow");
+  host.textContent = "";
+
+  PORTOES.forEach((p, i) => {
+    const feito = state.feito[p.id];
+    const anteriorOk = i === 0 || state.feito[PORTOES[i-1].id];
+    const aberta = state.aberta === p.id && anteriorOk;
+    const travada = !anteriorOk && !feito;
+
+    const cls = "stage " + (travada ? "is-locked" : feito && !aberta ? "is-done" : aberta ? "is-active" : "");
+    const card = el("div", cls);
+
+    const podeAbrir = anteriorOk;
+    const head = el(podeAbrir ? "button" : "div", "st-head");
+    if (podeAbrir) {
+      head.type = "button";
+      head.setAttribute("aria-expanded", String(aberta));
+      head.onclick = () => { state.aberta = aberta ? null : p.id; render(); };
+    }
+    head.append(el("span","st-n", feito ? "✓" : String(i+1)));
+    head.append(el("span","st-title", p.titulo));
+    head.append(el("span","st-sub",
+      travada ? "aguardando a etapa " + i
+      : feito && !aberta ? "concluído · reabrir"
+      : feito ? "concluído"
+      : aberta ? "" : "abrir"));
+    card.append(head);
+
+    if (aberta) {
+      const body = el("div","st-body");
+      body.append(el("p","lead", p.lead));
+
+      const ul = el("ul","checklist");
+      p.itens.forEach(x => ul.append(el("li","",x)));
+      body.append(ul);
+
+      const stop = el("div","callout c-stop");
+      stop.append(el("span","ch","Não faça"));
+      const su = el("ul");
+      p.nunca.forEach(x => su.append(el("li","",x)));
+      stop.append(su);
+      body.append(stop);
+
+      const adv = el("div","advance");
+      const b = el("button","btn", (feito ? "✓ " : "") + p.cta);
+      b.type = "button";
+      b.onclick = () => {
+        state.feito[p.id] = true;
+        const prox = PORTOES[i+1];
+        state.aberta = prox && !state.feito[prox.id] ? prox.id : null;
+        render();
+        const alvo = document.getElementById(prox ? "flow" : "axes");
+        if (alvo) alvo.scrollIntoView({ behavior:"smooth", block:"start" });
+      };
+      adv.append(b);
+      adv.append(el("span","why", p.why));
+      body.append(adv);
+
+      card.append(body);
+    }
+
+    host.append(card);
+  });
+}
+
+/* ================= ETAPA 4: eixos ================= */
+function renderAxes() {
+  const host = document.getElementById("axes");
+  host.textContent = "";
+
+  if (!portoesOk()) {
+    const faltam = PORTOES.filter(p => !state.feito[p.id]);
+    const lock = el("div","lock");
+    lock.append(el("span","eyebrow","Etapa 4 · bloqueada"));
+    lock.append(el("p","","A verificação por tema abre depois do ticket criado. Assim a classificação fica registrada e mensurável, em vez de viver só na cabeça de quem atendeu."));
+    const ol = el("ol");
+    faltam.forEach(p => ol.append(el("li","",p.titulo)));
+    lock.append(ol);
+    const esc = el("button","btn ghost sm","Emergência: liberar agora");
+    esc.type = "button";
+    esc.onclick = () => {
+      state.feito.ia = state.feito.problema = state.feito.ticket = true;
+      state.pulou = true; state.aberta = null;
+      render();
+      document.getElementById("axes").scrollIntoView({ behavior:"smooth", block:"start" });
+    };
+    lock.append(esc);
+    lock.append(el("p","","<span class=\"microhint\">Use só em P1 com a loja parada. O desvio fica marcado no ticket com a tag <code>etapas:puladas</code>.</span>"));
+    host.append(lock);
+    return;
+  }
+
+  const wrapCat = el("section","step");
+  const hc = el("div","step-h");
+  hc.append(el("span","eyebrow","Etapa 4 · eixo 1"), el("h2","","Natureza do ticket"),
+    el("span","note","Você classifica, não o cliente. Pode reclassificar a qualquer momento."));
+  wrapCat.append(hc);
+  const gc = el("div","cards");
+  CATEGORIAS.forEach(c => {
+    const b = el("button","card");
+    b.type = "button";
+    b.setAttribute("aria-pressed", String(state.cat === c.id));
+    b.append(el("span","ct",c.trilha), el("span","cn",c.nome), el("span","cd",c.desc));
+    b.onclick = () => { state.cat = state.cat === c.id ? null : c.id; resetFup(); render(); };
+    gc.append(b);
+  });
+  wrapCat.append(gc);
+  host.append(wrapCat);
+
+  const wrapMod = el("section","step");
+  wrapMod.style.marginTop = "22px";
+  const hm = el("div","step-h");
+  hm.append(el("span","eyebrow","Etapa 4 · eixo 2"), el("h2","","Módulo da plataforma"),
+    el("span","note","Onde olhar e qual documentação mandar."));
+  wrapMod.append(hm);
+  const gm = el("div","cards");
+  MODULOS.forEach(m => {
+    const b = el("button","card");
+    b.type = "button";
+    b.setAttribute("aria-pressed", String(state.mod === m.id));
+    b.append(el("span","ct",m.area), el("span","cn",m.nome));
+    b.onclick = () => { state.mod = state.mod === m.id ? null : m.id; resetFup(); render(); };
+    gm.append(b);
+  });
+  wrapMod.append(gm);
+  host.append(wrapMod);
+}
+
+/* ================= ETAPA 5: direcionamento ================= */
+function renderOut() {
+  const host = document.getElementById("out");
+  host.textContent = "";
+  if (!portoesOk()) return;
+
+  if (!state.cat || !state.mod) {
+    const falta = !state.cat && !state.mod ? "a natureza do ticket e o módulo"
+                : !state.cat ? "a natureza do ticket" : "o módulo";
+    host.append(el("div","empty","Selecione " + falta + " para ver o direcionamento. Ou busque pelo sintoma no painel à esquerda."));
+    return;
+  }
+
+  const c = cat(state.cat), m = mod(state.mod);
+  const t = TEMPOS.find(x => x.id === state.tempo);
+  const sevId = MATRIZ_SEV[state.oper][c.id];
+  const s = SEV[sevId];
+  const executarAgora = state.oper === "sim" && sevId === "P1" && t.id !== "novo";
+
+  const wrap = el("div","result");
+
+  const head = el("div","rhead");
+  head.append(el("span","eyebrow","Etapa 5 · agir e explicar"));
+  head.append(el("h2","rtitle", c.nome + ' <span class="sep">/</span> ' + m.nome));
+  const pills = el("div","pills");
+  pills.append(
+    el("span","pill " + s.cls, s.rot),
+    el("span","pill p-info","Dono: " + c.dono),
+    el("span","pill p-line","Trilha: " + c.trilha)
+  );
+  if (state.pulou) pills.append(el("span","pill p-crit","etapas puladas"));
+  head.append(pills);
+  head.append(el("p","rprazo", s.prazo));
+  wrap.append(head);
+
+  const body = el("div","rbody");
+
+  /* ---- coluna esquerda ---- */
+  const L = el("div","rcol");
+
+  const mode = el("div","callout c-mode");
+  mode.append(el("span","ch","Modo de entrega — " + (executarAgora ? "sobreposto pela urgência" : t.rot)));
+  mode.append(el("p","", "<strong>" + (executarAgora ? "Executo agora, ensino depois" : t.modo) + ".</strong> " +
+    (executarAgora
+      ? "A loja está em operação e o caso é P1. Não é momento de ensinar: resolva você, e agende o repasse para depois do serviço."
+      : t.txt)));
+  L.append(mode);
+
+  const fl = el("div","block");
+  fl.append(el("h3","","Sequência de ação"));
+  const ol = el("ol","steps");
+  c.fluxo.forEach(p => ol.append(el("li","",p)));
+  fl.append(ol);
+  L.append(fl);
+
+  if (m.casos.length) {
+    const cs = el("div","block");
+    cs.append(el("h3","","Casos conhecidos em " + m.nome));
+    const ul = el("ul","cases");
+    m.casos.slice().sort((a,b) => (b.cat === c.id) - (a.cat === c.id)).forEach(k => {
+      const li = el("li","case");
+      li.append(el("div","case-s",k.s));
+      li.append(el("div","case-c", k.c + (k.cat !== c.id ? ' <em>· costuma ser ' + cat(k.cat).nome + "</em>" : "")));
+      const a = el("a","","Abrir o guia deste caso");
+      a.href = D + k.d; a.target = "_blank"; a.rel = "noopener";
+      li.append(a);
+      ul.append(li);
+    });
+    cs.append(ul);
+    L.append(cs);
+  }
+
+  const exp = el("div","block");
+  exp.append(el("h3","","Explicar ao cliente antes de encerrar"));
+  const eul = el("ul","bul");
+  [
+    "Diga <strong>o que era</strong> e <strong>o que você fez</strong>, em uma frase, sem jargão interno.",
+    "Se foi configuração, diga <strong>qual</strong> — o cliente precisa saber para não repetir.",
+    "Mande <strong>o caminho na plataforma</strong> e o link da documentação, mesmo que você tenha executado.",
+    "Se escalou, diga <strong>para quem</strong> e <strong>quando terá retorno</strong>. Nunca deixe o prazo em aberto."
+  ].forEach(x => eul.append(el("li","",x)));
+  exp.append(eul);
+  L.append(exp);
+
+  const stop = el("div","callout c-stop");
+  stop.append(el("span","ch","Não faça"));
+  const su = el("ul");
+  c.nunca.forEach(x => su.append(el("li","",x)));
+  stop.append(su);
+  L.append(stop);
+
+  body.append(L);
+
+  /* ---- coluna direita ---- */
+  const R = el("div","rcol");
+
+  const ctx = el("div","block");
+  ctx.append(el("h3","","Onde olhar"));
+  ctx.append(el("p","txt", m.onde));
+  R.append(ctx);
+
+  const col = el("div","block");
+  col.append(el("h3","","O que coletar antes de agir"));
+  const cu = el("ul","bul");
+  m.coletar.forEach(x => cu.append(el("li","",x)));
+  col.append(cu);
+  R.append(col);
+
+  const esc = el("div","block");
+  esc.append(el("h3","","Quando escalar"));
+  const eu = el("ul","bul");
+  c.escalar.forEach(x => eu.append(el("li","",x)));
+  esc.append(eu);
+  R.append(esc);
+
+  const dk = el("div","block");
+  dk.append(el("h3","","Documentação de " + m.nome));
+  const dl = el("ul","doclist");
+  m.docs.forEach(d => {
+    const li = el("li");
+    const a = el("a","",d.t);
+    a.href = D + d.u; a.target = "_blank"; a.rel = "noopener";
+    li.append(a); dl.append(li);
+  });
+  dk.append(dl);
+  R.append(dk);
+
+  const tg = el("div","block");
+  tg.append(el("h3","","Registrar no ticket"));
+  const tw = el("div","tags");
+  const tags = [...c.tags, "modulo:" + m.id, "sev:" + sevId,
+    "modo:" + (executarAgora ? "executado_urgencia" : t.id),
+    "loja_em_operacao:" + state.oper];
+  if (state.pulou) tags.push("etapas:puladas");
+  tags.forEach(x => tw.append(el("span","tag",x)));
+  tg.append(tw);
+  tg.append(el("span","microhint","Sem essas tags não há como medir tempo de resolução por módulo nem descobrir onde falta documentação."));
+  R.append(tg);
+
+  body.append(R);
+  wrap.append(body);
+  host.append(wrap);
+}
+
+/* ================= ETAPA 6: FUP ================= */
+function resetFup() {
+  state.fup = "pendente";
+  state.fup2_em = null;
+  state.fup2_limite = null;
+}
+
+function renderFup() {
+  const host = document.getElementById("fup");
+  host.textContent = "";
+  if (!portoesOk() || !state.cat || !state.mod) return;
+
+  const wrap = el("div","result");
+
+  const head = el("div","rhead");
+  head.append(el("span","eyebrow","Etapa 6 · follow-up e encerramento"));
+  head.append(el("h2","rtitle","O atendimento não termina na explicação"));
+  head.append(el("p","rprazo","Resolvido não é o mesmo que confirmado. O ticket só encerra com resposta do cliente ou com o silêncio esgotado."));
+  wrap.append(head);
+
+  const col = el("div","rcol");
+  const fup = el("div","fup");
+
+  /* --- FUP 1 --- */
+  const n1 = el("div","fnode" + (state.fup === "pendente" ? " on" : " spent"));
+  const h1 = el("div","fnode-h");
+  h1.append(el("span","ft","FUP 1"), el("span","fw","imediatamente após explicar"));
+  n1.append(h1);
+  const say1 = el("div","callout c-say");
+  say1.append(el("span","ch","Mande assim"));
+  say1.append(el("p","","&ldquo;Consegue conferir aí pra mim? Ficou como você precisava?&rdquo;"));
+  n1.append(say1);
+
+  const br1 = el("div","branches");
+  const b1y = el("div","branch yes");
+  b1y.append(el("span","bl","Respondeu"));
+  b1y.append(el("span","bt","<strong>Encerre o ticket.</strong> Registre a confirmação do cliente e as tags. Sem isso o encerramento não vale como resolvido."));
+  const b1n = el("div","branch no");
+  b1n.append(el("span","bl","Sem resposta"));
+  b1n.append(el("span","bt","<strong>Agende o FUP 2 para " + FUP_ESPERA_H + " horas depois.</strong> Deixe o ticket aberto aguardando cliente — não encerre e não fique reenviando no meio."));
+  br1.append(b1y, b1n);
+  n1.append(br1);
+
+  if (state.fup === "pendente") {
+    const act = el("div","advance");
+    const y = el("button","btn sm","Cliente respondeu");
+    y.type = "button";
+    y.onclick = () => { state.fup = "encerrado_confirmado"; render(); };
+    const n = el("button","btn ghost sm","Sem resposta — agendar FUP 2");
+    n.type = "button";
+    n.onclick = () => {
+      const agora = new Date();
+      state.fup2_em = new Date(agora.getTime() + FUP_ESPERA_H*3600e3);
+      state.fup2_limite = new Date(agora.getTime() + (FUP_ESPERA_H + FUP_LIMITE_H)*3600e3);
+      state.fup = "fup1_sem_resposta";
+      render();
+    };
+    act.append(y, n);
+    n1.append(act);
+  }
+  fup.append(n1);
+  fup.append(el("div","fconn","↓"));
+
+  /* --- FUP 2 --- */
+  const ativo2 = state.fup === "fup1_sem_resposta";
+  const n2 = el("div","fnode" + (ativo2 ? " on" : (state.fup === "pendente" ? "" : " spent")));
+  const h2 = el("div","fnode-h");
+  h2.append(el("span","ft","FUP 2"), el("span","fw", FUP_ESPERA_H + " horas depois do FUP 1"));
+  if (state.fup2_em) h2.append(el("span","clock","enviar às " + hhmm(state.fup2_em)));
+  n2.append(h2);
+  const say2 = el("div","callout c-say");
+  say2.append(el("span","ch","Mande assim"));
+  say2.append(el("p","","&ldquo;Passando pra confirmar se ficou tudo certo. Se eu não tiver retorno, vou encerrar por aqui — e é só chamar de novo que a gente reabre.&rdquo;"));
+  n2.append(say2);
+
+  const br2 = el("div","branches");
+  const b2y = el("div","branch yes");
+  b2y.append(el("span","bl","Respondeu"));
+  b2y.append(el("span","bt","<strong>Encerre o ticket</strong> com a confirmação registrada."));
+  const b2n = el("div","branch no");
+  b2n.append(el("span","bl","Silêncio por " + FUP_LIMITE_H + " hora"));
+  b2n.append(el("span","bt","<strong>Encerre por inatividade</strong>" +
+    (state.fup2_limite ? " a partir das <span class=\"clock\">" + hhmm(state.fup2_limite) + "</span>" : "") +
+    ". Deixe escrito no ticket que o cliente pode reabrir a qualquer momento."));
+  br2.append(b2y, b2n);
+  n2.append(br2);
+
+  if (ativo2) {
+    const act = el("div","advance");
+    const y = el("button","btn sm","Cliente respondeu");
+    y.type = "button";
+    y.onclick = () => { state.fup = "encerrado_confirmado"; render(); };
+    const n = el("button","btn ghost sm","Silêncio esgotado — encerrar");
+    n.type = "button";
+    n.onclick = () => { state.fup = "encerrado_inatividade"; render(); };
+    act.append(y, n);
+    n2.append(act);
+    act.append(el("span","why","Aviso: o aviso de encerramento precisa ter sido enviado antes."));
+  }
+  fup.append(n2);
+
+  col.append(fup);
+
+  /* --- desfecho --- */
+  if (state.fup === "encerrado_confirmado" || state.fup === "encerrado_inatividade") {
+    const confirmado = state.fup === "encerrado_confirmado";
+    const done = el("div","callout " + (confirmado ? "c-mode" : "c-stop"));
+    done.append(el("span","ch", confirmado ? "Encerrado com confirmação" : "Encerrado por inatividade"));
+    done.append(el("p","", confirmado
+      ? "Este é o desfecho que conta como resolvido. Antes de fechar: a confirmação do cliente está colada no ticket, a categoria final está correta e as tags estão aplicadas."
+      : "Encerramento válido, mas <strong>não conta como resolvido</strong>. Marque a tag abaixo — volume alto de encerramento por inatividade normalmente significa que a explicação não ficou clara, não que o cliente não se importa."));
+    col.append(done);
+
+    const tg = el("div","block");
+    tg.append(el("h3","","Tags de encerramento"));
+    const tw = el("div","tags");
+    [ "encerramento:" + (confirmado ? "confirmado" : "inatividade"),
+      "fups:" + (confirmado && !state.fup2_em ? "1" : "2"),
+      "confirmado_pelo_cliente:" + (confirmado ? "sim" : "nao")
+    ].forEach(x => tw.append(el("span","tag",x)));
+    tg.append(tw);
+    col.append(tg);
+
+    const back = el("div","advance");
+    const b = el("button","btn ghost sm","Refazer o follow-up");
+    b.type = "button";
+    b.onclick = () => { resetFup(); render(); };
+    back.append(b);
+    col.append(back);
+  }
+
+  /* --- regra sempre visível --- */
+  const rule = el("div","block");
+  rule.append(el("h3","","A regra em uma linha"));
+  const kv = el("div","kv");
+  [
+    ["FUP 1","Assim que explicar. Respondeu → encerra."],
+    ["FUP 2","" + FUP_ESPERA_H + "h depois, se houve silêncio. Respondeu → encerra."],
+    ["Limite","" + FUP_LIMITE_H + "h de silêncio após o FUP 2 → encerra por inatividade."],
+    ["Total","Silêncio absoluto encerra " + (FUP_ESPERA_H + FUP_LIMITE_H) + "h após a explicação."]
+  ].forEach(([k,v]) => {
+    const row = el("div","kv-row");
+    row.append(el("span","kv-k",k), el("span","kv-v",v));
+    kv.append(row);
+  });
+  rule.append(kv);
+  col.append(rule);
+
+  wrap.append(col);
+  host.append(wrap);
+}
+
+/* ================= BUSCA ================= */
+const INDEX = [];
+MODULOS.forEach(m => {
+  INDEX.push({ label:m.nome, mod:m.id, cat:null, hay:(m.nome + " " + m.area + " " + m.onde).toLowerCase() });
+  m.casos.forEach(k => INDEX.push({ label:k.s, mod:m.id, cat:k.cat, hay:(k.s + " " + k.c + " " + m.nome).toLowerCase() }));
+});
+
+function renderResults() {
+  const q = document.getElementById("q").value.trim().toLowerCase();
+  const host = document.getElementById("results");
+  host.textContent = "";
+  if (q.length < 2) return;
+  const hits = INDEX.filter(i => q.split(/\s+/).every(w => i.hay.includes(w))).slice(0, 12);
+  if (!hits.length) {
+    host.append(el("li","",'<span class="nores">Nenhum caso conhecido. Classifique manualmente pelos dois eixos.</span>'));
+    return;
+  }
+  hits.forEach(h => {
+    const li = el("li");
+    const b = el("button");
+    b.type = "button";
+    b.innerHTML = h.label + '<span class="rmod">' + mod(h.mod).nome + (h.cat ? " · " + cat(h.cat).nome : "") + "</span>";
+    b.onclick = () => {
+      state.mod = h.mod;
+      if (h.cat) state.cat = h.cat;
+      resetFup();
+      document.getElementById("q").value = "";
+      renderResults();
+      render();
+      const alvo = document.getElementById(portoesOk() ? "out" : "axes");
+      alvo.scrollIntoView({ behavior:"smooth", block:"start" });
+    };
+    li.append(b);
+    host.append(li);
+  });
+}
+
+/* ================= BOOT ================= */
+function render() { renderSpine(); renderChips(); renderFlow(); renderAxes(); renderOut(); renderFup(); }
+
+document.getElementById("q").addEventListener("input", renderResults);
+document.getElementById("reset").addEventListener("click", () => {
+  state.feito = { ia:false, problema:false, ticket:false };
+  state.aberta = "ia";
+  state.pulou = false;
+  state.cat = null; state.mod = null;
+  resetFup();
+  document.getElementById("q").value = "";
+  renderResults(); render();
+  window.scrollTo({ top:0, behavior:"smooth" });
+});
+render();
+</script>
