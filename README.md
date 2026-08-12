@@ -5,100 +5,94 @@ do atendimento, da leitura da conversa da IA até o encerramento com follow-up.
 
 **No ar em:** https://murilobolzan.github.io/playbook-atendimento/
 
-Página única, sem dependências. Abre em qualquer navegador, funciona offline.
+---
+
+## Você só edita um arquivo
+
+| Arquivo | O que é |
+|---|---|
+| **[`conteudo.js`](conteudo.js)** | **Todo o texto do playbook. É aqui que você mexe.** |
+| `index.html` | O motor. Não precisa abrir. |
+
+Para editar: clique em **[`conteudo.js`](conteudo.js)** → ícone de lápis (**Edit**) →
+altere → **Commit changes**. Cerca de 40 segundos depois o site já mostra a versão nova.
 
 ---
 
-## Como editar os textos
+## Não procure no código: use o Modo mapa
 
-Todo o conteúdo está em listas de dados no fim do `index.html`, separado da lógica.
-Você edita direto aqui no GitHub: clique em `index.html`, clique no lápis (**Edit**),
-altere, e clique em **Commit changes**. Em cerca de 40 segundos o site atualiza sozinho.
+Abra o playbook e clique em **Modo mapa** no canto superior direito.
 
-### Onde fica cada coisa
+Cada bloco da tela ganha uma etiqueta vinho com um marcador, tipo `■ 6 fluxo`.
+Esse marcador é o endereço dentro do `conteudo.js`. Aí você abre o arquivo,
+aperta Ctrl+F, procura `■ 6` e cai exatamente no lugar certo.
 
-| Linha | O que você edita ali |
-|------:|----------------------|
-| 385 | `PORTOES` — etapas 1, 2 e 3: título, texto de abertura, checklist, "não faça" e o texto do botão |
-| 447 | `TEMPOS` — escada de autonomia: rótulos de tempo de casa e texto do modo de entrega |
-| 458 | `CATEGORIAS` — as 7 naturezas: sequência de ação, quando escalar, não faça, tags |
-| 570 | `MODULOS` — os 13 módulos: onde olhar, o que coletar, links da documentação, casos conhecidos |
-| 796 | `SEV` — nomes e prazos de P1 / P2 / P3 |
-| 801 | `MATRIZ_SEV` — qual severidade cada categoria recebe com a loja aberta ou fechada |
-| 807 | `FUP_ESPERA_H` — horas até o segundo follow-up (hoje: 2) |
-| 808 | `FUP_LIMITE_H` — horas de tolerância de silêncio após o segundo follow-up (hoje: 1) |
-| 841 | `ETAPAS` — nomes que aparecem na trilha numerada do topo |
-| 963 | Botão "Emergência: liberar agora" — apague esta linha e as 8 seguintes para exigir as etapas sempre |
-| 1086 | Bloco "Explicar ao cliente antes de encerrar" |
-| 1187 | Frase pronta do FUP 1 |
-| 1229 | Frase pronta do FUP 2 |
+É o caminho mais rápido: você olha a tela, não o código.
 
-As linhas mudam de lugar conforme você adiciona conteúdo. Se estiver perdido, use a busca
-do GitHub dentro do arquivo (tecla `/`) e procure pelo nome da lista, ex. `const CATEGORIAS`.
+---
 
-### Anatomia de uma categoria
+## Índice do conteudo.js
 
-```js
-{
-  id:"ajuste",              // NÃO mude — é a chave interna
-  nome:"Ajuste",            // aparece no card
-  trilha:"Solicitação",     // etiqueta cinza acima do nome
-  dono:"Atendimentos",      // pílula azul no resultado
-  desc:"Nada quebrado...",  // linha pequena no card
-  fluxo:[                   // a sequência numerada de ação
-    "Primeiro passo aqui.",
-    "Segundo passo, com <strong>destaque</strong>."
-  ],
-  escalar:["Situação → <strong>Time</strong>"],
-  nunca:["O que não fazer"],
-  tags:["tipo:ajuste"]
-}
-```
+Se preferir ir direto, cada seção tem um marcador. Ctrl+F com ele no `conteudo.js`:
 
-### Anatomia de um módulo
+| Marcador | O que muda |
+|---|---|
+| `■ 1` | Endereço da documentação (a base de todos os links) |
+| `■ 2` | Nomes das 6 etapas, na trilha numerada do topo |
+| `■ 3` | Etapas 1, 2 e 3 — as travadas: checklist, "não faça", texto do botão |
+| `■ 4` | Tempo de casa — os três modos de quem executa a ação |
+| `■ 5` | Loja em operação — as duas opções do painel |
+| `■ 6` | As 7 naturezas de ticket: sequência de ação, quando escalar, não faça, tags |
+| `■ 7` | Os 13 módulos: onde olhar, o que coletar, links, casos conhecidos |
+| `■ 8` | Severidade e prazos de P1 / P2 / P3 |
+| `■ 9` | Follow-up: os tempos (2h e 1h) e as frases prontas |
+| `■ 10` | Todo o texto fixo da tela: títulos, avisos, rótulos |
 
-```js
-{
-  id:"reserva",             // NÃO mude
-  nome:"Reserva",
-  area:"Operações",         // etiqueta cinza no card
-  onde:"Operações → Reservas. Verifique...",
-  coletar:["O que pedir ao cliente antes de agir"],
-  docs:[
-    { t:"Título do link", u:"/caminho/na/documentacao" }
-  ],
-  casos:[
-    {
-      s:"Sintoma como o cliente descreve",
-      c:"Explicação da causa mais provável",
-      d:"/caminho/do/artigo",
-      cat:"bug"             // categoria que este caso costuma ser
-    }
-  ]
-}
-```
+## Tarefas comuns
 
-Para adicionar um caso conhecido, copie um bloco entre chaves, cole e ajuste.
-A busca por sintoma indexa automaticamente — não precisa registrar em outro lugar.
+| Você quer... | Vá em |
+|---|---|
+| Mudar uma frase da checklist da etapa 1, 2 ou 3 | `■ 3` |
+| Mudar os prazos ou os nomes de P1 / P2 / P3 | `■ 8`, bloco `SEV` |
+| Mudar qual severidade uma categoria recebe | `■ 8`, bloco `MATRIZ_SEV` |
+| Mudar os cortes de 30 e 90 dias do tempo de casa | `■ 4` |
+| Mudar as horas do follow-up | `■ 9`, `esperaHoras` e `limiteHoras` |
+| Mudar a frase que o atendente manda no FUP | `■ 9`, `f1Mensagem` e `f2Mensagem` |
+| Adicionar um caso conhecido novo | `■ 7`, dentro de `casos` do módulo |
+| Adicionar ou trocar um link de documentação | `■ 7`, dentro de `docs` do módulo |
+| Mudar a sequência de ação de uma categoria | `■ 6`, dentro de `fluxo` |
+| Mudar as regras de escalonamento | `■ 6`, dentro de `escalar` |
+| Tirar o botão "Emergência: liberar agora" | `■ 10`, apague a linha `bloqueioBotao` |
+| Mudar o título ou o subtítulo do topo | `■ 10`, `titulo` e `subtitulo` |
 
-Os caminhos em `u` e `d` são relativos à documentação. A base está na linha 382
-(`const D`), então `/operacoes/reservas` vira o endereço completo sozinho.
+### Adicionar uma categoria nova
+
+Em `■ 6`, copie um bloco inteiro entre `{ }`, cole antes do `]` final, e troque o
+`id` por um nome curto sem espaço nem acento. Depois vá em `■ 8` e adicione esse
+mesmo `id` nas **duas** linhas de `MATRIZ_SEV`, senão a página quebra ao selecionar
+a categoria nova.
+
+### Adicionar um módulo novo
+
+Em `■ 7`, copie um bloco inteiro entre `{ }`, cole antes do `]` final, e troque o
+`id`. Não precisa mexer em mais nada — os cards e a busca se atualizam sozinhos.
 
 ---
 
 ## Quatro regras para não quebrar
 
-1. **Toda frase entre aspas duplas**, e cada item da lista separado por vírgula.
+1. **Toda frase fica entre "aspas duplas"**, e cada item da lista termina com vírgula.
    A vírgula que falta no meio da lista quebra a página inteira.
-2. **Apóstrofo é seguro** dentro de aspas duplas. Para aspas *dentro* do texto,
-   use `&ldquo;` e `&rdquo;` — é o padrão já usado no arquivo.
-3. **`<strong>` sempre fecha com `</strong>`.** Tag aberta desconfigura o resto do bloco.
-4. **Nunca mude os `id:`.** São as chaves que ligam a matriz de severidade, as tags
-   e a busca. Mudar `nome:` é livre; mudar `id:` derruba a página.
+2. **Apóstrofo pode.** Para aspas dentro do texto use `&ldquo;` e `&rdquo;`.
+3. **`<strong>` sempre fecha com `</strong>`.** Tag aberta desconfigura o bloco.
+4. **Nunca mude os `id:`.** Mudar `nome:` é livre; mudar `id:` derruba a página.
 
 **Se a tela ficar branca depois de publicar:** é erro de sintaxe. Abra a página,
-pressione `F12`, vá na aba **Console** — ela aponta a linha exata. Para voltar à versão
-que funcionava, vá em **Commits**, abra o commit anterior e use **Revert**.
+aperte `F12`, vá na aba **Console** — ela aponta a linha exata. Para voltar à versão
+que funcionava: aba **Commits** → abra o commit → **Revert**.
+
+Se quiser conferir antes de publicar, baixe a pasta e abra o `index.html` com dois
+cliques. Os dois arquivos precisam estar juntos na mesma pasta.
 
 ---
 
@@ -107,16 +101,16 @@ que funcionava, vá em **Commits**, abra o commit anterior e use **Revert**.
 Marcados como rascunho porque foram propostos a partir de referência de mercado,
 não da operação real:
 
-- Os cortes de tempo de casa (30 e 90 dias) na escada de autonomia
-- A matriz de severidade e os prazos de P1 / P2 / P3
-- Os tempos de follow-up (2h e 1h)
+- Os cortes de tempo de casa, 30 e 90 dias, na escada de autonomia (`■ 4`)
+- A matriz de severidade e os prazos de P1 / P2 / P3 (`■ 8`)
+- Os tempos de follow-up, 2h e 1h (`■ 9`)
 - Se o botão de emergência que libera as etapas travadas deve continuar existindo
-- Campos que o ticket realmente exige no sistema de vocês (etapa 3)
-- Se existe identificador da conversa da IA para colar no ticket (etapa 1)
+- Campos que o ticket realmente exige no sistema de vocês (etapa 3, em `■ 3`)
+- Se existe identificador da conversa da IA para colar no ticket (etapa 1, em `■ 3`)
 
 ## Lacuna conhecida na taxonomia
 
 A documentação da plataforma cobre **Eventos** e **Links da loja**, mas não existe
-subcategoria para nenhum dos dois. Hoje esses tickets caem em "configurações gerais"
-ou "outro" e a medição deles se perde. Decidir se entram como módulos ou se ficam
-deliberadamente fora do escopo do suporte.
+subcategoria para nenhum dos dois. Hoje esses tickets caem em "Configurações gerais"
+ou "Outro" e a medição deles se perde. Decidir se entram como módulos (`■ 7`) ou se
+ficam deliberadamente fora do escopo do suporte.
