@@ -13,18 +13,18 @@
    Cada bloco ganha uma etiqueta com o nome do bloco daqui. Aí você
    procura esse nome neste arquivo.
 
-   Jeito 2 — pelo índice: aperte Ctrl+F e procure o marcador, ex: "■ 6"
+   Jeito 2 — pelo índice: aperte Ctrl+F e procure o marcador, ex: "[6]"
 
-     ■ 1   ENDEREÇO DA DOCUMENTAÇÃO
-     ■ 2   NOMES DAS 6 ETAPAS ................ trilha numerada do topo
-     ■ 3   ETAPAS 1, 2 E 3 ................... as etapas travadas em sequência
-     ■ 4   TEMPO DE CASA ..................... quem executa a ação
-     ■ 5   LOJA EM OPERAÇÃO .................. as duas opções do painel
-     ■ 6   AS 7 NATUREZAS DE TICKET .......... ajuste, dúvida, bug...
-     ■ 7   OS 13 MÓDULOS ..................... reserva, delivery, cardápio...
-     ■ 8   SEVERIDADE E PRAZOS ............... P1, P2, P3
-     ■ 9   FOLLOW-UP ......................... tempos e frases do FUP
-     ■ 10  TÍTULOS E AVISOS DA TELA .......... todo o resto do texto fixo
+     [1]   ENDEREÇO DA DOCUMENTAÇÃO
+     [2]   NOMES DAS 6 ETAPAS ................ trilha numerada do topo
+     [3]   ETAPAS 1, 2 E 3 ................... as etapas travadas em sequência
+     [4]   TEMPO DE CASA ..................... quem executa a ação
+     [5]   LOJA EM OPERAÇÃO .................. as duas opções do painel
+     [6]   AS 7 NATUREZAS DE TICKET .......... ajuste, dúvida, bug...
+     [7]   OS 13 MÓDULOS ..................... reserva, delivery, cardápio...
+     [8]   SEVERIDADE E PRAZOS ............... P1, P2, P3
+     [9]   FOLLOW-UP ......................... tempos e frases do FUP
+     [10]  TÍTULOS E AVISOS DA TELA .......... todo o resto do texto fixo
 
    ─────────────────────────────────────────────────────────────────────────
    QUATRO REGRAS PARA NÃO QUEBRAR
@@ -41,7 +41,7 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 
 
-/* ■ 1 ═══════════════════════════════════════════════════════════════════════
+/* [1] ═══════════════════════════════════════════════════════════════════════
    ENDEREÇO DA DOCUMENTAÇÃO
 
    Base de todos os links. Os caminhos nos módulos (mais abaixo) são colados
@@ -51,7 +51,7 @@
 const D = "https://dionisio.gitbook.io/documentacao-dionisio";
 
 
-/* ■ 2 ═══════════════════════════════════════════════════════════════════════
+/* [2] ═══════════════════════════════════════════════════════════════════════
    NOMES DAS 6 ETAPAS
 
    Aparecem na trilha numerada do topo da tela. São só rótulos — mudar o
@@ -68,7 +68,7 @@ const ETAPAS = [
 ];
 
 
-/* ■ 3 ═══════════════════════════════════════════════════════════════════════
+/* [3] ═══════════════════════════════════════════════════════════════════════
    ETAPAS 1, 2 E 3 — as travadas em sequência
 
    São os três cards que abrem a tela. Cada um só libera o próximo depois
@@ -144,7 +144,7 @@ const PORTOES = [
 ];
 
 
-/* ■ 4 ═══════════════════════════════════════════════════════════════════════
+/* [4] ═══════════════════════════════════════════════════════════════════════
    TEMPO DE CASA — a escada de autonomia
 
    Os três botões do painel esquerdo. Não mudam o QUE fazer, mudam QUEM
@@ -180,11 +180,11 @@ const TEMPOS = [
 ];
 
 
-/* ■ 5 ═══════════════════════════════════════════════════════════════════════
+/* [5] ═══════════════════════════════════════════════════════════════════════
    LOJA EM OPERAÇÃO
 
    Os dois botões do painel esquerdo. "sim" sobe a severidade e cancela o
-   modo de ensino. Para mudar QUAL severidade cada situação recebe, veja ■ 8
+   modo de ensino. Para mudar QUAL severidade cada situação recebe, veja [8]
    ═════════════════════════════════════════════════════════════════════════ */
 
 const OPER = [
@@ -193,7 +193,7 @@ const OPER = [
 ];
 
 
-/* ■ 6 ═══════════════════════════════════════════════════════════════════════
+/* [6] ═══════════════════════════════════════════════════════════════════════
    AS 7 NATUREZAS DE TICKET — eixo 1
 
    Os cards da etapa 4 e o conteúdo da coluna esquerda do resultado.
@@ -210,7 +210,7 @@ const OPER = [
 
    Para adicionar uma categoria nova: copie um bloco inteiro entre { },
    cole antes do ] final, troque o id por um nome curto sem espaço, e
-   adicione esse mesmo id nas DUAS linhas de MATRIZ_SEV em ■ 8
+   adicione esse mesmo id nas DUAS linhas de MATRIZ_SEV em [8]
    ═════════════════════════════════════════════════════════════════════════ */
 
 const CATEGORIAS = [
@@ -373,7 +373,7 @@ const CATEGORIAS = [
 ];
 
 
-/* ■ 7 ═══════════════════════════════════════════════════════════════════════
+/* [7] ═══════════════════════════════════════════════════════════════════════
    OS 13 MÓDULOS — eixo 2
 
    Os cards da etapa 4 e o conteúdo da coluna direita do resultado.
@@ -385,7 +385,7 @@ const CATEGORIAS = [
      coletar = a lista "O que coletar antes de agir"
      docs    = os links de documentação
                  t = título que aparece
-                 u = caminho, colado depois do endereço do ■ 1
+                 u = caminho, colado depois do endereço do [1]
      casos   = os "Casos conhecidos", que também alimentam a busca do painel
                  s   = sintoma, como o cliente descreve
                  c   = explicação da causa provável
@@ -709,7 +709,7 @@ const MODULOS = [
 ];
 
 
-/* ■ 8 ═══════════════════════════════════════════════════════════════════════
+/* [8] ═══════════════════════════════════════════════════════════════════════
    SEVERIDADE E PRAZOS
 
    SEV = o nome e o prazo de cada nível.
@@ -737,7 +737,7 @@ const MATRIZ_SEV = {
 };
 
 
-/* ■ 9 ═══════════════════════════════════════════════════════════════════════
+/* [9] ═══════════════════════════════════════════════════════════════════════
    FOLLOW-UP — etapa 6
 
    esperaHoras = quantas horas até o segundo FUP
@@ -796,7 +796,7 @@ const FUP = {
 };
 
 
-/* ■ 10 ══════════════════════════════════════════════════════════════════════
+/* [10] ══════════════════════════════════════════════════════════════════════
    TÍTULOS E AVISOS DA TELA
 
    Todo o texto fixo que não pertence a um bloco acima. Está agrupado na

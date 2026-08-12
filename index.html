@@ -372,7 +372,7 @@
   <div>
     Cada etiqueta vinho mostra de onde vem aquele bloco. Abra o arquivo
     <code>conteudo.js</code> no GitHub e use Ctrl+F com o marcador da etiqueta,
-    por exemplo <code>■ 6</code>, para pular direto ao lugar certo.
+    por exemplo <code>[6]</code>, para pular direto ao lugar certo.
   </div>
 </div>
 
@@ -495,8 +495,8 @@ function renderMoldura() {
   bm.setAttribute("aria-pressed", String(state.mapa));
   document.body.classList.toggle("mapa", state.mapa);
 
-  src(document.getElementById("f-tempo"), "■ 4 TEMPOS");
-  src(document.getElementById("f-oper"), "■ 5 OPER");
+  src(document.getElementById("f-tempo"), "[4] TEMPOS");
+  src(document.getElementById("f-oper"), "[5] OPER");
 }
 
 /* ---------- trilha do topo ---------- */
@@ -509,7 +509,7 @@ function renderSpine() {
     node.append(el("span","mo-n", n < atual ? "✓" : String(n)), el("span","mo-t", t));
     host.append(node);
   });
-  src(host, "■ 2 ETAPAS");
+  src(host, "[2] ETAPAS");
 }
 
 /* ---------- painel esquerdo ---------- */
@@ -546,7 +546,7 @@ function renderFlow() {
     const travada = !anteriorOk && !feito;
 
     const card = el("div", "stage " + (travada ? "is-locked" : feito && !aberta ? "is-done" : aberta ? "is-active" : ""));
-    if (aberta) src(card, "■ 3 PORTOES");
+    if (aberta) src(card, "[3] PORTOES");
 
     const head = el(anteriorOk ? "button" : "div", "st-head");
     if (anteriorOk) {
@@ -605,7 +605,7 @@ function renderAxes() {
   host.textContent = "";
 
   if (!portoesOk()) {
-    const lock = src(el("div","lock"), "■ 10 bloqueio*");
+    const lock = src(el("div","lock"), "[10] bloqueio*");
     lock.append(el("span","eyebrow", TEXTOS.bloqueioEyebrow));
     lock.append(el("p","", TEXTOS.bloqueioTexto));
     const ol = el("ol");
@@ -625,7 +625,7 @@ function renderAxes() {
     return;
   }
 
-  const wrapCat = src(el("section","step"), "■ 6 CATEGORIAS");
+  const wrapCat = src(el("section","step"), "[6] CATEGORIAS");
   const hc = el("div","step-h");
   hc.append(el("span","eyebrow", TEXTOS.eixo1Eyebrow), el("h2","", TEXTOS.eixo1Titulo), el("span","note", TEXTOS.eixo1Nota));
   wrapCat.append(hc);
@@ -641,7 +641,7 @@ function renderAxes() {
   wrapCat.append(gc);
   host.append(wrapCat);
 
-  const wrapMod = src(el("section","step"), "■ 7 MODULOS");
+  const wrapMod = src(el("section","step"), "[7] MODULOS");
   wrapMod.style.marginTop = "22px";
   const hm = el("div","step-h");
   hm.append(el("span","eyebrow", TEXTOS.eixo2Eyebrow), el("h2","", TEXTOS.eixo2Titulo), el("span","note", TEXTOS.eixo2Nota));
@@ -683,7 +683,7 @@ function renderOut() {
   const head = el("div","rhead");
   head.append(el("span","eyebrow", TEXTOS.resEyebrow));
   head.append(el("h2","rtitle", c.nome + ' <span class="sep">/</span> ' + m.nome));
-  const pills = src(el("div","pills"), "■ 8 SEV");
+  const pills = src(el("div","pills"), "[8] SEV");
   pills.append(
     el("span","pill " + s.cls, s.rot),
     el("span","pill p-info","Dono: " + c.dono),
@@ -699,13 +699,13 @@ function renderOut() {
   /* ----- coluna esquerda ----- */
   const L = el("div","rcol");
 
-  const mode = src(el("div","callout c-mode"), "■ 4 TEMPOS");
+  const mode = src(el("div","callout c-mode"), "[4] TEMPOS");
   mode.append(el("span","ch", TEXTOS.resModoLabel + " — " + (urgente ? TEXTOS.resModoUrgencia : t.rot)));
   mode.append(el("p","", "<strong>" + (urgente ? TEXTOS.resModoUrgenciaTitulo : t.modo) + ".</strong> " +
     (urgente ? TEXTOS.resModoUrgenciaTexto : t.txt)));
   L.append(mode);
 
-  const fl = src(el("div","block"), "■ 6 fluxo");
+  const fl = src(el("div","block"), "[6] fluxo");
   fl.append(el("h3","", TEXTOS.resSequencia));
   const ol = el("ol","steps");
   c.fluxo.forEach(p => ol.append(el("li","",p)));
@@ -713,7 +713,7 @@ function renderOut() {
   L.append(fl);
 
   if (m.casos.length) {
-    const cs = src(el("div","block"), "■ 7 casos");
+    const cs = src(el("div","block"), "[7] casos");
     cs.append(el("h3","", TEXTOS.resCasos + " " + m.nome));
     const ul = el("ul","cases");
     m.casos.slice().sort((a,b) => (b.cat === c.id) - (a.cat === c.id)).forEach(k => {
@@ -729,14 +729,14 @@ function renderOut() {
     L.append(cs);
   }
 
-  const exp = src(el("div","block"), "■ 10 resExplicarItens");
+  const exp = src(el("div","block"), "[10] resExplicarItens");
   exp.append(el("h3","", TEXTOS.resExplicarTitulo));
   const eul = el("ul","bul");
   TEXTOS.resExplicarItens.forEach(x => eul.append(el("li","",x)));
   exp.append(eul);
   L.append(exp);
 
-  const stop = src(el("div","callout c-stop"), "■ 6 nunca");
+  const stop = src(el("div","callout c-stop"), "[6] nunca");
   stop.append(el("span","ch", TEXTOS.resNaoFaca));
   const su = el("ul");
   c.nunca.forEach(x => su.append(el("li","",x)));
@@ -748,26 +748,26 @@ function renderOut() {
   /* ----- coluna direita ----- */
   const R = el("div","rcol");
 
-  const ctx = src(el("div","block"), "■ 7 onde");
+  const ctx = src(el("div","block"), "[7] onde");
   ctx.append(el("h3","", TEXTOS.resOndeOlhar));
   ctx.append(el("p","txt", m.onde));
   R.append(ctx);
 
-  const col = src(el("div","block"), "■ 7 coletar");
+  const col = src(el("div","block"), "[7] coletar");
   col.append(el("h3","", TEXTOS.resColetar));
   const cu = el("ul","bul");
   m.coletar.forEach(x => cu.append(el("li","",x)));
   col.append(cu);
   R.append(col);
 
-  const esc = src(el("div","block"), "■ 6 escalar");
+  const esc = src(el("div","block"), "[6] escalar");
   esc.append(el("h3","", TEXTOS.resEscalar));
   const eu = el("ul","bul");
   c.escalar.forEach(x => eu.append(el("li","",x)));
   esc.append(eu);
   R.append(esc);
 
-  const dk = src(el("div","block"), "■ 7 docs");
+  const dk = src(el("div","block"), "[7] docs");
   dk.append(el("h3","", TEXTOS.resDocs + " " + m.nome));
   const dl = el("ul","doclist");
   m.docs.forEach(d => {
@@ -779,7 +779,7 @@ function renderOut() {
   dk.append(dl);
   R.append(dk);
 
-  const tg = src(el("div","block"), "■ 6 tags");
+  const tg = src(el("div","block"), "[6] tags");
   tg.append(el("h3","", TEXTOS.resTags));
   const tw = el("div","tags");
   const tags = [...c.tags, "modulo:" + m.id, "sev:" + sevId,
@@ -817,7 +817,7 @@ function renderFup() {
   wrap.append(head);
 
   const col = el("div","rcol");
-  const arv = src(el("div","fup"), "■ 9 FUP");
+  const arv = src(el("div","fup"), "[9] FUP");
 
   /* --- FUP 1 --- */
   const n1 = el("div","fnode" + (state.fup === "pendente" ? " on" : " spent"));

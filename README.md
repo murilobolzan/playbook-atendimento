@@ -23,9 +23,9 @@ altere → **Commit changes**. Cerca de 40 segundos depois o site já mostra a v
 
 Abra o playbook e clique em **Modo mapa** no canto superior direito.
 
-Cada bloco da tela ganha uma etiqueta vinho com um marcador, tipo `■ 6 fluxo`.
+Cada bloco da tela ganha uma etiqueta vinho com um marcador, tipo `[6] fluxo`.
 Esse marcador é o endereço dentro do `conteudo.js`. Aí você abre o arquivo,
-aperta Ctrl+F, procura `■ 6` e cai exatamente no lugar certo.
+aperta Ctrl+F, procura `[6]` e cai exatamente no lugar certo.
 
 É o caminho mais rápido: você olha a tela, não o código.
 
@@ -37,44 +37,44 @@ Se preferir ir direto, cada seção tem um marcador. Ctrl+F com ele no `conteudo
 
 | Marcador | O que muda |
 |---|---|
-| `■ 1` | Endereço da documentação (a base de todos os links) |
-| `■ 2` | Nomes das 6 etapas, na trilha numerada do topo |
-| `■ 3` | Etapas 1, 2 e 3 — as travadas: checklist, "não faça", texto do botão |
-| `■ 4` | Tempo de casa — os três modos de quem executa a ação |
-| `■ 5` | Loja em operação — as duas opções do painel |
-| `■ 6` | As 7 naturezas de ticket: sequência de ação, quando escalar, não faça, tags |
-| `■ 7` | Os 13 módulos: onde olhar, o que coletar, links, casos conhecidos |
-| `■ 8` | Severidade e prazos de P1 / P2 / P3 |
-| `■ 9` | Follow-up: os tempos (2h e 1h) e as frases prontas |
-| `■ 10` | Todo o texto fixo da tela: títulos, avisos, rótulos |
+| `[1]` | Endereço da documentação (a base de todos os links) |
+| `[2]` | Nomes das 6 etapas, na trilha numerada do topo |
+| `[3]` | Etapas 1, 2 e 3 — as travadas: checklist, "não faça", texto do botão |
+| `[4]` | Tempo de casa — os três modos de quem executa a ação |
+| `[5]` | Loja em operação — as duas opções do painel |
+| `[6]` | As 7 naturezas de ticket: sequência de ação, quando escalar, não faça, tags |
+| `[7]` | Os 13 módulos: onde olhar, o que coletar, links, casos conhecidos |
+| `[8]` | Severidade e prazos de P1 / P2 / P3 |
+| `[9]` | Follow-up: os tempos (2h e 1h) e as frases prontas |
+| `[10]` | Todo o texto fixo da tela: títulos, avisos, rótulos |
 
 ## Tarefas comuns
 
 | Você quer... | Vá em |
 |---|---|
-| Mudar uma frase da checklist da etapa 1, 2 ou 3 | `■ 3` |
-| Mudar os prazos ou os nomes de P1 / P2 / P3 | `■ 8`, bloco `SEV` |
-| Mudar qual severidade uma categoria recebe | `■ 8`, bloco `MATRIZ_SEV` |
-| Mudar os cortes de 30 e 90 dias do tempo de casa | `■ 4` |
-| Mudar as horas do follow-up | `■ 9`, `esperaHoras` e `limiteHoras` |
-| Mudar a frase que o atendente manda no FUP | `■ 9`, `f1Mensagem` e `f2Mensagem` |
-| Adicionar um caso conhecido novo | `■ 7`, dentro de `casos` do módulo |
-| Adicionar ou trocar um link de documentação | `■ 7`, dentro de `docs` do módulo |
-| Mudar a sequência de ação de uma categoria | `■ 6`, dentro de `fluxo` |
-| Mudar as regras de escalonamento | `■ 6`, dentro de `escalar` |
-| Tirar o botão "Emergência: liberar agora" | `■ 10`, apague a linha `bloqueioBotao` |
-| Mudar o título ou o subtítulo do topo | `■ 10`, `titulo` e `subtitulo` |
+| Mudar uma frase da checklist da etapa 1, 2 ou 3 | `[3]` |
+| Mudar os prazos ou os nomes de P1 / P2 / P3 | `[8]`, bloco `SEV` |
+| Mudar qual severidade uma categoria recebe | `[8]`, bloco `MATRIZ_SEV` |
+| Mudar os cortes de 30 e 90 dias do tempo de casa | `[4]` |
+| Mudar as horas do follow-up | `[9]`, `esperaHoras` e `limiteHoras` |
+| Mudar a frase que o atendente manda no FUP | `[9]`, `f1Mensagem` e `f2Mensagem` |
+| Adicionar um caso conhecido novo | `[7]`, dentro de `casos` do módulo |
+| Adicionar ou trocar um link de documentação | `[7]`, dentro de `docs` do módulo |
+| Mudar a sequência de ação de uma categoria | `[6]`, dentro de `fluxo` |
+| Mudar as regras de escalonamento | `[6]`, dentro de `escalar` |
+| Tirar o botão "Emergência: liberar agora" | `[10]`, apague a linha `bloqueioBotao` |
+| Mudar o título ou o subtítulo do topo | `[10]`, `titulo` e `subtitulo` |
 
 ### Adicionar uma categoria nova
 
-Em `■ 6`, copie um bloco inteiro entre `{ }`, cole antes do `]` final, e troque o
-`id` por um nome curto sem espaço nem acento. Depois vá em `■ 8` e adicione esse
+Em `[6]`, copie um bloco inteiro entre `{ }`, cole antes do `]` final, e troque o
+`id` por um nome curto sem espaço nem acento. Depois vá em `[8]` e adicione esse
 mesmo `id` nas **duas** linhas de `MATRIZ_SEV`, senão a página quebra ao selecionar
 a categoria nova.
 
 ### Adicionar um módulo novo
 
-Em `■ 7`, copie um bloco inteiro entre `{ }`, cole antes do `]` final, e troque o
+Em `[7]`, copie um bloco inteiro entre `{ }`, cole antes do `]` final, e troque o
 `id`. Não precisa mexer em mais nada — os cards e a busca se atualizam sozinhos.
 
 ---
@@ -101,16 +101,16 @@ cliques. Os dois arquivos precisam estar juntos na mesma pasta.
 Marcados como rascunho porque foram propostos a partir de referência de mercado,
 não da operação real:
 
-- Os cortes de tempo de casa, 30 e 90 dias, na escada de autonomia (`■ 4`)
-- A matriz de severidade e os prazos de P1 / P2 / P3 (`■ 8`)
-- Os tempos de follow-up, 2h e 1h (`■ 9`)
+- Os cortes de tempo de casa, 30 e 90 dias, na escada de autonomia (`[4]`)
+- A matriz de severidade e os prazos de P1 / P2 / P3 (`[8]`)
+- Os tempos de follow-up, 2h e 1h (`[9]`)
 - Se o botão de emergência que libera as etapas travadas deve continuar existindo
-- Campos que o ticket realmente exige no sistema de vocês (etapa 3, em `■ 3`)
-- Se existe identificador da conversa da IA para colar no ticket (etapa 1, em `■ 3`)
+- Campos que o ticket realmente exige no sistema de vocês (etapa 3, em `[3]`)
+- Se existe identificador da conversa da IA para colar no ticket (etapa 1, em `[3]`)
 
 ## Lacuna conhecida na taxonomia
 
 A documentação da plataforma cobre **Eventos** e **Links da loja**, mas não existe
 subcategoria para nenhum dos dois. Hoje esses tickets caem em "Configurações gerais"
-ou "Outro" e a medição deles se perde. Decidir se entram como módulos (`■ 7`) ou se
+ou "Outro" e a medição deles se perde. Decidir se entram como módulos (`[7]`) ou se
 ficam deliberadamente fora do escopo do suporte.
