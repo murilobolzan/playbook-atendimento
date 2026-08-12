@@ -3,7 +3,7 @@
 Playbook interativo para o time de Atendimentos. Guia o atendente pelas seis etapas
 do atendimento, da leitura da conversa da IA até o encerramento com follow-up.
 
-**No ar em:** _(preencher com o link do GitHub Pages depois de publicar)_
+**No ar em:** https://murilobolzan.github.io/playbook-atendimento/
 
 Página única, sem dependências. Abre em qualquer navegador, funciona offline.
 
