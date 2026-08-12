@@ -59,11 +59,11 @@ const D = "https://dionisio.gitbook.io/documentacao-dionisio";
    ═════════════════════════════════════════════════════════════════════════ */
 
 const ETAPAS = [
-  "Ler a conversa da IA",
+  "Ler a conversa do Cliente",
   "Entender o problema",
   "Criar o ticket",
   "Verificar o tema",
-  "Agir e explicar",
+  "Guia de Atendimento",
   "Follow-up e encerrar"
 ];
 
@@ -85,15 +85,14 @@ const ETAPAS = [
 const PORTOES = [
   {
     id: "ia",
-    titulo: "Ler a conversa da IA",
+    titulo: "Ler a conversa do Cliente",
     lead: "A IA atendeu primeiro. Você está entrando no meio de uma conversa — leia antes de escrever qualquer coisa.",
     itens: [
-      "Leia do <strong>início</strong>, não só a última mensagem.",
-      "Anote <strong>o que a IA já respondeu e já prometeu</strong>. Não repita e nunca contradiga sem explicar a correção.",
-      "Verifique se a IA <strong>errou</strong>: informação desatualizada ou fora da validade é ajuste de conteúdo no módulo IA, não bug.",
-      "Anote <strong>o que o cliente já tentou</strong> e quais dados ele já forneceu.",
-      "Conte <strong>quantas vezes ele voltou ao mesmo assunto</strong>. Reincidência muda a prioridade e o tom.",
       "Identifique <strong>qual loja</strong> e <strong>qual usuário</strong> está falando."
+      "Leia do <strong>início</strong>, não só a última mensagem. Leia também o resumo criado pela IA.",
+      "Anote <strong>o que a IA já respondeu/alterou</strong>.",
+      "Verifique se a IA <strong>acertou/errou</strong>: se errou, corrija e peça desculpas pelo erro.",
+      "Verifique os dados que o <strong>cliente<strong> forneceu e entenda o que ele quer aplicar na plataforma.",
     ],
     nunca: [
       "Abrir a conversa pela última mensagem e responder no escuro.",
