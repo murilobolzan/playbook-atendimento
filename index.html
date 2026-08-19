@@ -424,9 +424,98 @@
   </div>
 </div>
 
+<!-- Captura erro de sintaxe do conteudo.js para poder avisar em tela.
+     Precisa vir ANTES do conteudo.js. -->
+<script>
+  window.__erroConteudo = null;
+  window.addEventListener("error", function (e) {
+    if (!window.__erroConteudo && e.filename && e.filename.indexOf("conteudo.js") !== -1) {
+      window.__erroConteudo = { msg: e.message || "", linha: e.lineno || 0 };
+    }
+  });
+</script>
 <script src="conteudo.js"></script>
 <script>
 "use strict";
+
+/* ---------- rede de segurança ----------
+   Se o conteudo.js tiver erro de sintaxe, o navegador aborta o arquivo
+   inteiro e nenhuma das listas existe. Sem isso, a tela ficaria vazia
+   e ninguém saberia por quê. */
+(function () {
+  var faltando = [];
+  if (typeof D === "undefined") faltando.push("D");
+  if (typeof ETAPAS === "undefined") faltando.push("ETAPAS");
+  if (typeof PORTOES === "undefined") faltando.push("PORTOES");
+  if (typeof TEMPOS === "undefined") faltando.push("TEMPOS");
+  if (typeof OPER === "undefined") faltando.push("OPER");
+  if (typeof CATEGORIAS === "undefined") faltando.push("CATEGORIAS");
+  if (typeof MODULOS === "undefined") faltando.push("MODULOS");
+  if (typeof SEV === "undefined") faltando.push("SEV");
+  if (typeof MATRIZ_SEV === "undefined") faltando.push("MATRIZ_SEV");
+  if (typeof FUP === "undefined") faltando.push("FUP");
+  if (typeof TEXTOS === "undefined") faltando.push("TEXTOS");
+  if (!faltando.length) return;
+
+  var REPO = "https://github.com/murilobolzan/playbook-atendimento";
+  var err = window.__erroConteudo || {};
+  var linha = err.linha > 0 ? err.linha : 0;
+
+  var pista = linha
+    ? 'O navegador parou na <strong>linha ' + linha + '</strong> do <code>conteudo.js</code>.'
+    : 'O arquivo <code>conteudo.js</code> não carregou.';
+
+  var msg = err.msg ? '<p class="err-tec">' + err.msg.replace(/</g, "&lt;") + "</p>" : "";
+
+  var linkArquivo = REPO + "/blob/main/conteudo.js" + (linha ? "#L" + linha : "");
+  var linkHist = REPO + "/commits/main/conteudo.js";
+
+  document.body.innerHTML =
+    '<div class="errbox">' +
+      '<span class="err-tag">Playbook fora do ar</span>' +
+      "<h1>O conteúdo não carregou</h1>" +
+      "<p>" + pista + " Quase sempre é uma destas quatro coisas na última edição:</p>" +
+      "<ol>" +
+        "<li><strong>Vírgula faltando</strong> no fim de um item da lista. Todo item leva vírgula, menos o último.</li>" +
+        "<li><strong>Aspas abertas e não fechadas</strong> em alguma frase.</li>" +
+        "<li><strong>Chave <code>{</code> ou colchete <code>[</code></strong> sem o par de fechamento.</li>" +
+        "<li>Uma <strong>tag <code>&lt;strong&gt;</code></strong> sem a barra no fechamento.</li>" +
+      "</ol>" +
+      msg +
+      '<div class="err-acoes">' +
+        '<a class="err-btn" href="' + linkArquivo + '" target="_blank" rel="noopener">Abrir o conteudo.js' + (linha ? " na linha " + linha : "") + "</a>" +
+        '<a class="err-btn ghost" href="' + linkHist + '" target="_blank" rel="noopener">Voltar para a versão anterior</a>' +
+      "</div>" +
+      '<p class="err-nota">Para desfazer: abra o histórico, entre no último commit e use <strong>Revert</strong>. ' +
+      "O playbook volta ao ar em cerca de 40 segundos.</p>" +
+      '<p class="err-nota">Listas que não chegaram: <code>' + faltando.join("</code>, <code>") + "</code></p>" +
+    "</div>";
+
+  var css = document.createElement("style");
+  css.textContent =
+    ".errbox{max-width:60ch;margin:9vh auto;padding:0 24px;font-family:var(--font-ui)}" +
+    ".errbox h1{font-size:26px;font-weight:650;letter-spacing:-.02em;margin:10px 0 14px}" +
+    ".errbox p{font-size:15px;line-height:1.6;color:var(--ink-2);margin:0 0 14px}" +
+    ".errbox ol{font-size:14.5px;line-height:1.6;color:var(--ink-2);padding-left:20px;margin:0 0 16px;" +
+      "display:flex;flex-direction:column;gap:7px}" +
+    ".errbox strong{color:var(--ink)}" +
+    ".errbox code{font-family:var(--font-mono);font-size:13px;background:var(--surface);" +
+      "border:1px solid var(--line);border-radius:2px;padding:1px 5px}" +
+    ".err-tag{font-family:var(--font-mono);font-size:10.5px;font-weight:700;letter-spacing:.12em;" +
+      "text-transform:uppercase;color:var(--crit);background:var(--crit-bg);" +
+      "border:1px solid var(--crit);border-radius:2px;padding:3px 8px;display:inline-block}" +
+    ".err-tec{font-family:var(--font-mono);font-size:12.5px;color:var(--crit);background:var(--crit-bg);" +
+      "border:1px solid var(--line);border-left:3px solid var(--crit);border-radius:2px;" +
+      "padding:10px 12px;overflow-x:auto;white-space:pre-wrap}" +
+    ".err-acoes{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}" +
+    ".err-btn{font-size:13.5px;font-weight:600;text-decoration:none;border-radius:2px;padding:8px 14px;" +
+      "background:var(--wine);color:var(--on-wine);border:1px solid var(--wine)}" +
+    ".err-btn.ghost{background:transparent;color:var(--ink-2);border-color:var(--line-strong);font-weight:500}" +
+    ".err-nota{font-size:12.5px;color:var(--ink-3)}";
+  document.head.appendChild(css);
+
+  throw new Error("conteudo.js nao carregou: " + faltando.join(", "));
+})();
 
 /* ═══════════════════════════════════════════════════════════════════════════
    MOTOR — lê tudo de conteudo.js. Não precisa editar nada aqui.

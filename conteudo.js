@@ -88,11 +88,11 @@ const PORTOES = [
     titulo: "Ler a conversa do Cliente",
     lead: "A IA atendeu primeiro. Você está entrando no meio de uma conversa — leia antes de escrever qualquer coisa.",
     itens: [
-      "Identifique <strong>qual loja</strong> e <strong>qual usuário</strong> está falando."
+      "Identifique <strong>qual loja</strong> e <strong>qual usuário</strong> está falando.",
       "Leia do <strong>início</strong>, não só a última mensagem. Leia também o resumo criado pela IA.",
       "Anote <strong>o que a IA já respondeu/alterou</strong>.",
       "Verifique se a IA <strong>acertou/errou</strong>: se errou, corrija e peça desculpas pelo erro.",
-      "Verifique os dados que o <strong>cliente<strong> forneceu e entenda o que ele quer aplicar na plataforma.",
+      "Verifique os dados que o <strong>cliente</strong> forneceu e entenda o que ele quer aplicar na plataforma.",
     ],
     nunca: [
       "Abrir a conversa pela última mensagem e responder no escuro.",
