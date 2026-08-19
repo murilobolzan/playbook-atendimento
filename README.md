@@ -31,6 +31,25 @@ aperta Ctrl+F, procura `[6]` e cai exatamente no lugar certo.
 
 ---
 
+## A documentação vive dentro do playbook
+
+O painel esquerdo virou **"Dúvida ao solucionar o problema? Pergunte por aqui"**.
+O atendente digita a dúvida e a documentação abre numa gaveta por cima do playbook,
+já com a pergunta feita para a IA que vive dentro dela — sem perder o atendimento em
+andamento. Enter no campo também envia.
+
+Todo link de documentação do playbook abre nessa mesma gaveta: os guias de caso
+conhecido e a lista de artigos do módulo. `Esc` fecha, e o botão **Abrir em nova aba**
+sai para o GitBook quando o atendente quiser a tela cheia. Ctrl+clique nos links
+continua abrindo em nova aba direto.
+
+Enquanto ele digita, os **casos conhecidos** que combinam aparecem abaixo do campo —
+resposta instantânea sem precisar perguntar para a IA.
+
+Para mudar esses textos, veja `[10]` no `conteudo.js`.
+
+---
+
 ## Índice do conteudo.js
 
 Se preferir ir direto, cada seção tem um marcador. Ctrl+F com ele no `conteudo.js`:

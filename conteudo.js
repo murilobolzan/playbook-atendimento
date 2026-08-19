@@ -817,10 +817,23 @@ const TEXTOS = {
   railOperLabel: "A loja está em operação agora?",
   railOperHint: "Confirme isso na etapa 2. Casa cheia sobe a severidade e cancela o modo de ensino.",
 
-  /* --- painel esquerdo: busca --- */
-  railBusca: "Busca por sintoma",
-  buscaPlaceholder: "ex: pedido não chega, cupom, NPS",
-  buscaVazia: "Nenhum caso conhecido. Classifique manualmente pelos dois eixos.",
+  /* --- painel esquerdo: perguntar para a IA da documentação ---
+     O que o atendente digita aqui vai direto para a IA que vive dentro da
+     documentação, e a resposta abre numa gaveta sem sair do playbook. */
+  railBusca: "Dúvida ao solucionar o problema? Pergunte por aqui:",
+  buscaHint: "Caso tenha dúvida de como resolver o ticket, acesse a documentação e pergunte para a IA que está dentro dela.",
+  buscaPlaceholder: "ex: como configuro a taxa de entrega?",
+  buscaBotao: "Perguntar para a IA da documentação",
+  buscaCasosTitulo: "Casos conhecidos que combinam",
+  buscaVazia: "Nenhum caso conhecido com esse termo. Pergunte para a IA no botão acima.",
+
+  /* --- gaveta da documentação --- */
+  docTitulo: "Documentação",
+  docPergunta: "Pergunta enviada para a IA",
+  docNovaAba: "Abrir em nova aba",
+  docFechar: "Fechar",
+  docCarregando: "Abrindo a documentação...",
+  docFalhou: "Se a documentação não aparecer aqui, use o botão \"Abrir em nova aba\".",
 
   /* --- etapas 1 a 3 --- */
   etapaAguardando: "aguardando a etapa",

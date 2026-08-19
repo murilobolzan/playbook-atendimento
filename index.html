@@ -352,6 +352,34 @@
   .lock code { font-family:var(--font-mono); font-size:11.5px; }
   .empty { border:1px dashed var(--line-strong); border-radius:var(--r); padding:26px 20px; text-align:center; color:var(--ink-3); font-size:13.5px; background:var(--surface-2); }
 
+  /* ============ PAINEL DA IA + GAVETA DA DOCUMENTACAO ============ */
+  .panel.destaque { border-color:var(--wine-line); }
+  .panel.destaque .panel-h .eyebrow { color:var(--wine); text-transform:none; letter-spacing:.02em; font-size:12px; line-height:1.4; display:block; }
+  .btn.cheio { width:100%; justify-content:center; text-align:center; }
+  .achados { display:flex; flex-direction:column; gap:5px; padding-top:3px; border-top:1px solid var(--line); }
+
+  .gaveta { position:fixed; inset:0; z-index:60; display:flex; justify-content:flex-end; }
+  .gaveta[hidden] { display:none; }
+  .gaveta-fundo { position:absolute; inset:0; background:rgba(10,6,8,.55); }
+  .gaveta-painel {
+    position:relative; width:min(760px, 100%); height:100%;
+    background:var(--surface); border-left:1px solid var(--line);
+    box-shadow:-18px 0 48px -24px rgba(0,0,0,.5);
+    display:flex; flex-direction:column;
+  }
+  @media (max-width:820px) { .gaveta-painel { width:100%; border-left:0; } }
+  .gaveta-topo {
+    display:flex; align-items:flex-start; gap:14px; padding:13px 16px;
+    border-bottom:1px solid var(--line); background:var(--surface-2); flex:0 0 auto;
+  }
+  .gaveta-id { display:flex; flex-direction:column; gap:2px; min-width:0; }
+  .gaveta-id strong { font-size:14.5px; font-weight:650; letter-spacing:-.005em; overflow-wrap:anywhere; }
+  .gaveta-acoes { display:flex; gap:6px; margin-left:auto; flex:0 0 auto; }
+  .gaveta-acoes .btn { text-decoration:none; white-space:nowrap; }
+  .gaveta-nota { margin:0; padding:7px 16px; font-size:11.5px; color:var(--ink-3); border-bottom:1px solid var(--line); flex:0 0 auto; }
+  #gaveta-frame { flex:1 1 auto; width:100%; border:0; background:var(--surface); }
+  body.gaveta-aberta { overflow:hidden; }
+
   .foot { margin-top:30px; padding-top:16px; border-top:1px solid var(--line); display:flex; flex-direction:column; gap:9px; align-items:flex-start; }
   .foot p { margin:0; font-size:12px; color:var(--ink-3); line-height:1.5; max-width:70ch; }
   .foot strong { color:var(--ink-2); }
@@ -400,11 +428,16 @@
         </div>
       </section>
 
-      <section class="panel">
+      <section class="panel destaque">
         <div class="panel-h"><span class="eyebrow" id="t-rail-busca"></span></div>
         <div class="panel-b">
+          <span class="hint" id="t-busca-hint"></span>
           <div class="search"><input type="search" id="q" autocomplete="off"></div>
-          <ul class="results" id="results"></ul>
+          <button class="btn sm cheio" id="btn-ia" type="button"></button>
+          <div class="achados" id="achados" hidden>
+            <span class="eyebrow" id="t-casos-titulo"></span>
+            <ul class="results" id="results"></ul>
+          </div>
         </div>
       </section>
     </aside>
@@ -422,6 +455,25 @@
     </main>
 
   </div>
+</div>
+
+<!-- Gaveta que abre a documentacao por cima do playbook, sem perder o estado. -->
+<div class="gaveta" id="gaveta" hidden>
+  <div class="gaveta-fundo" id="gaveta-fundo"></div>
+  <aside class="gaveta-painel" role="dialog" aria-modal="true" aria-labelledby="gaveta-titulo">
+    <header class="gaveta-topo">
+      <div class="gaveta-id">
+        <span class="eyebrow" id="gaveta-eyebrow"></span>
+        <strong id="gaveta-titulo"></strong>
+      </div>
+      <div class="gaveta-acoes">
+        <a class="btn ghost sm" id="gaveta-nova-aba" target="_blank" rel="noopener"></a>
+        <button class="btn ghost sm" id="gaveta-fechar" type="button"></button>
+      </div>
+    </header>
+    <p class="gaveta-nota" id="gaveta-nota"></p>
+    <iframe id="gaveta-frame" title="Documentação"></iframe>
+  </aside>
 </div>
 
 <!-- Captura erro de sintaxe do conteudo.js para poder avisar em tela.
@@ -544,6 +596,44 @@ const mod = id => MODULOS.find(m => m.id === id);
 const portoesOk = () => state.feito.ia && state.feito.problema && state.feito.ticket;
 const hhmm = d => String(d.getHours()).padStart(2,"0") + ":" + String(d.getMinutes()).padStart(2,"0");
 
+/* ---------- gaveta da documentação ----------
+   Abre a documentação por cima do playbook, preservando o estado do
+   atendimento. Ctrl+clique e clique do meio continuam abrindo em nova aba. */
+function abrirDoc(url, titulo, ehPergunta) {
+  document.getElementById("gaveta-eyebrow").textContent = ehPergunta ? TEXTOS.docPergunta : TEXTOS.docTitulo;
+  document.getElementById("gaveta-titulo").textContent = titulo;
+  document.getElementById("gaveta-nova-aba").href = url;
+  document.getElementById("gaveta-frame").src = url;
+  document.getElementById("gaveta").hidden = false;
+  document.body.classList.add("gaveta-aberta");
+  document.getElementById("gaveta-fechar").focus();
+}
+
+function fecharDoc() {
+  document.getElementById("gaveta").hidden = true;
+  document.getElementById("gaveta-frame").src = "about:blank";
+  document.body.classList.remove("gaveta-aberta");
+}
+
+/* liga um link para abrir na gaveta em vez de trocar de página */
+function linkDoc(a, url, titulo) {
+  a.href = url;
+  a.rel = "noopener";
+  a.target = "_blank";
+  a.addEventListener("click", function (e) {
+    if (e.ctrlKey || e.metaKey || e.shiftKey || e.button === 1) return;
+    e.preventDefault();
+    abrirDoc(url, titulo, false);
+  });
+  return a;
+}
+
+function perguntarIA() {
+  const q = document.getElementById("q").value.trim();
+  const url = q ? D + "?ask=" + encodeURIComponent(q) : D;
+  abrirDoc(url, q || TEXTOS.docTitulo, !!q);
+}
+
 /* troca {espera}, {limite}, {total} e {falta} pelos valores reais */
 function fmt(s, extra) {
   const v = Object.assign({
@@ -576,8 +666,14 @@ function renderMoldura() {
   document.getElementById("t-oper-label").textContent = TEXTOS.railOperLabel;
   document.getElementById("t-oper-hint").textContent = TEXTOS.railOperHint;
   document.getElementById("t-rail-busca").textContent = TEXTOS.railBusca;
+  document.getElementById("t-busca-hint").textContent = TEXTOS.buscaHint;
   document.getElementById("q").placeholder = TEXTOS.buscaPlaceholder;
   document.getElementById("q").setAttribute("aria-label", TEXTOS.railBusca);
+  document.getElementById("btn-ia").textContent = TEXTOS.buscaBotao;
+  document.getElementById("t-casos-titulo").textContent = TEXTOS.buscaCasosTitulo;
+  document.getElementById("gaveta-nova-aba").textContent = TEXTOS.docNovaAba;
+  document.getElementById("gaveta-fechar").textContent = TEXTOS.docFechar;
+  document.getElementById("gaveta-nota").textContent = TEXTOS.docFalhou;
   document.getElementById("reset").textContent = TEXTOS.rodapeBotao;
   document.getElementById("t-rodape").innerHTML = TEXTOS.rodapeAviso;
 
@@ -811,9 +907,7 @@ function renderOut() {
       const li = el("li","case");
       li.append(el("div","case-s",k.s));
       li.append(el("div","case-c", k.c + (k.cat !== c.id ? ' <em>· ' + TEXTOS.resCasoCostuma + " " + cat(k.cat).nome + "</em>" : "")));
-      const a = el("a","", TEXTOS.resCasoLink);
-      a.href = D + k.d; a.target = "_blank"; a.rel = "noopener";
-      li.append(a);
+      li.append(linkDoc(el("a","", TEXTOS.resCasoLink), D + k.d, k.s));
       ul.append(li);
     });
     cs.append(ul);
@@ -863,9 +957,7 @@ function renderOut() {
   const dl = el("ul","doclist");
   m.docs.forEach(d => {
     const li = el("li");
-    const a = el("a","",d.t);
-    a.href = D + d.u; a.target = "_blank"; a.rel = "noopener";
-    li.append(a); dl.append(li);
+    li.append(linkDoc(el("a","",d.t), D + d.u, d.t)); dl.append(li);
   });
   dk.append(dl);
   R.append(dk);
@@ -1037,8 +1129,10 @@ MODULOS.forEach(m => {
 function renderResults() {
   const q = norm(document.getElementById("q").value.trim());
   const host = document.getElementById("results");
+  const caixa = document.getElementById("achados");
   host.textContent = "";
-  if (q.length < 2) return;
+  if (q.length < 2) { caixa.hidden = true; return; }
+  caixa.hidden = false;
   const hits = INDEX.filter(i => q.split(/\s+/).every(w => i.hay.includes(w))).slice(0, 12);
   if (!hits.length) {
     host.append(el("li","", '<span class="nores">' + TEXTOS.buscaVazia + "</span>"));
@@ -1070,6 +1164,18 @@ function render() {
 }
 
 document.getElementById("q").addEventListener("input", renderResults);
+
+document.getElementById("q").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") { e.preventDefault(); perguntarIA(); }
+});
+
+document.getElementById("btn-ia").addEventListener("click", perguntarIA);
+document.getElementById("gaveta-fechar").addEventListener("click", fecharDoc);
+document.getElementById("gaveta-fundo").addEventListener("click", fecharDoc);
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && !document.getElementById("gaveta").hidden) fecharDoc();
+});
 
 document.getElementById("btn-mapa").addEventListener("click", () => {
   state.mapa = !state.mapa;
