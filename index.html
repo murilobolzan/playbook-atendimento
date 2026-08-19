@@ -817,7 +817,18 @@ function renderMoldura() {
    evita que ele passe por baixo do cabecalho quando o texto quebra linha. */
 function medirTopo() {
   const topo = document.querySelector(".topo");
-  if (topo) document.documentElement.style.setProperty("--stick", Math.round(topo.getBoundingClientRect().height) + "px");
+  if (!topo) return;
+  const h = Math.round(topo.getBoundingClientRect().height);
+  if (h > 0) document.documentElement.style.setProperty("--stick", h + "px");
+}
+
+/* O cabecalho muda de altura quando o texto quebra linha, quando o aviso do
+   modo mapa aparece e quando a janela muda de largura. Observar o elemento
+   mantem a medida sempre correta; medir uma vez sozinha fica desatualizada. */
+function observarTopo() {
+  const topo = document.querySelector(".topo");
+  if (!topo || typeof ResizeObserver === "undefined") return;
+  new ResizeObserver(medirTopo).observe(topo);
 }
 
 /* ---------- trilha do topo ---------- */
@@ -1320,6 +1331,7 @@ function render() {
 }
 
 window.addEventListener("resize", medirTopo);
+observarTopo();
 
 document.getElementById("q").addEventListener("input", renderResults);
 
