@@ -428,7 +428,7 @@
         </div>
       </section>
 
-      <section class="panel destaque">
+      <section class="panel destaque" id="p-ia">
         <div class="panel-h"><span class="eyebrow" id="t-rail-busca"></span></div>
         <div class="panel-b">
           <span class="hint" id="t-busca-hint"></span>
@@ -682,6 +682,7 @@ function renderMoldura() {
   bm.setAttribute("aria-pressed", String(state.mapa));
   document.body.classList.toggle("mapa", state.mapa);
 
+  src(document.getElementById("p-ia"), "[10] busca* + docFalhou");
   src(document.getElementById("f-tempo"), "[4] TEMPOS");
   src(document.getElementById("f-oper"), "[5] OPER");
 }
