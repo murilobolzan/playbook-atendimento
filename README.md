@@ -81,15 +81,24 @@ Em `[7]`, copie um bloco inteiro entre `{ }`, cole antes do `]` final, e troque 
 
 ## Quatro regras para não quebrar
 
-1. **Toda frase fica entre "aspas duplas"**, e cada item da lista termina com vírgula.
-   A vírgula que falta no meio da lista quebra a página inteira.
+1. **Toda frase fica entre "aspas duplas"**, e cada item da lista termina com vírgula —
+   **menos o último**. Cuidado ao **reordenar itens**: se você move o último item para
+   cima, ele passa a precisar de vírgula. É de longe o erro mais comum.
 2. **Apóstrofo pode.** Para aspas dentro do texto use `&ldquo;` e `&rdquo;`.
 3. **`<strong>` sempre fecha com `</strong>`.** Tag aberta desconfigura o bloco.
 4. **Nunca mude os `id:`.** Mudar `nome:` é livre; mudar `id:` derruba a página.
 
-**Se a tela ficar branca depois de publicar:** é erro de sintaxe. Abra a página,
-aperte `F12`, vá na aba **Console** — ela aponta a linha exata. Para voltar à versão
-que funcionava: aba **Commits** → abra o commit → **Revert**.
+## Se você quebrar algo
+
+O playbook avisa. Em vez de tela vazia, aparece um painel vermelho dizendo
+**em qual linha** o navegador parou, as quatro causas mais comuns, um botão que abre
+o `conteudo.js` já naquela linha, e outro que leva ao histórico para reverter.
+
+Um detalhe que economiza tempo: quando o problema é **vírgula faltando**, o navegador
+acusa a linha **seguinte**. O painel já avisa isso e indica as duas linhas.
+
+Para desfazer sem entender o erro: **Commits** → abra o último commit → **Revert**.
+O playbook volta ao ar em cerca de 40 segundos.
 
 Se quiser conferir antes de publicar, baixe a pasta e abra o `index.html` com dois
 cliques. Os dois arquivos precisam estar juntos na mesma pasta.

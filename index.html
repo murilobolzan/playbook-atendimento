@@ -462,8 +462,10 @@
   var linha = err.linha > 0 ? err.linha : 0;
 
   var pista = linha
-    ? 'O navegador parou na <strong>linha ' + linha + '</strong> do <code>conteudo.js</code>.'
-    : 'O arquivo <code>conteudo.js</code> não carregou.';
+    ? "O navegador parou na <strong>linha " + linha + "</strong> do <code>conteudo.js</code>. " +
+      "Atenção: quando falta vírgula, o erro real fica na <strong>linha de cima</strong> — " +
+      "confira a " + (linha - 1) + " antes da " + linha + "."
+    : "O arquivo <code>conteudo.js</code> não carregou.";
 
   var msg = err.msg ? '<p class="err-tec">' + err.msg.replace(/</g, "&lt;") + "</p>" : "";
 
