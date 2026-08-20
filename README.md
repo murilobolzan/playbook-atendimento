@@ -98,6 +98,24 @@ Em `[7]`, copie um bloco inteiro entre `{ }`, cole antes do `]` final, e troque 
 
 ---
 
+## Cores
+
+A paleta sai da cor da marca declarada no tema da documentação
+(`--primary-original: 187 149 212`, ou seja **#BB95D4**). Para texto e bordas o
+playbook usa **#6D3D93**, uma versão escurecida do mesmo lilás que atinge 7,7:1 de
+contraste sobre branco; no tema escuro o lilás original cobre 8,5:1. Os cinzas puxam
+de leve para o roxo em vez de serem neutros puros.
+
+Cor é a única coisa que **não** fica no `conteudo.js`: ela mora no bloco `:root` no
+começo do `index.html`. São quatro declarações — `:root`, o bloco
+`prefers-color-scheme: dark`, e os dois `[data-theme]`. Mudar só a primeira quebra o
+tema escuro, então mude nas quatro.
+
+Se for trocar de cor, confira o contraste antes: texto pequeno precisa de 4,5:1 contra
+o fundo em que ele aparece.
+
+---
+
 ## Quatro regras para não quebrar
 
 1. **Toda frase fica entre "aspas duplas"**, e cada item da lista termina com vírgula —
