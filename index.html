@@ -134,25 +134,26 @@
   /* ============ TRILHA DAS ETAPAS ============ */
   .spine { background: var(--surface-2); border-bottom: 1px solid var(--line); }
   .spine-in {
-    max-width: 1240px; margin: 0 auto; padding: var(--s2) var(--s5);
-    display: flex; gap: var(--s1); overflow-x: auto; scrollbar-width: thin;
+    max-width: 1240px; margin: 0 auto; padding: 0 var(--s5);
+    display: flex; gap: 2px; overflow-x: auto; scrollbar-width: thin;
   }
   .mo {
     display: flex; align-items: center; gap: 7px;
-    padding: 5px var(--s3) 5px var(--s2); border-radius: var(--r-sm);
-    white-space: nowrap; flex: 0 0 auto; border: 1px solid transparent;
+    padding: var(--s3) var(--s3) 10px; white-space: nowrap; flex: 0 0 auto;
+    border: 0; border-bottom: 2px solid transparent;
     font: inherit; background: transparent; text-align: left;
   }
   button.mo { cursor: pointer; }
-  button.mo:hover { background: var(--accent-suave); border-color: var(--accent-linha); }
+  button.mo:hover { background: var(--accent-suave); }
   button.mo:hover .mo-t { color: var(--accent); }
+  .mo[disabled] { opacity: .45; cursor: not-allowed; }
+  .mo[aria-selected="true"] { border-bottom-color: var(--accent); background: var(--surface); }
   .mo-n {
     font-family: var(--font-mono); font-size: 10px; font-weight: 700; color: var(--ink-3);
     border: 1px solid var(--line-forte); width: 18px; height: 18px;
     display: inline-grid; place-items: center; border-radius: 50%; flex: 0 0 auto;
   }
   .mo-t { font-size: var(--t-sm); color: var(--ink-3); }
-  .mo.on { background: var(--accent-suave); border-color: var(--accent-linha); }
   .mo.on .mo-n { color: var(--accent-sobre); background: var(--accent); border-color: var(--accent); }
   .mo.on .mo-t { color: var(--ink); font-weight: 600; }
   .mo.ok .mo-n { color: var(--calm); background: var(--calm-bg); border-color: color-mix(in srgb, var(--calm) 40%, transparent); }
@@ -160,15 +161,16 @@
 
   /* ============ ESTRUTURA ============ */
   .grid {
-    display: grid; grid-template-columns: 280px minmax(0,1fr);
+    display: grid; grid-template-columns: minmax(0,1fr) 356px;
     gap: var(--s6); padding-top: var(--s6); align-items: start;
   }
-  @media (max-width: 980px) { .grid { grid-template-columns: 1fr; gap: var(--s4); } }
+  @media (max-width: 1080px) { .grid { grid-template-columns: 1fr; gap: var(--s5); } }
   .rail {
     position: sticky; top: calc(var(--stick) + var(--s5));
     display: flex; flex-direction: column; gap: var(--s3);
   }
-  @media (max-width: 980px) { .rail { position: static; } }
+  /* no mobile a dúvida sobe para o topo: é o foco da plataforma */
+  @media (max-width: 1080px) { .rail { position: static; order: -1; } }
   main { display: flex; flex-direction: column; gap: var(--s6); min-width: 0; }
 
   /* ============ PAINEIS DO TRILHO ============ */
@@ -195,18 +197,27 @@
     color: var(--accent-sobre); font-weight: 600;
   }
 
-  /* ============ PAINEL DE DUVIDA ============ */
-  .panel.destaque { border-color: var(--accent-linha); box-shadow: var(--sombra-forte); }
-  .panel.destaque .panel-h .eyebrow {
-    color: var(--accent); text-transform: none; letter-spacing: 0;
-    font-family: var(--font-ui); font-size: var(--t-base); font-weight: 650;
-    line-height: 1.4; display: block;
+  /* ============ PAINEL DE DUVIDA — o foco da plataforma ============ */
+  .panel.duvida {
+    border-color: var(--accent-linha); border-top: 3px solid var(--accent);
+    box-shadow: var(--sombra-forte); background: var(--surface);
   }
+  .panel.duvida .panel-h { padding: var(--s4) var(--s5) 0; display: flex; flex-direction: column; gap: var(--s1); }
+  .panel.duvida .panel-b { padding: var(--s3) var(--s5) var(--s5); gap: var(--s4); }
+  .duvida-tag { color: var(--accent); }
+  .duvida-titulo {
+    margin: 0; font-size: var(--t-lg); font-weight: 650;
+    letter-spacing: -.02em; line-height: 1.25; color: var(--ink); text-wrap: balance;
+  }
+  .duvida-hint { margin: 0; font-size: var(--t-base); color: var(--ink-2); line-height: 1.55; }
+  .duvida-rodape { margin: 0; font-size: var(--t-xs); color: var(--ink-3); line-height: 1.5; }
   .search input {
-    width: 100%; font: inherit; font-size: var(--t-base); padding: var(--s2) var(--s3);
+    width: 100%; font: inherit; font-size: var(--t-md); padding: var(--s3) var(--s3);
     background: var(--surface-2); color: var(--ink);
     border: 1px solid var(--line-forte); border-radius: var(--r-sm);
   }
+  .panel.duvida .btn.cheio { padding: var(--s3) var(--s4); font-size: var(--t-base); }
+  .panel.duvida .results { max-height: 320px; }
   .search input::placeholder { color: var(--ink-3); }
   .search input:focus { border-color: var(--accent); }
   .btn.cheio { width: 100%; justify-content: center; }
@@ -499,6 +510,38 @@
   #gaveta-frame { flex: 1 1 auto; width: 100%; border: 0; background: var(--surface); }
   body.gaveta-aberta { overflow: hidden; }
 
+  /* ============ NAVEGACAO ENTRE PASSOS ============ */
+  .passos {
+    display: flex; align-items: center; gap: var(--s4);
+    padding-top: var(--s5); border-top: 1px solid var(--line);
+  }
+  .passos .btn { min-width: 132px; justify-content: center; }
+  .passos-onde {
+    margin-inline: auto; font-family: var(--font-mono); font-size: var(--t-xs);
+    letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3);
+    text-align: center; order: 0;
+  }
+  .passos .btn[disabled] { opacity: .4; cursor: not-allowed; }
+  .passos .btn[disabled]:hover { background: var(--accent); border-color: var(--accent); }
+  .passos .btn.ghost[disabled]:hover { background: transparent; border-color: var(--line-forte); color: var(--ink-2); }
+  @media (max-width: 560px) {
+    .passos { flex-wrap: wrap; }
+    .passos-onde { order: -1; flex: 1 0 100%; margin: 0 0 var(--s2); text-align: left; }
+    .passos .btn { flex: 1 1 auto; min-width: 0; }
+  }
+
+  /* ============ CONTEXTO DENTRO DA ETAPA 2 ============ */
+  .ctx {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr));
+    gap: var(--s4); padding: var(--s4);
+    background: var(--surface-2); border: 1px solid var(--line);
+    border-left: 3px solid var(--accent-linha); border-radius: var(--r-sm);
+  }
+  .ctx-tag {
+    grid-column: 1 / -1; font-family: var(--font-mono); font-size: 10px;
+    font-weight: 700; letter-spacing: .11em; text-transform: uppercase; color: var(--accent);
+  }
+
   /* ============ RODAPE ============ */
   .foot {
     margin-top: var(--s2); padding-top: var(--s4); border-top: 1px solid var(--line);
@@ -536,48 +579,42 @@
 <div class="shell">
   <div class="grid">
 
-    <aside class="rail">
-      <section class="panel">
-        <div class="panel-h"><span class="eyebrow" id="t-rail-contexto"></span></div>
-        <div class="panel-b">
-          <div class="field" id="f-tempo">
-            <label id="t-tempo-label"></label>
-            <div class="chips" role="group" aria-labelledby="t-tempo-label" id="chips-tempo"></div>
-            <span class="hint" id="t-tempo-hint"></span>
-          </div>
-          <div class="field" id="f-oper">
-            <label id="t-oper-label"></label>
-            <div class="chips" role="group" aria-labelledby="t-oper-label" id="chips-oper"></div>
-            <span class="hint" id="t-oper-hint"></span>
-          </div>
-        </div>
-      </section>
-
-      <section class="panel destaque" id="p-ia">
-        <div class="panel-h"><span class="eyebrow" id="t-rail-busca"></span></div>
-        <div class="panel-b">
-          <span class="hint" id="t-busca-hint"></span>
-          <div class="search"><input type="search" id="q" autocomplete="off"></div>
-          <button class="btn sm cheio" id="btn-ia" type="button"></button>
-          <div class="achados" id="achados" hidden>
-            <span class="eyebrow" id="t-casos-titulo"></span>
-            <ul class="results" id="results"></ul>
-          </div>
-        </div>
-      </section>
-    </aside>
-
     <main>
       <section class="flow" id="flow"></section>
       <section id="axes"></section>
       <section id="out" aria-live="polite"></section>
       <section id="fup"></section>
 
+      <nav class="passos" aria-label="Navegação entre etapas">
+        <button class="btn ghost" id="btn-voltar" type="button"></button>
+        <span class="passos-onde" id="t-onde"></span>
+        <button class="btn" id="btn-avancar" type="button"></button>
+      </nav>
+
       <div class="foot">
         <button class="btn ghost sm" id="reset" type="button"></button>
         <p id="t-rodape"></p>
       </div>
     </main>
+
+    <aside class="rail">
+      <section class="panel duvida" id="p-ia">
+        <div class="panel-h">
+          <span class="eyebrow duvida-tag" id="t-duvida-tag"></span>
+          <h2 class="duvida-titulo" id="t-rail-busca"></h2>
+        </div>
+        <div class="panel-b">
+          <p class="duvida-hint" id="t-busca-hint"></p>
+          <div class="search"><input type="search" id="q" autocomplete="off"></div>
+          <button class="btn cheio" id="btn-ia" type="button"></button>
+          <div class="achados" id="achados" hidden>
+            <span class="eyebrow" id="t-casos-titulo"></span>
+            <ul class="results" id="results"></ul>
+          </div>
+          <p class="duvida-rodape" id="t-duvida-rodape"></p>
+        </div>
+      </section>
+    </aside>
 
   </div>
 </div>
@@ -704,7 +741,7 @@
 const state = {
   tempo:"rampa", oper:"nao",
   feito:{ ia:false, problema:false, ticket:false },
-  aberta:"ia",
+  aba:1,
   pulou:false,
   mapa:false,
   cat:null, mod:null,
@@ -769,27 +806,14 @@ function fmt(s, extra) {
   return String(s).replace(/\{(\w+)\}/g, (m,k) => (k in v ? v[k] : m));
 }
 
-function etapaAtual() {
-  if (!portoesOk()) {
-    if (!state.feito.ia) return 1;
-    if (!state.feito.problema) return 2;
-    return 3;
-  }
-  if (!state.cat || !state.mod) return 4;
-  if (state.fup === "pendente") return 5;
-  return 6;
-}
 
 /* ---------- textos fixos da moldura ---------- */
 function renderMoldura() {
   document.getElementById("t-marca").textContent = TEXTOS.marca;
   document.getElementById("t-titulo").textContent = TEXTOS.titulo;
   document.getElementById("t-sub").textContent = TEXTOS.subtitulo;
-  document.getElementById("t-rail-contexto").textContent = TEXTOS.railContexto;
-  document.getElementById("t-tempo-label").textContent = TEXTOS.railTempoLabel;
-  document.getElementById("t-tempo-hint").textContent = TEXTOS.railTempoHint;
-  document.getElementById("t-oper-label").textContent = TEXTOS.railOperLabel;
-  document.getElementById("t-oper-hint").textContent = TEXTOS.railOperHint;
+  document.getElementById("t-duvida-tag").textContent = TEXTOS.duvidaTag;
+  document.getElementById("t-duvida-rodape").textContent = TEXTOS.duvidaRodape;
   document.getElementById("t-rail-busca").textContent = TEXTOS.railBusca;
   document.getElementById("t-busca-hint").textContent = TEXTOS.buscaHint;
   document.getElementById("q").placeholder = TEXTOS.buscaPlaceholder;
@@ -807,9 +831,28 @@ function renderMoldura() {
   bm.setAttribute("aria-pressed", String(state.mapa));
   document.body.classList.toggle("mapa", state.mapa);
 
-  src(document.getElementById("p-ia"), "[10] busca* + docFalhou");
-  src(document.getElementById("f-tempo"), "[4] TEMPOS");
-  src(document.getElementById("f-oper"), "[5] OPER");
+  src(document.getElementById("p-ia"), "[10] duvida* + busca*");
+
+  const voltar = document.getElementById("btn-voltar");
+  const avancar = document.getElementById("btn-avancar");
+  voltar.textContent = TEXTOS.navVoltar;
+  avancar.textContent = TEXTOS.navAvancar;
+  voltar.disabled = state.aba <= 1;
+  avancar.disabled = state.aba >= ETAPAS.length;
+  document.getElementById("t-onde").textContent =
+    fmt(TEXTOS.navOnde, { atual: state.aba, total: ETAPAS.length });
+}
+
+/* uma aba por passo: mostra so a seção da aba atual */
+function renderAbaVisivel() {
+  const mapa = { flow: state.aba <= 3, axes: state.aba === 4, out: state.aba === 5, fup: state.aba === 6 };
+  for (const id in mapa) document.getElementById(id).hidden = !mapa[id];
+}
+
+function irParaAba(n) {
+  state.aba = Math.min(Math.max(n, 1), ETAPAS.length);
+  render();
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 /* ---------- altura do topo fixo ----------
@@ -833,124 +876,107 @@ function observarTopo() {
 
 /* ---------- trilha do topo ---------- */
 function renderSpine() {
-  const atual = etapaAtual(), host = document.getElementById("spine");
+  const host = document.getElementById("spine");
   host.textContent = "";
-  ETAPAS.forEach((t,i) => {
+  host.setAttribute("role", "tablist");
+  ETAPAS.forEach((titulo, i) => {
     const n = i + 1;
-    const clicavel = n <= atual;
-    const node = el(clicavel ? "button" : "div", n === atual ? "mo on" : (n < atual ? "mo ok" : "mo"));
-    if (clicavel) {
-      node.type = "button";
-      node.title = "Ir para: " + t;
-      node.onclick = () => irParaEtapa(n);
-    }
-    node.append(el("span","mo-n", n < atual ? "✓" : String(n)), el("span","mo-t", t));
-    host.append(node);
+    const concluida = n <= 3 && state.feito[PORTOES[n-1].id];
+    const atual = n === state.aba;
+    const b = el("button", "mo" + (atual ? " on" : "") + (concluida && !atual ? " ok" : ""));
+    b.type = "button";
+    b.setAttribute("role", "tab");
+    b.setAttribute("aria-selected", String(atual));
+    b.title = titulo;
+    b.onclick = () => irParaAba(n);
+    b.append(el("span","mo-n", concluida && !atual ? "✓" : String(n)), el("span","mo-t", titulo));
+    host.append(b);
   });
   src(host, "[2] ETAPAS");
-}
-
-/* clicar numa etapa ja alcancada leva de volta para ela */
-function irParaEtapa(n) {
-  if (n <= 3) {
-    state.aberta = PORTOES[n-1].id;
-    render();
-    rolarAte("flow");
-  } else {
-    rolarAte(n === 4 ? "axes" : n === 5 ? "out" : "fup");
-  }
-}
-
-function rolarAte(id) {
-  const alvo = document.getElementById(id);
-  if (alvo) alvo.scrollIntoView({ behavior: "smooth", block: "start" });
-}
-
-/* ---------- painel esquerdo ---------- */
-function renderChips() {
-  const t = document.getElementById("chips-tempo");
-  t.textContent = "";
-  TEMPOS.forEach(o => {
-    const b = el("button","chip",o.rot);
-    b.type = "button";
-    b.setAttribute("aria-pressed", String(state.tempo === o.id));
-    b.onclick = () => { state.tempo = o.id; render(); };
-    t.append(b);
-  });
-  const p = document.getElementById("chips-oper");
-  p.textContent = "";
-  OPER.forEach(o => {
-    const b = el("button","chip",o.rot);
-    b.type = "button";
-    b.setAttribute("aria-pressed", String(state.oper === o.id));
-    b.onclick = () => { state.oper = o.id; render(); };
-    p.append(b);
-  });
 }
 
 /* ---------- etapas 1 a 3 ---------- */
 function renderFlow() {
   const host = document.getElementById("flow");
   host.textContent = "";
+  if (state.aba > 3) return;
 
-  PORTOES.forEach((p, i) => {
-    const feito = state.feito[p.id];
-    const anteriorOk = i === 0 || state.feito[PORTOES[i-1].id];
-    const aberta = state.aberta === p.id && anteriorOk;
-    const travada = !anteriorOk && !feito;
+  const i = state.aba - 1;
+  const p = PORTOES[i];
+  const feito = state.feito[p.id];
 
-    const card = el("div", "stage " + (travada ? "is-locked" : feito && !aberta ? "is-done" : aberta ? "is-active" : ""));
-    if (aberta) src(card, "[3] PORTOES");
+  const card = src(el("div", "stage is-active" + (feito ? " is-done" : "")), "[3] PORTOES");
 
-    const head = el(anteriorOk ? "button" : "div", "st-head");
-    if (anteriorOk) {
-      head.type = "button";
-      head.setAttribute("aria-expanded", String(aberta));
-      head.onclick = () => { state.aberta = aberta ? null : p.id; render(); };
-    }
-    head.append(el("span","st-n", feito ? "✓" : String(i+1)));
-    head.append(el("span","st-title", p.titulo));
-    head.append(el("span","st-sub",
-      travada ? TEXTOS.etapaAguardando + " " + i
-      : feito && !aberta ? TEXTOS.etapaReabrir
-      : feito ? TEXTOS.etapaConcluida
-      : aberta ? "" : TEXTOS.etapaAbrir));
-    card.append(head);
+  const head = el("div", "st-head");
+  head.append(el("span","st-n", feito ? "✓" : String(i+1)));
+  head.append(el("span","st-title", p.titulo));
+  head.append(el("span","st-sub", feito ? TEXTOS.etapaConcluida : ""));
+  card.append(head);
 
-    if (aberta) {
-      const body = el("div","st-body");
-      body.append(el("p","lead", p.lead));
+  const body = el("div","st-body");
+  body.append(el("p","lead", p.lead));
 
-      const ul = el("ul","checklist");
-      p.itens.forEach(x => ul.append(el("li","",x)));
-      body.append(ul);
+  const ul = el("ul","checklist");
+  p.itens.forEach(x => ul.append(el("li","",x)));
+  body.append(ul);
 
-      const stop = el("div","callout c-stop");
-      stop.append(el("span","ch", TEXTOS.etapaNaoFaca));
-      const su = el("ul");
-      p.nunca.forEach(x => su.append(el("li","",x)));
-      stop.append(su);
-      body.append(stop);
+  /* as duas perguntas de contexto vivem na etapa 2, onde a checklist pede
+     para confirmá-las. Alimentam a severidade e o modo de entrega. */
+  if (p.id === "problema") body.append(blocoContexto());
 
-      const adv = el("div","advance");
-      const b = el("button","btn", (feito ? "✓ " : "") + p.cta);
-      b.type = "button";
-      b.onclick = () => {
-        state.feito[p.id] = true;
-        const prox = PORTOES[i+1];
-        state.aberta = prox && !state.feito[prox.id] ? prox.id : null;
-        render();
-        const alvo = document.getElementById(prox ? "flow" : "axes");
-        if (alvo) alvo.scrollIntoView({ behavior:"smooth", block:"start" });
-      };
-      adv.append(b, el("span","why", p.why));
-      body.append(adv);
+  const stop = el("div","callout c-stop");
+  stop.append(el("span","ch", TEXTOS.etapaNaoFaca));
+  const su = el("ul");
+  p.nunca.forEach(x => su.append(el("li","",x)));
+  stop.append(su);
+  body.append(stop);
 
-      card.append(body);
-    }
+  const adv = el("div","advance");
+  const b = el("button","btn", (feito ? "✓ " : "") + p.cta);
+  b.type = "button";
+  b.onclick = () => { state.feito[p.id] = true; irParaAba(state.aba + 1); };
+  adv.append(b, el("span","why", p.why));
+  body.append(adv);
 
-    host.append(card);
+  card.append(body);
+  host.append(card);
+}
+
+/* bloco de contexto do cliente, embutido na etapa 2 */
+function blocoContexto() {
+  const box = src(el("div","ctx"), "[4] TEMPOS + [5] OPER");
+  box.append(el("span","ctx-tag", TEXTOS.ctxTag));
+
+  const fTempo = el("div","field");
+  fTempo.append(el("label","", TEXTOS.ctxTempoLabel));
+  const gTempo = el("div","chips");
+  gTempo.setAttribute("role","group");
+  gTempo.setAttribute("aria-label", TEXTOS.ctxTempoLabel);
+  TEMPOS.forEach(o => {
+    const b = el("button","chip", o.rot);
+    b.type = "button";
+    b.setAttribute("aria-pressed", String(state.tempo === o.id));
+    b.onclick = () => { state.tempo = o.id; render(); };
+    gTempo.append(b);
   });
+  fTempo.append(gTempo, el("span","hint", TEXTOS.ctxTempoHint));
+
+  const fOper = el("div","field");
+  fOper.append(el("label","", TEXTOS.ctxOperLabel));
+  const gOper = el("div","chips");
+  gOper.setAttribute("role","group");
+  gOper.setAttribute("aria-label", TEXTOS.ctxOperLabel);
+  OPER.forEach(o => {
+    const b = el("button","chip", o.rot);
+    b.type = "button";
+    b.setAttribute("aria-pressed", String(state.oper === o.id));
+    b.onclick = () => { state.oper = o.id; render(); };
+    gOper.append(b);
+  });
+  fOper.append(gOper, el("span","hint", TEXTOS.ctxOperHint));
+
+  box.append(fTempo, fOper);
+  return box;
 }
 
 /* ---------- etapa 4 ---------- */
@@ -969,9 +995,8 @@ function renderAxes() {
     esc.type = "button";
     esc.onclick = () => {
       state.feito.ia = state.feito.problema = state.feito.ticket = true;
-      state.pulou = true; state.aberta = null;
-      render();
-      document.getElementById("axes").scrollIntoView({ behavior:"smooth", block:"start" });
+      state.pulou = true;
+      irParaAba(4);
     };
     lock.append(esc);
     lock.append(el("p","", '<span class="microhint">' + TEXTOS.bloqueioAviso + "</span>"));
@@ -1016,8 +1041,11 @@ function renderAxes() {
 function renderOut() {
   const host = document.getElementById("out");
   host.textContent = "";
-  if (!portoesOk()) return;
 
+  if (!portoesOk()) {
+    host.append(el("div","empty", TEXTOS.abaTrancada));
+    return;
+  }
   if (!state.cat || !state.mod) {
     const falta = !state.cat && !state.mod ? "a natureza do ticket e o módulo"
                 : !state.cat ? "a natureza do ticket" : "o módulo";
@@ -1155,7 +1183,8 @@ function resetFup() {
 function renderFup() {
   const host = document.getElementById("fup");
   host.textContent = "";
-  if (!portoesOk() || !state.cat || !state.mod) return;
+  if (!portoesOk()) { host.append(el("div","empty", TEXTOS.abaTrancada)); return; }
+  if (!state.cat || !state.mod) { host.append(el("div","empty", TEXTOS.abaSemTema)); return; }
 
   const wrap = el("div","result");
 
@@ -1315,8 +1344,7 @@ function renderResults() {
       resetFup();
       document.getElementById("q").value = "";
       renderResults();
-      render();
-      document.getElementById(portoesOk() ? "out" : "axes").scrollIntoView({ behavior:"smooth", block:"start" });
+      irParaAba(portoesOk() ? 5 : 4);
     };
     li.append(b);
     host.append(li);
@@ -1325,8 +1353,9 @@ function renderResults() {
 
 /* ---------- boot ---------- */
 function render() {
-  renderMoldura(); renderSpine(); renderChips();
+  renderMoldura(); renderSpine();
   renderFlow(); renderAxes(); renderOut(); renderFup();
+  renderAbaVisivel();
   medirTopo();
 }
 
@@ -1347,6 +1376,9 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "Escape" && !document.getElementById("gaveta").hidden) fecharDoc();
 });
 
+document.getElementById("btn-voltar").addEventListener("click", () => irParaAba(state.aba - 1));
+document.getElementById("btn-avancar").addEventListener("click", () => irParaAba(state.aba + 1));
+
 document.getElementById("btn-mapa").addEventListener("click", () => {
   state.mapa = !state.mapa;
   render();
@@ -1354,7 +1386,7 @@ document.getElementById("btn-mapa").addEventListener("click", () => {
 
 document.getElementById("reset").addEventListener("click", () => {
   state.feito = { ia:false, problema:false, ticket:false };
-  state.aberta = "ia";
+  state.aba = 1;
   state.pulou = false;
   state.cat = null; state.mod = null;
   resetFup();

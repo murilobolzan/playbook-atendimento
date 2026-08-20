@@ -31,9 +31,26 @@ aperta Ctrl+F, procura `[6]` e cai exatamente no lugar certo.
 
 ---
 
+## Uma etapa por aba
+
+As seis etapas são abas. A tela mostra **uma só por vez**, com "← Etapa anterior" e
+"Próxima etapa →" no rodapé e o indicador "Etapa N de 6" no meio. Clicar direto numa
+aba também funciona, então dá para voltar e conferir sem perder nada.
+
+As abas 4, 5 e 6 só mostram conteúdo depois do ticket criado. Antes disso elas abrem,
+mas explicam o que falta — ninguém fica preso.
+
+O **Contexto do cliente** não é mais um painel separado: as duas perguntas (tempo de
+casa e loja em operação) ficam dentro da **etapa 2**, onde a checklist já manda
+confirmá-las. Elas continuam alimentando a severidade e o modo de entrega.
+
+---
+
 ## A documentação vive dentro do playbook
 
-O painel esquerdo virou **"Dúvida ao solucionar o problema? Pergunte por aqui"**.
+O painel de dúvida fica **sempre visível, em todas as abas** — à direita no desktop,
+no topo no celular. É o foco da plataforma.
+
 O atendente digita a dúvida e a documentação abre numa gaveta por cima do playbook,
 já com a pergunta feita para a IA que vive dentro dela — sem perder o atendimento em
 andamento. Enter no campo também envia.
@@ -57,10 +74,10 @@ Se preferir ir direto, cada seção tem um marcador. Ctrl+F com ele no `conteudo
 | Marcador | O que muda |
 |---|---|
 | `[1]` | Endereço da documentação (a base de todos os links) |
-| `[2]` | Nomes das 6 etapas, na trilha numerada do topo |
+| `[2]` | Nomes das 6 etapas, que são os rótulos das abas |
 | `[3]` | Etapas 1, 2 e 3 — as travadas: checklist, "não faça", texto do botão |
-| `[4]` | Tempo de casa — os três modos de quem executa a ação |
-| `[5]` | Loja em operação — as duas opções do painel |
+| `[4]` | Tempo de casa — os três modos de quem executa a ação (aparece na etapa 2) |
+| `[5]` | Loja em operação — as duas opções (aparece na etapa 2) |
 | `[6]` | As 7 naturezas de ticket: sequência de ação, quando escalar, não faça, tags |
 | `[7]` | Os 13 módulos: onde olhar, o que coletar, links, casos conhecidos |
 | `[8]` | Severidade e prazos de P1 / P2 / P3 |
@@ -83,6 +100,8 @@ Se preferir ir direto, cada seção tem um marcador. Ctrl+F com ele no `conteudo
 | Mudar as regras de escalonamento | `[6]`, dentro de `escalar` |
 | Tirar o botão "Emergência: liberar agora" | `[10]`, apague a linha `bloqueioBotao` |
 | Mudar o título ou o subtítulo do topo | `[10]`, `titulo` e `subtitulo` |
+| Mudar o texto do painel de dúvida | `[10]`, grupo `duvida*` e `busca*` |
+| Mudar os botões de navegação entre abas | `[10]`, grupo `nav*` |
 
 ### Adicionar uma categoria nova
 

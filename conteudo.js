@@ -810,22 +810,35 @@ const TEXTOS = {
   subtitulo: "Uso interno — time de Atendimentos",
   botaoMapa: "Modo mapa",
 
-  /* --- painel esquerdo: contexto --- */
-  railContexto: "Contexto do cliente",
-  railTempoLabel: "Tempo de casa",
-  railTempoHint: "Define quem executa a ação, não o que fazer.",
-  railOperLabel: "A loja está em operação agora?",
-  railOperHint: "Confirme isso na etapa 2. Casa cheia sobe a severidade e cancela o modo de ensino.",
-
-  /* --- painel esquerdo: perguntar para a IA da documentação ---
-     O que o atendente digita aqui vai direto para a IA que vive dentro da
-     documentação, e a resposta abre numa gaveta sem sair do playbook. */
+  /* --- painel de dúvida: o foco da plataforma ---
+     Fica sempre visível, em qualquer aba. O que o atendente digita vai direto
+     para a IA que vive dentro da documentação, e a resposta abre numa gaveta
+     sem tirar ninguém do atendimento. */
+  duvidaTag: "Central de dúvidas",
   railBusca: "Dúvida ao solucionar o problema? Pergunte por aqui:",
   buscaHint: "Caso tenha dúvida de como resolver o ticket, acesse a documentação e pergunte para a IA que está dentro dela.",
   buscaPlaceholder: "ex: como configuro a taxa de entrega?",
   buscaBotao: "Perguntar para a IA da documentação",
   buscaCasosTitulo: "Casos conhecidos que combinam",
   buscaVazia: "Nenhum caso conhecido com esse termo. Pergunte para a IA no botão acima.",
+  duvidaRodape: "A resposta abre aqui mesmo, por cima do playbook. Você não perde o atendimento em andamento.",
+
+  /* --- contexto do cliente, dentro da etapa 2 ---
+     Estas duas perguntas alimentam a severidade e o modo de entrega. Ficam na
+     etapa 2 porque é lá que a checklist manda confirmá-las. */
+  ctxTag: "Marque antes de avançar",
+  ctxTempoLabel: "Tempo de casa",
+  ctxTempoHint: "Define quem executa a ação, não o que fazer.",
+  ctxOperLabel: "A loja está em operação agora?",
+  ctxOperHint: "Casa cheia sobe a severidade e cancela o modo de ensino.",
+
+  /* --- navegação entre as abas ---
+     {atual} e {total} são trocados pelos números reais. */
+  navVoltar: "← Etapa anterior",
+  navAvancar: "Próxima etapa →",
+  navOnde: "Etapa {atual} de {total}",
+  abaTrancada: "Esta etapa abre depois do ticket criado. Voltar para a etapa 3.",
+  abaSemTema: "Escolha a natureza e o módulo na etapa 4 para ver o follow-up.",
 
   /* --- gaveta da documentação --- */
   docTitulo: "Documentação",
@@ -836,10 +849,7 @@ const TEXTOS = {
   docFalhou: "Se a documentação não aparecer aqui, use o botão \"Abrir em nova aba\".",
 
   /* --- etapas 1 a 3 --- */
-  etapaAguardando: "aguardando a etapa",
   etapaConcluida: "concluído",
-  etapaReabrir: "concluído · reabrir",
-  etapaAbrir: "abrir",
   etapaNaoFaca: "Não faça",
 
   /* --- etapa 4 bloqueada --- */
