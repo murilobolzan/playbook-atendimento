@@ -868,10 +868,13 @@ function medirTopo() {
 /* O cabecalho muda de altura quando o texto quebra linha, quando o aviso do
    modo mapa aparece e quando a janela muda de largura. Observar o elemento
    mantem a medida sempre correta; medir uma vez sozinha fica desatualizada. */
+let observadorTopo = null;   /* guardar a referência: observador sem dono pode ser coletado */
+
 function observarTopo() {
   const topo = document.querySelector(".topo");
   if (!topo || typeof ResizeObserver === "undefined") return;
-  new ResizeObserver(medirTopo).observe(topo);
+  observadorTopo = new ResizeObserver(medirTopo);
+  observadorTopo.observe(topo);
 }
 
 /* ---------- trilha do topo ---------- */
@@ -1360,7 +1363,12 @@ function render() {
 }
 
 window.addEventListener("resize", medirTopo);
+window.addEventListener("load", medirTopo);
 observarTopo();
+
+/* o topo muda de altura enquanto a fonte e o layout assentam; dois quadros
+   depois do boot a medida ja e a definitiva */
+requestAnimationFrame(() => requestAnimationFrame(medirTopo));
 
 document.getElementById("q").addEventListener("input", renderResults);
 
