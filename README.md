@@ -33,45 +33,16 @@ aperta Ctrl+F, procura `[6]` e cai exatamente no lugar certo.
 
 ## Uma etapa por aba
 
-As sete etapas são abas. A tela mostra **uma só por vez**, com "← Etapa anterior" e
-"Próxima etapa →" no rodapé e o indicador "Etapa N de 7" no meio. Clicar direto numa
+As seis etapas são abas. A tela mostra **uma só por vez**, com "← Etapa anterior" e
+"Próxima etapa →" no rodapé e o indicador "Etapa N de 6" no meio. Clicar direto numa
 aba também funciona, então dá para voltar e conferir sem perder nada.
 
 As abas 4, 5 e 6 só mostram conteúdo depois do ticket criado. Antes disso elas abrem,
 mas explicam o que falta — ninguém fica preso.
 
-A quantidade de abas vem da quantidade de itens em `[2]`: adicionar um nome ali cria
-uma aba, mas o conteúdo dela precisa existir no motor.
-
 O **Contexto do cliente** não é mais um painel separado: as duas perguntas (tempo de
 casa e loja em operação) ficam dentro da **etapa 2**, onde a checklist já manda
 confirmá-las. Elas continuam alimentando a severidade e o modo de entrega.
-
----
-
-## Avaliação do atendimento
-
-A **aba 7** fecha o atendimento com quatro critérios, cada um de 0 a 5:
-
-| Critério | O que mede |
-|---|---|
-| Entendeu o problema de fato | Se chegou ao problema real ou parou no pedido |
-| Resolveu de fato | Se resolveu e se confirmou que o cliente entendeu |
-| Qualidade técnica | Se a resposta se sustenta tecnicamente |
-| Tom adequado | Cordialidade, escrita e padrão Dionísio |
-
-O placar mostra o total, de 20, e a média. As notas viram tags no ticket. Não bloqueia
-nada: é registro de qualidade, não portão.
-
-**Peso.** Os quatro estão com `peso: 1`, ou seja peso igual. Total e média se
-recalculam sozinhos se você mudar esses números em `[11]`.
-
-**Proatividade foi excluída de propósito.** Está dito no comentário de `[11]` e aparece
-como aviso no rodapé da aba, para ninguém reintroduzir por engano.
-
-**Três níveis vieram em branco e eu preenchi por dedução** — revise antes de usar para
-valer. São: critério 1 nível 1, critério 3 nível 2 e critério 4 nível 1. Estão
-marcados no comentário de `[11]`.
 
 ---
 
@@ -112,7 +83,6 @@ Se preferir ir direto, cada seção tem um marcador. Ctrl+F com ele no `conteudo
 | `[8]` | Severidade e prazos de P1 / P2 / P3 |
 | `[9]` | Follow-up: os tempos (2h e 1h) e as frases prontas |
 | `[10]` | Todo o texto fixo da tela: títulos, avisos, rótulos |
-| `[11]` | Avaliação do atendimento: os 4 critérios, seus níveis e seus pesos |
 
 ## Tarefas comuns
 
@@ -132,9 +102,6 @@ Se preferir ir direto, cada seção tem um marcador. Ctrl+F com ele no `conteudo
 | Mudar o título ou o subtítulo do topo | `[10]`, `titulo` e `subtitulo` |
 | Mudar o texto do painel de dúvida | `[10]`, grupo `duvida*` e `busca*` |
 | Mudar os botões de navegação entre abas | `[10]`, grupo `nav*` |
-| Mudar um nível da régua de avaliação | `[11]`, dentro de `niveis` do critério |
-| Mudar o peso de um critério | `[11]`, o campo `peso` |
-| Adicionar ou remover um critério de avaliação | `[11]`, dentro de `criterios` |
 
 ### Adicionar uma categoria nova
 
@@ -205,9 +172,6 @@ não da operação real:
 - Se o botão de emergência que libera as etapas travadas deve continuar existindo
 - Campos que o ticket realmente exige no sistema de vocês (etapa 3, em `[3]`)
 - Se existe identificador da conversa da IA para colar no ticket (etapa 1, em `[3]`)
-- Os pesos dos quatro critérios de avaliação, hoje todos iguais (`[11]`)
-- Os três níveis da régua que foram preenchidos por dedução (`[11]`)
-- Se existe faixa de aprovação por nota — hoje o playbook mostra o número e não julga
 
 ## Lacuna conhecida na taxonomia
 

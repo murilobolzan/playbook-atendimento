@@ -510,57 +510,6 @@
   #gaveta-frame { flex: 1 1 auto; width: 100%; border: 0; background: var(--surface); }
   body.gaveta-aberta { overflow: hidden; }
 
-  /* ============ AVALIACAO DO ATENDIMENTO ============ */
-  .rubrica { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px,1fr)); gap: var(--s3); }
-  .crit {
-    border: 1px solid var(--line); border-left: 3px solid var(--line-forte);
-    border-radius: var(--r); background: var(--surface); overflow: hidden;
-  }
-  .crit.marcado { border-left-color: var(--accent); border-color: var(--accent-linha); }
-  .crit-h {
-    display: flex; align-items: center; gap: var(--s3);
-    padding: var(--s3) var(--s4); background: var(--surface-2); border-bottom: 1px solid var(--line);
-  }
-  .crit-h h3 { margin: 0; font-size: var(--t-base); font-weight: 650; }
-  .crit-nota {
-    margin-left: auto; flex: 0 0 auto;
-    font-family: var(--font-mono); font-size: var(--t-md); font-weight: 700;
-    font-variant-numeric: tabular-nums; color: var(--ink-3);
-    width: 30px; height: 26px; display: grid; place-items: center;
-    border: 1px solid var(--line-forte); border-radius: var(--r-sm); background: var(--surface);
-  }
-  .crit.marcado .crit-nota { color: var(--accent-sobre); background: var(--accent); border-color: var(--accent); }
-
-  .niveis { list-style: none; margin: 0; padding: var(--s2); display: flex; flex-direction: column; gap: 2px; }
-  .nivel {
-    width: 100%; text-align: left; font: inherit; cursor: pointer;
-    display: flex; align-items: flex-start; gap: var(--s3);
-    background: transparent; border: 1px solid transparent; border-radius: var(--r-sm);
-    padding: 7px var(--s2); color: var(--ink-2);
-  }
-  .nivel:hover { background: var(--accent-suave); border-color: var(--accent-linha); }
-  .nivel.on { background: var(--accent-suave); border-color: var(--accent); color: var(--ink); }
-  .nivel-n {
-    flex: 0 0 auto; font-family: var(--font-mono); font-size: 10px; font-weight: 700;
-    width: 18px; height: 18px; display: grid; place-items: center; margin-top: 2px;
-    border: 1px solid var(--line-forte); border-radius: 50%; color: var(--ink-3); background: var(--surface);
-  }
-  .nivel.on .nivel-n { color: var(--accent-sobre); background: var(--accent); border-color: var(--accent); }
-  .nivel-t { font-size: var(--t-sm); line-height: 1.45; }
-  .nivel.on .nivel-t { font-weight: 600; }
-
-  .placar {
-    display: flex; align-items: center; gap: var(--s6); flex-wrap: wrap;
-    padding: var(--s4); border: 1px solid var(--accent-linha); border-radius: var(--r);
-    background: var(--accent-suave);
-  }
-  .placar-vazio { margin: 0; font-size: var(--t-base); color: var(--ink-2); }
-  .placar-item { display: flex; flex-direction: column; gap: 2px; }
-  .placar-k { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
-  .placar-v { font-size: var(--t-xl); font-weight: 650; letter-spacing: -.02em; font-variant-numeric: tabular-nums; color: var(--ink); }
-  .placar-barra { flex: 1 1 180px; height: 8px; background: var(--surface); border: 1px solid var(--accent-linha); border-radius: 99px; overflow: hidden; }
-  .placar-fill { height: 100%; background: var(--accent); border-radius: 99px; }
-
   /* ============ NAVEGACAO ENTRE PASSOS ============ */
   .passos {
     display: flex; align-items: center; gap: var(--s4);
@@ -635,7 +584,6 @@
       <section id="axes"></section>
       <section id="out" aria-live="polite"></section>
       <section id="fup"></section>
-      <section id="aval"></section>
 
       <nav class="passos" aria-label="Navegação entre etapas">
         <button class="btn ghost" id="btn-voltar" type="button"></button>
@@ -797,7 +745,6 @@ const state = {
   pulou:false,
   mapa:false,
   cat:null, mod:null,
-  notas:{},
   fup:"pendente",
   fup2_em:null,
   fup2_limite:null
@@ -898,8 +845,7 @@ function renderMoldura() {
 
 /* uma aba por passo: mostra so a seção da aba atual */
 function renderAbaVisivel() {
-  const mapa = { flow: state.aba <= 3, axes: state.aba === 4, out: state.aba === 5,
-                 fup: state.aba === 6, aval: state.aba === 7 };
+  const mapa = { flow: state.aba <= 3, axes: state.aba === 4, out: state.aba === 5, fup: state.aba === 6 };
   for (const id in mapa) document.getElementById(id).hidden = !mapa[id];
 }
 
@@ -1367,98 +1313,6 @@ function renderFup() {
   host.append(wrap);
 }
 
-/* ---------- etapa 7: avaliação ---------- */
-function renderAvaliacao() {
-  const host = document.getElementById("aval");
-  host.textContent = "";
-
-  const wrap = el("div","result");
-
-  const head = el("div","rhead");
-  head.append(el("span","eyebrow", AVALIACAO.eyebrow));
-  head.append(el("h2","rtitle", AVALIACAO.titulo));
-  head.append(el("p","rprazo", AVALIACAO.subtitulo));
-  wrap.append(head);
-
-  const col = el("div","rcol");
-  const grade = src(el("div","rubrica"), "[11] AVALIACAO");
-
-  AVALIACAO.criterios.forEach(c => {
-    const nota = state.notas[c.id];
-    const bloco = el("div","crit" + (nota === undefined ? "" : " marcado"));
-
-    const ch = el("div","crit-h");
-    ch.append(el("h3","", c.nome));
-    ch.append(el("span","crit-nota", nota === undefined ? "—" : String(nota)));
-    bloco.append(ch);
-
-    const ul = el("ul","niveis");
-    c.niveis.forEach((txt, n) => {
-      const li = el("li");
-      const b = el("button","nivel" + (nota === n ? " on" : ""));
-      b.type = "button";
-      b.setAttribute("aria-pressed", String(nota === n));
-      b.append(el("span","nivel-n", String(n)), el("span","nivel-t", txt));
-      b.onclick = () => {
-        if (state.notas[c.id] === n) delete state.notas[c.id];
-        else state.notas[c.id] = n;
-        render();
-      };
-      li.append(b);
-      ul.append(li);
-    });
-    bloco.append(ul);
-    grade.append(bloco);
-  });
-  col.append(grade);
-
-  /* placar */
-  const respondidos = AVALIACAO.criterios.filter(c => state.notas[c.id] !== undefined);
-  const placar = el("div","placar");
-
-  if (respondidos.length < AVALIACAO.criterios.length) {
-    placar.append(el("p","placar-vazio", AVALIACAO.semNota));
-  } else {
-    const pesoTotal = AVALIACAO.criterios.reduce((a,c) => a + c.peso, 0);
-    const soma = AVALIACAO.criterios.reduce((a,c) => a + state.notas[c.id] * c.peso, 0);
-    const maximo = 5 * pesoTotal;
-    const media = soma / pesoTotal;
-
-    const t1 = el("div","placar-item");
-    t1.append(el("span","placar-k", AVALIACAO.totalLabel));
-    t1.append(el("span","placar-v", soma + " " + AVALIACAO.deLabel + " " + maximo));
-    const t2 = el("div","placar-item");
-    t2.append(el("span","placar-k", AVALIACAO.mediaLabel));
-    t2.append(el("span","placar-v", media.toFixed(1).replace(".", ",")));
-    placar.append(t1, t2);
-
-    const barra = el("div","placar-barra");
-    const fill = el("div","placar-fill");
-    fill.style.width = Math.round((soma / maximo) * 100) + "%";
-    barra.append(fill);
-    placar.append(barra);
-  }
-  col.append(placar);
-
-  /* tags */
-  if (respondidos.length === AVALIACAO.criterios.length) {
-    const pesoTotal = AVALIACAO.criterios.reduce((a,c) => a + c.peso, 0);
-    const soma = AVALIACAO.criterios.reduce((a,c) => a + state.notas[c.id] * c.peso, 0);
-    const tg = el("div","block");
-    tg.append(el("h3","", AVALIACAO.tagsTitulo));
-    const tw = el("div","tags");
-    AVALIACAO.criterios.forEach(c => tw.append(el("span","tag","aval_" + c.id + ":" + state.notas[c.id])));
-    tw.append(el("span","tag","aval_total:" + soma + "/" + (5 * pesoTotal)));
-    tg.append(tw);
-    tg.append(el("span","microhint", AVALIACAO.tagsHint));
-    col.append(tg);
-  }
-
-  col.append(el("p","microhint", AVALIACAO.excluido));
-  wrap.append(col);
-  host.append(wrap);
-}
-
 /* ---------- busca ---------- */
 /* tira acento e caixa: quem digita "pedido nao chega" acha "não chegam" */
 const DIACRITICOS = new RegExp("[\\u0300-\\u036f]", "g");
@@ -1503,7 +1357,7 @@ function renderResults() {
 /* ---------- boot ---------- */
 function render() {
   renderMoldura(); renderSpine();
-  renderFlow(); renderAxes(); renderOut(); renderFup(); renderAvaliacao();
+  renderFlow(); renderAxes(); renderOut(); renderFup();
   renderAbaVisivel();
   medirTopo();
 }
@@ -1543,7 +1397,6 @@ document.getElementById("reset").addEventListener("click", () => {
   state.aba = 1;
   state.pulou = false;
   state.cat = null; state.mod = null;
-  state.notas = {};
   resetFup();
   document.getElementById("q").value = "";
   renderResults(); render();
