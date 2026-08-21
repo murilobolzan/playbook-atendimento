@@ -25,6 +25,7 @@
      [8]   SEVERIDADE E PRAZOS ............... P1, P2, P3
      [9]   FOLLOW-UP ......................... tempos e frases do FUP
      [10]  TÍTULOS E AVISOS DA TELA .......... todo o resto do texto fixo
+     [11]  AVALIAÇÃO DO ATENDIMENTO .......... os 4 critérios e seus pesos
 
    ─────────────────────────────────────────────────────────────────────────
    QUATRO REGRAS PARA NÃO QUEBRAR
@@ -54,8 +55,8 @@ const D = "https://dionisio.gitbook.io/documentacao-dionisio";
 /* [2] ═══════════════════════════════════════════════════════════════════════
    NOMES DAS 6 ETAPAS
 
-   Aparecem na trilha numerada do topo da tela. São só rótulos — mudar o
-   nome não muda a ordem nem o comportamento. Mantenha seis itens.
+   São os rótulos das abas. Mudar o nome não muda a ordem nem o
+   comportamento, mas a quantidade de itens define quantas abas existem.
    ═════════════════════════════════════════════════════════════════════════ */
 
 const ETAPAS = [
@@ -64,7 +65,8 @@ const ETAPAS = [
   "Criar o ticket",
   "Verificar o tema",
   "Guia de Atendimento",
-  "Follow-up e encerrar"
+  "Follow-up e encerrar",
+  "Avaliação"
 ];
 
 
@@ -906,4 +908,90 @@ const TEXTOS = {
   /* --- rodapé --- */
   rodapeBotao: "Reiniciar atendimento",
   rodapeAviso: "<strong>Rascunho para revisão.</strong> Severidade, prazos, cortes de tempo de casa e tempos de follow-up são propostas a calibrar. Os links apontam para a documentação real da plataforma."
+};
+
+
+/* [11] ══════════════════════════════════════════════════════════════════════
+   AVALIAÇÃO DO ATENDIMENTO — aba 7
+
+   Quatro critérios, cada um de 0 a 5. Aparece no fim do atendimento e não
+   trava nada: é registro de qualidade, não portão.
+
+   PROATIVIDADE FOI EXCLUÍDA DE PROPÓSITO. Se alguém quiser trazer de volta,
+   é decisão de gestão, não esquecimento.
+
+     peso   = quanto o critério vale no total. Todos em 1 = peso igual.
+              Mudou um número, o total e a média se recalculam sozinhos.
+     niveis = a régua do critério, do 0 ao 5, nessa ordem.
+
+   NÍVEIS QUE EU COMPLETEI e que você precisa revisar, porque vieram em
+   branco: critério 1 nível 1, critério 3 nível 2, critério 4 nível 1.
+   ═════════════════════════════════════════════════════════════════════════ */
+
+const AVALIACAO = {
+  eyebrow: "Etapa 7 · avaliação",
+  titulo: "Como este atendimento foi",
+  subtitulo: "Quatro critérios, de 0 a 5, com peso igual. Serve para medir e treinar — não bloqueia o fechamento do ticket.",
+  semNota: "Escolha uma nota em cada critério para ver o resultado.",
+  totalLabel: "Total",
+  mediaLabel: "Média",
+  deLabel: "de",
+  tagsTitulo: "Registrar no ticket",
+  tagsHint: "Sem a nota registrada não há como comparar atendimentos nem descobrir onde treinar.",
+  excluido: "Proatividade foi retirada desta régua de propósito.",
+
+  criterios: [
+    {
+      id: "entendeu",
+      nome: "Entendeu o problema de fato",
+      peso: 1,
+      niveis: [
+        "Não entendeu e não buscou entender.",
+        "Não entendeu e fez perguntas soltas, sem confirmar o entendimento com o cliente.",
+        "Não entendeu o problema do cliente e buscou entender.",
+        "Entendeu parcialmente.",
+        "Entendeu parcialmente o problema do cliente e buscou entender a fundo.",
+        "Entendeu completamente o problema do cliente."
+      ]
+    },
+    {
+      id: "resolveu",
+      nome: "Resolveu de fato",
+      peso: 1,
+      niveis: [
+        "Não conseguiu resolver.",
+        "Respondeu parcialmente as dúvidas do cliente e não garantiu que ele entendeu.",
+        "Respondeu parcialmente as dúvidas do cliente e garantiu que ele entendeu.",
+        "Respondeu o cliente mas sem garantir que ele entendeu.",
+        "Resolveu o problema do cliente.",
+        "Resolveu o problema do cliente garantindo que ele entendeu."
+      ]
+    },
+    {
+      id: "tecnica",
+      nome: "Qualidade técnica",
+      peso: 1,
+      niveis: [
+        "Respondeu de forma equivocada ao cliente.",
+        "Resposta abaixo do esperado na qualidade técnica.",
+        "Resposta com erro técnico pontual, que precisou de correção antes de fechar o ticket.",
+        "Resposta sem técnica, porém ajustada.",
+        "Entregou uma resposta técnica boa que resolveu o problema do cliente e garantiu que ele entendeu.",
+        "Entregou uma resposta técnica excelente que resolveu o problema do cliente e garantiu que ele entendeu."
+      ]
+    },
+    {
+      id: "tom",
+      nome: "Tom adequado",
+      peso: 1,
+      niveis: [
+        "Desrespeitou o cliente.",
+        "Respondeu de forma seca ou impaciente, sem desrespeito explícito.",
+        "Respondeu de forma desleixada.",
+        "Respondeu com alguns erros de digitação e pontuação e sem saudação inicial.",
+        "Respondeu com alguns erros de digitação e pontuação.",
+        "Respondeu de forma cordial e no padrão Dionísio."
+      ]
+    }
+  ]
 };
