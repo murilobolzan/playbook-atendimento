@@ -389,6 +389,16 @@
   .p-dono { color: var(--accent); background: var(--accent-suave); border-color: var(--accent-linha); }
   .p-line { color: var(--ink-3); background: var(--surface-2); border-color: var(--line); }
 
+  /* etapa 5: os dois caminhos em cima, o material do assunto embaixo */
+  .rsolo { padding: var(--s5); display: flex; flex-direction: column; gap: var(--s6); }
+  .rduo { display: grid; grid-template-columns: repeat(auto-fit, minmax(304px,1fr)); gap: var(--s6); }
+  .decisao {
+    background: var(--surface-2); border: 1px solid var(--line);
+    border-left: 3px solid var(--accent); border-radius: var(--r-sm);
+    padding: var(--s4); gap: var(--s3);
+  }
+  .decisao > h3 { font-size: var(--t-md); }
+
   .rbody { display: grid; grid-template-columns: minmax(0,1.4fr) minmax(0,1fr); }
   @media (max-width: 820px) { .rbody { grid-template-columns: 1fr; } }
   .rcol { padding: var(--s5); display: flex; flex-direction: column; gap: var(--s5); }
@@ -690,8 +700,6 @@
   if (typeof TEMPOS === "undefined") faltando.push("TEMPOS");
   if (typeof CATEGORIAS === "undefined") faltando.push("CATEGORIAS");
   if (typeof MODULOS === "undefined") faltando.push("MODULOS");
-  if (typeof SEV === "undefined") faltando.push("SEV");
-  if (typeof SEV_POR_CATEGORIA === "undefined") faltando.push("SEV_POR_CATEGORIA");
   if (typeof FUP === "undefined") faltando.push("FUP");
   if (typeof TEXTOS === "undefined") faltando.push("TEXTOS");
   if (!faltando.length) return;
@@ -981,7 +989,7 @@ function renderFlow() {
 /* tempo de plataforma do cliente — vive na etapa 5, junto da entrega.
    Mostra os dois caminhos lado a lado e destaca o escolhido. */
 function blocoModoEntrega() {
-  const box = src(el("div","block"), "[4] TEMPOS");
+  const box = src(el("div","block decisao"), "[4] TEMPOS");
   box.append(el("h3","", TEXTOS.resTempoLabel));
 
   const cards = el("div","modo-cards");
@@ -1004,6 +1012,9 @@ function blocoModoEntrega() {
   box.append(cards, el("span","microhint", TEXTOS.resTempoHint));
   return box;
 }
+
+/* eyebrow em branco simplesmente nao aparece */
+function poeEyebrow(pai, txt) { if (txt) pai.append(el("span","eyebrow", txt)); }
 
 /* ---------- etapa 4 ---------- */
 function renderAxes() {
@@ -1032,7 +1043,8 @@ function renderAxes() {
 
   const wrapCat = src(el("section","step"), "[6] CATEGORIAS");
   const hc = el("div","step-h");
-  hc.append(el("span","eyebrow", TEXTOS.eixo1Eyebrow), el("h2","", TEXTOS.eixo1Titulo), el("span","note", TEXTOS.eixo1Nota));
+  poeEyebrow(hc, TEXTOS.eixo1Eyebrow);
+  hc.append(el("h2","", TEXTOS.eixo1Titulo), el("span","note", TEXTOS.eixo1Nota));
   wrapCat.append(hc);
   const gc = el("div","cards");
   CATEGORIAS.forEach(c => {
@@ -1048,7 +1060,8 @@ function renderAxes() {
 
   const wrapMod = src(el("section","step"), "[7] MODULOS");
   const hm = el("div","step-h");
-  hm.append(el("span","eyebrow", TEXTOS.eixo2Eyebrow), el("h2","", TEXTOS.eixo2Titulo), el("span","note", TEXTOS.eixo2Nota));
+  poeEyebrow(hm, TEXTOS.eixo2Eyebrow);
+  hm.append(el("h2","", TEXTOS.eixo2Titulo), el("span","note", TEXTOS.eixo2Nota));
   wrapMod.append(hm);
   const gm = el("div","cards densa");
   MODULOS.forEach(m => {
@@ -1080,109 +1093,51 @@ function renderOut() {
   }
 
   const c = cat(state.cat), m = mod(state.mod);
-  /* fallback no fim: estado antigo salvo no navegador não pode derrubar a tela */
-  const t = TEMPOS.find(x => x.id === state.tempo) || TEMPOS[0];
-  const sevId = SEV_POR_CATEGORIA[c.id] || "P3";
-  const s = SEV[sevId];
 
   const wrap = el("div","result");
 
+  /* o tema vem escolhido da etapa anterior: aparece como identidade, nao como pergunta */
   const head = el("div","rhead");
-  head.append(el("span","eyebrow", TEXTOS.resEyebrow));
+  poeEyebrow(head, TEXTOS.resEyebrow);
   head.append(el("h2","rtitle", c.nome + ' <span class="sep">/</span> ' + m.nome));
-  const pills = src(el("div","pills"), "[8] SEV");
-  pills.append(
-    el("span","pill " + s.cls, s.rot),
-    el("span","pill p-dono","Dono: " + c.dono),
-    el("span","pill p-line", c.trilha)
-  );
-  if (state.pulou) pills.append(el("span","pill p-crit", TEXTOS.resPulou));
-  head.append(pills);
-  head.append(el("p","rprazo", s.prazo));
   wrap.append(head);
 
-  const body = el("div","rbody");
+  const corpo = el("div","rsolo");
 
-  /* ----- coluna esquerda ----- */
-  const L = el("div","rcol");
+  /* a decisao: quem executa o ajuste */
+  corpo.append(blocoModoEntrega());
 
-  L.append(blocoModoEntrega());
+  /* o material do assunto escolhido, vindo da documentacao */
+  const duo = el("div","rduo");
 
   if (m.casos.length) {
     const cs = src(el("div","block"), "[7] casos");
     cs.append(el("h3","", TEXTOS.resCasos + " " + m.nome));
     const ul = el("ul","cases");
-    m.casos.slice().sort((a,b) => (b.cat === c.id) - (a.cat === c.id)).forEach(k => {
+    m.casos.slice().sort((x,y) => (y.cat === c.id) - (x.cat === c.id)).forEach(k => {
       const li = el("li","case");
-      li.append(el("div","case-s",k.s));
+      li.append(el("div","case-s", k.s));
       li.append(el("div","case-c", k.c + (k.cat !== c.id ? ' <em>· ' + TEXTOS.resCasoCostuma + " " + cat(k.cat).nome + "</em>" : "")));
       li.append(linkDoc(el("a","", TEXTOS.resCasoLink), D + k.d, k.s));
       ul.append(li);
     });
     cs.append(ul);
-    L.append(cs);
+    duo.append(cs);
   }
-
-  const exp = src(el("div","block"), "[10] resExplicarItens");
-  exp.append(el("h3","", TEXTOS.resExplicarTitulo));
-  const eul = el("ul","bul");
-  TEXTOS.resExplicarItens.forEach(x => eul.append(el("li","",x)));
-  exp.append(eul);
-  L.append(exp);
-
-  const stop = src(el("div","callout c-stop"), "[6] nunca");
-  stop.append(el("span","ch", TEXTOS.resNaoFaca));
-  const su = el("ul");
-  c.nunca.forEach(x => su.append(el("li","",x)));
-  stop.append(su);
-  L.append(stop);
-
-  body.append(L);
-
-  /* ----- coluna direita ----- */
-  const R = el("div","rcol");
-
-  const ctx = src(el("div","block"), "[7] onde");
-  ctx.append(el("h3","", TEXTOS.resOndeOlhar));
-  ctx.append(el("p","txt", m.onde));
-  R.append(ctx);
-
-  const col = src(el("div","block"), "[7] coletar");
-  col.append(el("h3","", TEXTOS.resColetar));
-  const cu = el("ul","bul");
-  m.coletar.forEach(x => cu.append(el("li","",x)));
-  col.append(cu);
-  R.append(col);
-
-  const esc = src(el("div","block"), "[6] escalar");
-  esc.append(el("h3","", TEXTOS.resEscalar));
-  const eu = el("ul","bul");
-  c.escalar.forEach(x => eu.append(el("li","",x)));
-  esc.append(eu);
-  R.append(esc);
 
   const dk = src(el("div","block"), "[7] docs");
   dk.append(el("h3","", TEXTOS.resDocs + " " + m.nome));
   const dl = el("ul","doclist");
   m.docs.forEach(d => {
     const li = el("li");
-    li.append(linkDoc(el("a","",d.t), D + d.u, d.t)); dl.append(li);
+    li.append(linkDoc(el("a","", d.t), D + d.u, d.t));
+    dl.append(li);
   });
   dk.append(dl);
-  R.append(dk);
+  duo.append(dk);
 
-  const tg = src(el("div","block"), "[6] tags");
-  tg.append(el("h3","", TEXTOS.resTags));
-  const tw = el("div","tags");
-  const tags = [...c.tags, "modulo:" + m.id, "sev:" + sevId, "modo:" + t.id];
-  if (state.pulou) tags.push("etapas:puladas");
-  tags.forEach(x => tw.append(el("span","tag",x)));
-  tg.append(tw);
-  tg.append(el("span","microhint", TEXTOS.resTagsHint));
-  R.append(tg);
-
-  body.append(R);
-  wrap.append(body);
+  corpo.append(duo);
+  wrap.append(corpo);
   host.append(wrap);
 }
 
@@ -1202,7 +1157,7 @@ function renderFup() {
   const wrap = el("div","result");
 
   const head = el("div","rhead");
-  head.append(el("span","eyebrow", TEXTOS.fupEyebrow));
+  poeEyebrow(head, TEXTOS.fupEyebrow);
   head.append(el("h2","rtitle", TEXTOS.fupTitulo));
   head.append(el("p","rprazo", TEXTOS.fupSubtitulo));
   wrap.append(head);

@@ -781,25 +781,25 @@ const TEXTOS = {
   etapaNaoFaca: "Não faça",
 
   /* --- etapa 4 bloqueada --- */
-  bloqueioEyebrow: "Etapa 4 · bloqueada",
+  bloqueioEyebrow: "Ainda não liberado",
   bloqueioTexto: "A verificação por tema abre depois do ticket criado. Assim a classificação fica registrada e mensurável, em vez de viver só na cabeça de quem atendeu.",
   bloqueioBotao: "Emergência: liberar agora",
   bloqueioAviso: "Use só em P1 com a loja parada. O desvio fica marcado no ticket com a tag <code>etapas:puladas</code>.",
 
   /* --- etapa 4 liberada --- */
-  eixo1Eyebrow: "Etapa 4 · eixo 1",
+  eixo1Eyebrow: "",
   eixo1Titulo: "Natureza do ticket",
   eixo1Nota: "Você classifica, não o cliente. Pode reclassificar a qualquer momento.",
-  eixo2Eyebrow: "Etapa 4 · eixo 2",
+  eixo2Eyebrow: "",
   eixo2Titulo: "Módulo da plataforma",
   eixo2Nota: "Onde olhar e qual documentação mandar.",
   eixoVazio: "Selecione {falta} para ver o direcionamento. Ou busque pelo sintoma no painel à esquerda.",
 
   /* --- etapa 5: resultado, coluna esquerda --- */
-  resEyebrow: "Etapa 5 · agir e explicar",
+  resEyebrow: "",
   resPulou: "etapas puladas",
-  resTempoLabel: "Tempo de plataforma do cliente",
-  resTempoHint: "Escolha para saber quem executa o ajuste — você ou o cliente.",
+  resTempoLabel: "Quem executa este ajuste?",
+  resTempoHint: "O corte é o tempo de plataforma do cliente. Nos dois caminhos, mostre a ele o caminho na plataforma.",
   resModoLabel: "Modo de entrega",
   resCasos: "Casos conhecidos em",
   resCasoLink: "Abrir o guia deste caso",
@@ -822,7 +822,7 @@ const TEXTOS = {
   resTagsHint: "Sem essas tags não há como medir tempo de resolução por módulo nem descobrir onde falta documentação.",
 
   /* --- etapa 6: cabeçalho --- */
-  fupEyebrow: "Etapa 6 · follow-up e encerramento",
+  fupEyebrow: "",
   fupTitulo: "O atendimento não termina na explicação",
   fupSubtitulo: "Resolvido não é o mesmo que confirmado. O ticket só encerra com resposta do cliente ou com o silêncio esgotado.",
   fupMandeAssim: "Mande assim",
@@ -831,5 +831,5 @@ const TEXTOS = {
 
   /* --- rodapé --- */
   rodapeBotao: "Reiniciar atendimento",
-  rodapeAviso: "<strong>Rascunho para revisão.</strong> Severidade, prazos, cortes de tempo de casa e tempos de follow-up são propostas a calibrar. Os links apontam para a documentação real da plataforma."
+  rodapeAviso: "<strong>Rascunho para revisão.</strong> O corte de 45 dias e os tempos de follow-up são propostas a calibrar. Os links apontam para a documentação real da plataforma."
 };
