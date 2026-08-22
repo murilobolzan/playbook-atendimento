@@ -23,7 +23,7 @@ altere → **Commit changes**. Cerca de 40 segundos depois o site já mostra a v
 
 Abra o playbook e clique em **Modo mapa** no canto superior direito.
 
-Cada bloco da tela ganha uma etiqueta vinho com um marcador, tipo `[6] fluxo`.
+Cada bloco da tela ganha uma etiqueta vinho com um marcador, tipo `[6] escalar`.
 Esse marcador é o endereço dentro do `conteudo.js`. Aí você abre o arquivo,
 aperta Ctrl+F, procura `[6]` e cai exatamente no lugar certo.
 
@@ -37,12 +37,17 @@ As seis etapas são abas. A tela mostra **uma só por vez**, com "← Etapa ante
 "Próxima etapa →" no rodapé e o indicador "Etapa N de 6" no meio. Clicar direto numa
 aba também funciona, então dá para voltar e conferir sem perder nada.
 
-As abas 4, 5 e 6 só mostram conteúdo depois do ticket criado. Antes disso elas abrem,
-mas explicam o que falta — ninguém fica preso.
+As abas 4, 5 e 6 só abrem depois do ticket criado: na trilha do topo elas ficam
+desligadas até os três portões serem concluídos, para ninguém pular direto para a
+solução. Quem chega nelas pelo botão "Próxima etapa" vê o que ainda falta.
 
-O **Contexto do cliente** não é mais um painel separado: as duas perguntas (tempo de
-casa e loja em operação) ficam dentro da **etapa 2**, onde a checklist já manda
-confirmá-las. Elas continuam alimentando a severidade e o modo de entrega.
+O **tempo de plataforma do cliente** é a única pergunta de contexto e vive na
+**etapa 5**, junto da entrega: são dois cards lado a lado, "até 45 dias" e "mais de
+45 dias", e o escolhido define quem executa o ajuste. A pergunta "a loja está em
+operação?" saiu do fluxo — a severidade agora vem só da natureza do ticket.
+
+A **central de dúvidas** aparece apenas na etapa 5, que é onde o atendente resolve
+de fato. Nas outras etapas o conteúdo ocupa a largura inteira da tela.
 
 ---
 
@@ -76,9 +81,8 @@ Se preferir ir direto, cada seção tem um marcador. Ctrl+F com ele no `conteudo
 | `[1]` | Endereço da documentação (a base de todos os links) |
 | `[2]` | Nomes das 6 etapas, que são os rótulos das abas |
 | `[3]` | Etapas 1, 2 e 3 — as travadas: checklist, "não faça", texto do botão |
-| `[4]` | Tempo de casa — os três modos de quem executa a ação (aparece na etapa 2) |
-| `[5]` | Loja em operação — as duas opções (aparece na etapa 2) |
-| `[6]` | As 7 naturezas de ticket: sequência de ação, quando escalar, não faça, tags |
+| `[4]` | Tempo de plataforma — os dois modos de quem executa a ação (aparece na etapa 5) |
+| `[6]` | As 7 naturezas de ticket: quando escalar, não faça, tags |
 | `[7]` | Os 13 módulos: onde olhar, o que coletar, links, casos conhecidos |
 | `[8]` | Severidade e prazos de P1 / P2 / P3 |
 | `[9]` | Follow-up: os tempos (2h e 1h) e as frases prontas |
@@ -90,13 +94,12 @@ Se preferir ir direto, cada seção tem um marcador. Ctrl+F com ele no `conteudo
 |---|---|
 | Mudar uma frase da checklist da etapa 1, 2 ou 3 | `[3]` |
 | Mudar os prazos ou os nomes de P1 / P2 / P3 | `[8]`, bloco `SEV` |
-| Mudar qual severidade uma categoria recebe | `[8]`, bloco `MATRIZ_SEV` |
-| Mudar os cortes de 30 e 90 dias do tempo de casa | `[4]` |
+| Mudar qual severidade uma categoria recebe | `[8]`, bloco `SEV_POR_CATEGORIA` |
+| Mudar o corte de 45 dias do tempo de plataforma | `[4]` |
 | Mudar as horas do follow-up | `[9]`, `esperaHoras` e `limiteHoras` |
 | Mudar a frase que o atendente manda no FUP | `[9]`, `f1Mensagem` e `f2Mensagem` |
 | Adicionar um caso conhecido novo | `[7]`, dentro de `casos` do módulo |
 | Adicionar ou trocar um link de documentação | `[7]`, dentro de `docs` do módulo |
-| Mudar a sequência de ação de uma categoria | `[6]`, dentro de `fluxo` |
 | Mudar as regras de escalonamento | `[6]`, dentro de `escalar` |
 | Tirar o botão "Emergência: liberar agora" | `[10]`, apague a linha `bloqueioBotao` |
 | Mudar o título ou o subtítulo do topo | `[10]`, `titulo` e `subtitulo` |
@@ -107,8 +110,7 @@ Se preferir ir direto, cada seção tem um marcador. Ctrl+F com ele no `conteudo
 
 Em `[6]`, copie um bloco inteiro entre `{ }`, cole antes do `]` final, e troque o
 `id` por um nome curto sem espaço nem acento. Depois vá em `[8]` e adicione esse
-mesmo `id` nas **duas** linhas de `MATRIZ_SEV`, senão a página quebra ao selecionar
-a categoria nova.
+mesmo `id` em `SEV_POR_CATEGORIA`, senão a categoria nova entra como P3.
 
 ### Adicionar um módulo novo
 
@@ -166,8 +168,9 @@ cliques. Os dois arquivos precisam estar juntos na mesma pasta.
 Marcados como rascunho porque foram propostos a partir de referência de mercado,
 não da operação real:
 
-- Os cortes de tempo de casa, 30 e 90 dias, na escada de autonomia (`[4]`)
-- A matriz de severidade e os prazos de P1 / P2 / P3 (`[8]`)
+- O corte de 45 dias do tempo de plataforma, na escada de autonomia (`[4]`)
+- A severidade por natureza de ticket e os prazos de P1 / P2 / P3 (`[8]`) — virou uma
+  lista só depois de a pergunta "a casa está aberta?" sair do fluxo
 - Os tempos de follow-up, 2h e 1h (`[9]`)
 - Se o botão de emergência que libera as etapas travadas deve continuar existindo
 - Campos que o ticket realmente exige no sistema de vocês (etapa 3, em `[3]`)

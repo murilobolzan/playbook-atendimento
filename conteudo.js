@@ -91,7 +91,6 @@ const PORTOES = [
       "Identifique <strong>qual loja</strong> e <strong>qual usuário</strong> está falando.",
       "Leia do <strong>início</strong>, não só a última mensagem. Leia também o resumo criado pela IA.",
       "Anote <strong>o que a IA já respondeu/alterou</strong>.",
-      "Verifique se a IA <strong>acertou/errou</strong>: se errou, corrija e peça desculpas pelo erro.",
       "Verifique os dados que o <strong>cliente</strong> forneceu e entenda o que ele quer aplicar na plataforma.",
     ],
     nunca: [
@@ -109,6 +108,7 @@ const PORTOES = [
     itens: [
       "Separe <strong>a solução que ele apresentou</strong> do <strong>problema</strong>",
       "Caso não tenha 100% de certeza da solução, confirme o ajuste em <strong>uma frase</strong> e espere o cliente confirmar antes de agir",
+      "A entrega é sempre dupla: <strong>resolver</strong> e <strong>mostrar ao cliente como se faz</strong> — o caminho na plataforma faz parte da resposta.",
     ],
     nunca: [
       "Começar a resolver antes de entender 100% a dor do cliente",
@@ -135,17 +135,16 @@ const PORTOES = [
 
 
 /* [4] ═══════════════════════════════════════════════════════════════════════
-   TEMPO DE CASA — a escada de autonomia
+   TEMPO DE PLATAFORMA — a escada de autonomia
 
-   Os três botões do painel esquerdo. Não mudam o QUE fazer, mudam QUEM
-   executa. O texto aparece na caixa vinho "Modo de entrega".
+   Os dois botões que aparecem no alto da ETAPA 5. Não mudam o QUE fazer,
+   mudam QUEM executa. O texto aparece na caixa "Modo de entrega".
 
      rot  = texto do botão
      modo = título em negrito da caixa
      txt  = explicação da caixa
 
-   PENDENTE DE CALIBRAGEM: os cortes de 30 e 90 dias foram propostos por
-   referência de mercado, não pela operação de vocês.
+   O corte é de 45 dias de plataforma do cliente.
    ═════════════════════════════════════════════════════════════════════════ */
 
 const TEMPOS = [
@@ -153,49 +152,34 @@ const TEMPOS = [
     id: "novo",
     rot: "Até 45 dias",
     modo: "Executo e mostro para o cliente",
-    txt: "Cliente em implantação. Faça a alteração você mesmo, avise o que fez e mande o link da documentação para consulta futura. Não transfira a tarefa agora."
+    txt: "Cliente em implantação. Faça a alteração você mesmo, avise o que fez e mostre o caminho na plataforma para consulta futura. Não transfira a tarefa agora."
   },
   {
-    
     id: "velho",
     rot: "Mais de 45 dias",
-    modo: "Oriento e ele executa",
+    modo: "Mostro como faz e só executo se ele pedir",
     txt: "Cliente maduro. Mande o caminho na plataforma e confirme no final que se tiver alguma dúvida, só chamar. Só assuma a execução se ele pedir. Caso peça diariamente, explique que ele precisa ter autonomia na plataforma e peça para tentar executar uma vez que você irá checar se está correto ou não"
   }
-];
-
-
-/* [5] ═══════════════════════════════════════════════════════════════════════
-   LOJA EM OPERAÇÃO
-
-   Os dois botões do painel esquerdo. "sim" sobe a severidade e cancela o
-   modo de ensino. Para mudar QUAL severidade cada situação recebe, veja [8]
-   ═════════════════════════════════════════════════════════════════════════ */
-
-const OPER = [
-  { id: "sim", rot: "Sim, casa aberta" },
-  { id: "nao", rot: "Não / fora do horário" }
 ];
 
 
 /* [6] ═══════════════════════════════════════════════════════════════════════
    AS 7 NATUREZAS DE TICKET — eixo 1
 
-   Os cards da etapa 4 e o conteúdo da coluna esquerda do resultado.
+   Os cards da etapa 4 e o conteúdo das colunas do resultado (etapa 5).
 
      id      = NÃO MUDE. Chave interna usada pela severidade e pelas tags.
      nome    = título do card
      trilha  = etiqueta cinza acima do nome
      dono    = pílula azul no resultado
      desc    = linha pequena do card
-     fluxo   = a lista numerada "Sequência de ação"
      escalar = a lista "Quando escalar", na coluna direita
      nunca   = a caixa vermelha "Não faça"
      tags    = tags sugeridas para o ticket
 
    Para adicionar uma categoria nova: copie um bloco inteiro entre { },
    cole antes do ] final, troque o id por um nome curto sem espaço, e
-   adicione esse mesmo id nas DUAS linhas de MATRIZ_SEV em [8]
+   adicione esse mesmo id em SEV_POR_CATEGORIA, no bloco [8]
    ═════════════════════════════════════════════════════════════════════════ */
 
 const CATEGORIAS = [
@@ -205,13 +189,6 @@ const CATEGORIAS = [
     trilha: "Solicitação",
     dono: "Atendimentos",
     desc: "Nada quebrado — o cliente quer algo mudado na configuração.",
-    fluxo: [
-      "Confirme <strong>qual loja</strong> e <strong>qual tela</strong> exatamente, com print quando houver dúvida.",
-      "Verifique se o ajuste é reversível. Se mexe em preço, cobertura de entrega, política de pagamento ou permissão de membro, <strong>peça confirmação explícita por escrito</strong> antes de aplicar.",
-      "Aplique o ajuste conforme o modo de entrega indicado acima.",
-      "Valide o resultado <strong>na visão do cliente final</strong> — link público, cardápio, app — não só no painel.",
-      "Registre no ticket o que foi alterado, de qual valor para qual valor."
-    ],
     escalar: [
       "A ação não existe na interface → <strong>Tech</strong>",
       "O ajuste depende de mudança de plano ou contrato → <strong>Comercial</strong>",
@@ -229,12 +206,6 @@ const CATEGORIAS = [
     trilha: "Orientação",
     dono: "Atendimentos",
     desc: "Como funciona, onde clico, o que esse número significa.",
-    fluxo: [
-      "Responda em <strong>uma frase direta</strong> e só depois mande o link da documentação. Link sem resposta parece descaso.",
-      "Se a resposta tem mais de três passos, mande o <strong>caminho na plataforma</strong> e o artigo.",
-      "Se a IA já tinha respondido certo e o cliente não entendeu, <strong>reformule</strong> — não repita a mesma frase.",
-      "Confirme que resolveu antes de encerrar. Dúvida fechada sem confirmação volta como reclamação."
-    ],
     escalar: [
       "Não existe artigo cobrindo a dúvida → responda e <strong>sinalize a lacuna de documentação</strong>",
       "A dúvida revela que a plataforma não faz o que ele precisa → registre como <strong>Sugestão</strong> e avise Comercial"
@@ -251,13 +222,6 @@ const CATEGORIAS = [
     trilha: "Incidente",
     dono: "Atendimentos",
     desc: "O cliente está insatisfeito. A causa ainda é desconhecida.",
-    fluxo: [
-      "<strong>Acolha antes de diagnosticar.</strong> Reconheça o impacto na operação dele em uma frase, sem se justificar e sem culpar outro time — inclusive sem culpar a IA.",
-      "Separe <strong>fato</strong> de <strong>percepção</strong>: o que aconteceu, quando, em quantos pedidos ou reservas.",
-      "Identifique a raiz e reclassifique: falha do sistema → <strong>Bug</strong>; configuração errada → <strong>Ajuste</strong>; expectativa não atendida → segue como reclamação.",
-      "Dê um <strong>prazo concreto</strong> mesmo que seja só para o próximo retorno. Silêncio é o que transforma reclamação em cancelamento.",
-      "Cumpra o retorno mesmo sem novidade."
-    ],
     escalar: [
       "Menção a cancelar, rescindir ou &ldquo;vou avaliar outra ferramenta&rdquo; → <strong>Comercial imediatamente</strong>, no mesmo turno",
       "Reclamação sobre conduta do atendimento ou da IA → <strong>liderança de Atendimentos</strong>",
@@ -275,13 +239,6 @@ const CATEGORIAS = [
     trilha: "Incidente",
     dono: "Tech",
     desc: "O sistema não faz o que deveria fazer.",
-    fluxo: [
-      "<strong>Reproduza antes de escalar.</strong> Bug que Tech não consegue reproduzir volta para você e o cliente espera o dobro.",
-      "Colete o pacote mínimo: <strong>loja, usuário, horário, o que se esperava, o que aconteceu, print ou vídeo</strong> e o ID do pedido / reserva / disparo.",
-      "Verifique se é configuração antes de chamar de bug — confira o card do módulo ao lado.",
-      "Dê um <strong>contorno ao cliente agora</strong> se existir, mesmo manual, e diga que é temporário.",
-      "Escale para Tech com o pacote completo e informe ao cliente que foi escalado, com prazo do próximo retorno."
-    ],
     escalar: [
       "Sempre para <strong>Tech</strong> — mas só com o pacote mínimo reproduzido",
       "Afeta várias lojas ao mesmo tempo → <strong>Tech em caráter crítico</strong> e avise a liderança: pode ser incidente geral, não ticket individual"
@@ -298,12 +255,6 @@ const CATEGORIAS = [
     trilha: "Solicitação",
     dono: "Comercial",
     desc: "Pedido de algo que a plataforma não faz hoje.",
-    fluxo: [
-      "Agradeça e registre <strong>o problema por trás do pedido</strong>, não a solução que o cliente imaginou.",
-      "Verifique se já existe forma de resolver com o que hoje existe — muitas sugestões são dúvidas disfarçadas.",
-      "Registre com o nome da loja e a frequência com que ele tropeça nisso.",
-      "Encerre o ticket. Sugestão não fica aberta esperando produto."
-    ],
     escalar: [
       "Encaminhe o registro para <strong>Comercial</strong>, que consolida com produto"
     ],
@@ -319,12 +270,6 @@ const CATEGORIAS = [
     trilha: "Solicitação",
     dono: "Financeiro",
     desc: "Cobrança, fatura, plano, pagamento, recebimento.",
-    fluxo: [
-      "Identifique se é <strong>cobrança da Dionísio ao cliente</strong> ou <strong>recebimento do cliente pelos consumidores dele</strong> — são fluxos completamente diferentes.",
-      "Se for recebimento pela plataforma (reserva paga, pedido pago), trate como Ajuste ou Bug no módulo correspondente.",
-      "Se for a nossa cobrança, colete CNPJ, competência e print do que ele recebeu, e encaminhe para Financeiro.",
-      "Informe ao cliente que Financeiro assume, com prazo do próximo retorno."
-    ],
     escalar: [
       "Cobrança, fatura, nota, reembolso → <strong>Financeiro</strong>",
       "Mudança de plano ou renegociação → <strong>Comercial</strong>"
@@ -341,12 +286,6 @@ const CATEGORIAS = [
     trilha: "Triagem",
     dono: "Atendimentos",
     desc: "Porta de entrada. Não deve sobreviver até o fechamento.",
-    fluxo: [
-      "Use apenas enquanto você ainda não sabe o que é.",
-      "Faça <strong>uma pergunta aberta</strong>: o que o cliente estava tentando fazer quando isso aconteceu?",
-      "Reclassifique para uma das seis categorias antes de encerrar.",
-      "Se realmente não couber em nenhuma, escreva o motivo no ticket — é insumo para revisar a taxonomia."
-    ],
     escalar: [
       "Se não conseguir classificar em 2 interações → <strong>liderança de Atendimentos</strong>"
     ],
@@ -703,9 +642,8 @@ const MODULOS = [
      cls   = a cor. Só três valores válidos:
              "p-crit" vermelho · "p-warn" amarelo · "p-calm" verde
 
-   MATRIZ_SEV = qual severidade cada categoria recebe.
-     A linha "sim" vale quando a loja está em operação. A linha "nao",
-     quando está fechada. Todo id de categoria precisa aparecer nas duas.
+   SEV_POR_CATEGORIA = qual severidade cada natureza de ticket recebe.
+     Uma linha por categoria de [6]. Todo id precisa aparecer aqui.
 
    PENDENTE DE CALIBRAGEM: níveis e prazos vieram de referência de mercado.
    ═════════════════════════════════════════════════════════════════════════ */
@@ -716,9 +654,21 @@ const SEV = {
   P3: { rot: "P3 — sem impacto imediato",   cls: "p-calm", prazo: "Resolver em até 24h úteis." }
 };
 
-const MATRIZ_SEV = {
-  sim: { bug: "P1", ajuste: "P1", reclamacao: "P2", financeiro: "P2", duvida: "P2", outro: "P2", sugestao: "P3" },
-  nao: { bug: "P2", ajuste: "P2", reclamacao: "P2", financeiro: "P3", duvida: "P3", outro: "P3", sugestao: "P3" }
+/* Qual severidade cada natureza de ticket recebe. Todo id de categoria de [6]
+   precisa aparecer aqui.
+
+   PENDENTE DE CALIBRAGEM: antes eram duas listas (loja aberta / fechada).
+   Com a pergunta "a casa está aberta?" fora do fluxo, ficou uma só — estes
+   valores são proposta e podem ser ajustados livremente. */
+
+const SEV_POR_CATEGORIA = {
+  bug: "P1",
+  ajuste: "P2",
+  reclamacao: "P2",
+  financeiro: "P2",
+  duvida: "P3",
+  outro: "P3",
+  sugestao: "P3"
 };
 
 
@@ -797,9 +747,9 @@ const TEXTOS = {
   botaoMapa: "Modo mapa",
 
   /* --- painel de dúvida: o foco da plataforma ---
-     Fica sempre visível, em qualquer aba. O que o atendente digita vai direto
-     para a IA que vive dentro da documentação, e a resposta abre numa gaveta
-     sem tirar ninguém do atendimento. */
+     Aparece na ETAPA 5, que é onde o atendente resolve de fato. O que ele
+     digita vai direto para a IA que vive dentro da documentação, e a resposta
+     abre numa gaveta sem tirar ninguém do atendimento. */
   duvidaTag: "Central de dúvidas",
   railBusca: "Dúvida ao solucionar o problema? Pergunte por aqui:",
   buscaHint: "Caso tenha dúvida de como resolver o ticket, acesse a documentação e pergunte para a IA que está dentro dela.",
@@ -809,21 +759,13 @@ const TEXTOS = {
   buscaVazia: "Nenhum caso conhecido com esse termo. Pergunte para a IA no botão acima.",
   duvidaRodape: "A resposta abre aqui mesmo, por cima do playbook. Você não perde o atendimento em andamento.",
 
-  /* --- contexto do cliente, dentro da etapa 2 ---
-     Estas duas perguntas alimentam a severidade e o modo de entrega. Ficam na
-     etapa 2 porque é lá que a checklist manda confirmá-las. */
-  ctxTag: "Marque antes de avançar",
-  ctxTempoLabel: "Tempo de casa",
-  ctxTempoHint: "Define quem executa a ação, não o que fazer.",
-  ctxOperLabel: "A loja está em operação agora?",
-  ctxOperHint: "Casa cheia sobe a severidade e cancela o modo de ensino.",
-
   /* --- navegação entre as abas ---
      {atual} e {total} são trocados pelos números reais. */
   navVoltar: "← Etapa anterior",
   navAvancar: "Próxima etapa →",
   navOnde: "Etapa {atual} de {total}",
   abaTrancada: "Esta etapa abre depois do ticket criado. Voltar para a etapa 3.",
+  spineTrancada: "abre depois do ticket criado",
   abaSemTema: "Escolha a natureza e o módulo na etapa 4 para ver o follow-up.",
 
   /* --- gaveta da documentação --- */
@@ -856,11 +798,9 @@ const TEXTOS = {
   /* --- etapa 5: resultado, coluna esquerda --- */
   resEyebrow: "Etapa 5 · agir e explicar",
   resPulou: "etapas puladas",
+  resTempoLabel: "Tempo de plataforma do cliente",
+  resTempoHint: "Escolha para saber quem executa o ajuste — você ou o cliente.",
   resModoLabel: "Modo de entrega",
-  resModoUrgencia: "sobreposto pela urgência",
-  resModoUrgenciaTitulo: "Executo agora, ensino depois",
-  resModoUrgenciaTexto: "A loja está em operação e o caso é P1. Não é momento de ensinar: resolva você, e agende o repasse para depois do serviço.",
-  resSequencia: "Sequência de ação",
   resCasos: "Casos conhecidos em",
   resCasoLink: "Abrir o guia deste caso",
   resCasoCostuma: "costuma ser",

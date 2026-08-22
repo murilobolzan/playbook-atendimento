@@ -165,6 +165,7 @@
     gap: var(--s6); padding-top: var(--s6); align-items: start;
   }
   @media (max-width: 1080px) { .grid { grid-template-columns: 1fr; gap: var(--s5); } }
+  .grid.sem-rail { grid-template-columns: minmax(0,1fr); }
   .rail {
     position: sticky; top: calc(var(--stick) + var(--s5));
     display: flex; flex-direction: column; gap: var(--s3);
@@ -326,6 +327,31 @@
     grid-auto-rows: 1fr; gap: var(--s2);
   }
   .cards.densa { grid-template-columns: repeat(auto-fill, minmax(152px,1fr)); }
+
+  /* etapa 5: os dois caminhos de entrega, lado a lado */
+  .modo-cards {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(212px,1fr));
+    gap: var(--s2);
+  }
+  .modo-card {
+    font: inherit; text-align: left; cursor: pointer;
+    background: var(--surface); border: 1px solid var(--line);
+    border-left: 3px solid var(--line-forte); border-radius: var(--r);
+    padding: var(--s3); display: flex; flex-direction: column; gap: 5px;
+    transition: border-color .12s, background .12s, box-shadow .12s;
+  }
+  .modo-card:hover { border-left-color: var(--accent); }
+  .modo-card.on {
+    background: var(--accent-suave); border-color: var(--accent-linha);
+    border-left-color: var(--accent); box-shadow: var(--sombra);
+  }
+  .modo-rot {
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 700;
+    letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3);
+  }
+  .modo-card.on .modo-rot { color: var(--accent); }
+  .modo-modo { font-size: var(--t-base); font-weight: 650; color: var(--ink); line-height: 1.3; }
+  .modo-txt { font-size: var(--t-xs); color: var(--ink-2); line-height: 1.5; }
   .card {
     font: inherit; text-align: left; cursor: pointer;
     background: var(--surface); border: 1px solid var(--line);
@@ -662,11 +688,10 @@
   if (typeof ETAPAS === "undefined") faltando.push("ETAPAS");
   if (typeof PORTOES === "undefined") faltando.push("PORTOES");
   if (typeof TEMPOS === "undefined") faltando.push("TEMPOS");
-  if (typeof OPER === "undefined") faltando.push("OPER");
   if (typeof CATEGORIAS === "undefined") faltando.push("CATEGORIAS");
   if (typeof MODULOS === "undefined") faltando.push("MODULOS");
   if (typeof SEV === "undefined") faltando.push("SEV");
-  if (typeof MATRIZ_SEV === "undefined") faltando.push("MATRIZ_SEV");
+  if (typeof SEV_POR_CATEGORIA === "undefined") faltando.push("SEV_POR_CATEGORIA");
   if (typeof FUP === "undefined") faltando.push("FUP");
   if (typeof TEXTOS === "undefined") faltando.push("TEXTOS");
   if (!faltando.length) return;
@@ -739,7 +764,7 @@
 
 /* ---------- estado ---------- */
 const state = {
-  tempo:"rampa", oper:"nao",
+  tempo:"novo",
   feito:{ ia:false, problema:false, ticket:false },
   aba:1,
   pulou:false,
@@ -847,6 +872,14 @@ function renderMoldura() {
 function renderAbaVisivel() {
   const mapa = { flow: state.aba <= 3, axes: state.aba === 4, out: state.aba === 5, fup: state.aba === 6 };
   for (const id in mapa) document.getElementById(id).hidden = !mapa[id];
+
+  /* a central de dúvidas aparece na etapa 5, que é onde se resolve de fato.
+     Nas outras, o conteúdo ocupa a largura inteira. */
+  const rail = document.querySelector(".rail");
+  const grid = document.querySelector(".grid");
+  const naEtapaDeResolver = state.aba === 5;
+  if (rail) rail.hidden = !naEtapaDeResolver;
+  if (grid) grid.classList.toggle("sem-rail", !naEtapaDeResolver);
 }
 
 function irParaAba(n) {
@@ -886,12 +919,15 @@ function renderSpine() {
     const n = i + 1;
     const concluida = n <= 3 && state.feito[PORTOES[n-1].id];
     const atual = n === state.aba;
+    /* etapas 4 a 6 só abrem depois dos três portões: sem atalho na trilha */
+    const trancada = n >= 4 && !portoesOk();
     const b = el("button", "mo" + (atual ? " on" : "") + (concluida && !atual ? " ok" : ""));
     b.type = "button";
     b.setAttribute("role", "tab");
     b.setAttribute("aria-selected", String(atual));
-    b.title = titulo;
-    b.onclick = () => irParaAba(n);
+    b.disabled = trancada;
+    b.title = trancada ? titulo + " — " + TEXTOS.spineTrancada : titulo;
+    b.onclick = () => { if (!trancada) irParaAba(n); };
     b.append(el("span","mo-n", concluida && !atual ? "✓" : String(n)), el("span","mo-t", titulo));
     host.append(b);
   });
@@ -923,9 +959,6 @@ function renderFlow() {
   p.itens.forEach(x => ul.append(el("li","",x)));
   body.append(ul);
 
-  /* as duas perguntas de contexto vivem na etapa 2, onde a checklist pede
-     para confirmá-las. Alimentam a severidade e o modo de entrega. */
-  if (p.id === "problema") body.append(blocoContexto());
 
   const stop = el("div","callout c-stop");
   stop.append(el("span","ch", TEXTOS.etapaNaoFaca));
@@ -945,40 +978,30 @@ function renderFlow() {
   host.append(card);
 }
 
-/* bloco de contexto do cliente, embutido na etapa 2 */
-function blocoContexto() {
-  const box = src(el("div","ctx"), "[4] TEMPOS + [5] OPER");
-  box.append(el("span","ctx-tag", TEXTOS.ctxTag));
+/* tempo de plataforma do cliente — vive na etapa 5, junto da entrega.
+   Mostra os dois caminhos lado a lado e destaca o escolhido. */
+function blocoModoEntrega() {
+  const box = src(el("div","block"), "[4] TEMPOS");
+  box.append(el("h3","", TEXTOS.resTempoLabel));
 
-  const fTempo = el("div","field");
-  fTempo.append(el("label","", TEXTOS.ctxTempoLabel));
-  const gTempo = el("div","chips");
-  gTempo.setAttribute("role","group");
-  gTempo.setAttribute("aria-label", TEXTOS.ctxTempoLabel);
+  const cards = el("div","modo-cards");
+  cards.setAttribute("role","group");
+  cards.setAttribute("aria-label", TEXTOS.resTempoLabel);
   TEMPOS.forEach(o => {
-    const b = el("button","chip", o.rot);
+    const sel = state.tempo === o.id;
+    const b = el("button","modo-card" + (sel ? " on" : ""));
     b.type = "button";
-    b.setAttribute("aria-pressed", String(state.tempo === o.id));
+    b.setAttribute("aria-pressed", String(sel));
+    b.append(
+      el("span","modo-rot", o.rot),
+      el("span","modo-modo", o.modo),
+      el("span","modo-txt", o.txt)
+    );
     b.onclick = () => { state.tempo = o.id; render(); };
-    gTempo.append(b);
+    cards.append(b);
   });
-  fTempo.append(gTempo, el("span","hint", TEXTOS.ctxTempoHint));
 
-  const fOper = el("div","field");
-  fOper.append(el("label","", TEXTOS.ctxOperLabel));
-  const gOper = el("div","chips");
-  gOper.setAttribute("role","group");
-  gOper.setAttribute("aria-label", TEXTOS.ctxOperLabel);
-  OPER.forEach(o => {
-    const b = el("button","chip", o.rot);
-    b.type = "button";
-    b.setAttribute("aria-pressed", String(state.oper === o.id));
-    b.onclick = () => { state.oper = o.id; render(); };
-    gOper.append(b);
-  });
-  fOper.append(gOper, el("span","hint", TEXTOS.ctxOperHint));
-
-  box.append(fTempo, fOper);
+  box.append(cards, el("span","microhint", TEXTOS.resTempoHint));
   return box;
 }
 
@@ -1057,10 +1080,10 @@ function renderOut() {
   }
 
   const c = cat(state.cat), m = mod(state.mod);
-  const t = TEMPOS.find(x => x.id === state.tempo);
-  const sevId = MATRIZ_SEV[state.oper][c.id];
+  /* fallback no fim: estado antigo salvo no navegador não pode derrubar a tela */
+  const t = TEMPOS.find(x => x.id === state.tempo) || TEMPOS[0];
+  const sevId = SEV_POR_CATEGORIA[c.id] || "P3";
   const s = SEV[sevId];
-  const urgente = state.oper === "sim" && sevId === "P1" && t.id !== "novo";
 
   const wrap = el("div","result");
 
@@ -1083,18 +1106,7 @@ function renderOut() {
   /* ----- coluna esquerda ----- */
   const L = el("div","rcol");
 
-  const mode = src(el("div","callout c-mode"), "[4] TEMPOS");
-  mode.append(el("span","ch", TEXTOS.resModoLabel + " — " + (urgente ? TEXTOS.resModoUrgencia : t.rot)));
-  mode.append(el("p","", "<strong>" + (urgente ? TEXTOS.resModoUrgenciaTitulo : t.modo) + ".</strong> " +
-    (urgente ? TEXTOS.resModoUrgenciaTexto : t.txt)));
-  L.append(mode);
-
-  const fl = src(el("div","block"), "[6] fluxo");
-  fl.append(el("h3","", TEXTOS.resSequencia));
-  const ol = el("ol","steps");
-  c.fluxo.forEach(p => ol.append(el("li","",p)));
-  fl.append(ol);
-  L.append(fl);
+  L.append(blocoModoEntrega());
 
   if (m.casos.length) {
     const cs = src(el("div","block"), "[7] casos");
@@ -1162,9 +1174,7 @@ function renderOut() {
   const tg = src(el("div","block"), "[6] tags");
   tg.append(el("h3","", TEXTOS.resTags));
   const tw = el("div","tags");
-  const tags = [...c.tags, "modulo:" + m.id, "sev:" + sevId,
-    "modo:" + (urgente ? "executado_urgencia" : t.id),
-    "loja_em_operacao:" + state.oper];
+  const tags = [...c.tags, "modulo:" + m.id, "sev:" + sevId, "modo:" + t.id];
   if (state.pulou) tags.push("etapas:puladas");
   tags.forEach(x => tw.append(el("span","tag",x)));
   tg.append(tw);
