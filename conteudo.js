@@ -95,50 +95,41 @@ const PORTOES = [
       "Verifique os dados que o <strong>cliente</strong> forneceu e entenda o que ele quer aplicar na plataforma.",
     ],
     nunca: [
-      "Abrir a conversa pela última mensagem e responder no escuro.",
-      "Pedir informação que o cliente já deu para a IA — é a principal causa de irritação em atendimento herdado.",
-      "Assumir que o assunto é o rótulo que a IA deu."
+      "Abrir a conversa e ler somente a última mensagem e responder no escuro.",
+      "Prestar atenção para não pedir alguma informação que o cliente já deu para a IA, pois pode ser a principal causa de irritação em atendimento na IA.",
+      "Assumir que o assunto é o rótulo que a IA deu.",
     ],
     cta: "Li a conversa inteira",
-    why: "Sem isso você repete pergunta e o cliente reinicia a explicação."
+    why: "Caso não tenha entendido o que o cliente falou, pergunte de forma respeitosa tentando entender a fundo o contexto."
   },
   {
     id: "problema",
     titulo: "Entender o problema do cliente",
-    lead: "O cliente descreve uma solução. Você precisa do problema por trás dela — é isso que determina a categoria.",
+    lead: "O cliente descreve uma solução. Você precisa achar a solução para o problema",
     itens: [
-      "Separe <strong>o pedido</strong> do <strong>problema</strong>: ele pede &ldquo;mudar o botão X&rdquo;, o problema é &ldquo;o consumidor não consegue finalizar&rdquo;.",
-      "Confirme o entendimento em <strong>uma frase</strong> e espere o &ldquo;isso&rdquo; antes de agir.",
-      "Pergunte <strong>quando começou</strong> e <strong>quanto afetou</strong>: quantos pedidos, reservas ou disparos.",
-      "Peça <strong>print ou vídeo</strong> sempre que envolver tela.",
-      "Confirme se a <strong>loja está em operação agora</strong> e marque no painel à esquerda — isso define a severidade.",
-      "Confirme o <strong>tempo de casa</strong> e marque no painel — isso define quem executa."
+      "Separe <strong>a solução que ele apresentou</strong> do <strong>problema</strong>",
+      "Caso não tenha 100% de certeza da solução, confirme o ajuste em <strong>uma frase</strong> e espere o cliente confirmar antes de agir",
     ],
     nunca: [
-      "Começar a resolver antes de o cliente confirmar que você entendeu.",
-      "Diagnosticar por cima da hipótese do cliente sem verificar."
+      "Começar a resolver antes de entender 100% a dor do cliente",
     ],
     cta: "Entendi e confirmei com o cliente",
-    why: "Categoria errada aqui contamina todo o resto do atendimento."
+    why: "Entendimento equivocado do problema do cliente = solução errada = cliente insatisfeito"
   },
   {
     id: "ticket",
     titulo: "Criar o ticket",
     lead: "O ticket vem antes da solução, não depois. Ticket criado no fim vira medição perdida.",
     itens: [
-      "<strong>Título</strong>: o sintoma na linguagem do cliente, não a sua hipótese técnica.",
-      "Vincule <strong>loja</strong>, <strong>usuário</strong> e <strong>canal</strong> de entrada.",
-      "Cole o <strong>trecho relevante da conversa da IA</strong> e o identificador dela.",
-      "Anexe as <strong>evidências</strong>: prints, IDs de pedido, reserva, disparo ou cupom.",
-      "Marque <strong>categoria e módulo iniciais</strong> — você pode reclassificar depois sem penalidade.",
-      "Registre se a <strong>loja está em operação</strong> e o <strong>tempo de casa</strong>."
+      "<strong>Título</strong>: Descrição breve do que é o ticket",
+      "Marque <strong>categoria e módulo iniciais</strong>: marque o motivo e a subcategoria correspondente ao ticket criado",
     ],
     nunca: [
-      "Resolver primeiro e criar o ticket depois — &ldquo;foi rápido, não precisa&rdquo; é como problema recorrente fica invisível.",
-      "Deixar o título como &ldquo;dúvida do cliente&rdquo; ou &ldquo;erro&rdquo;: título vago não agrupa e não vira estatística."
+      "Resolver primeiro e criar o ticket depois",
+      "Deixar o título como &ldquo;dúvida do cliente&rdquo; ou &ldquo;erro&rdquo;: deixe o título mais explicativo possível."
     ],
     cta: "Ticket criado",
-    why: "É o ticket que libera a verificação por tema."
+    why: "Só após a criação do ticket você pode solucionar o problema."
   }
 ];
 
@@ -160,21 +151,16 @@ const PORTOES = [
 const TEMPOS = [
   {
     id: "novo",
-    rot: "Até 30 dias",
-    modo: "Executo pelo cliente",
+    rot: "Até 45 dias",
+    modo: "Executo e mostro para o cliente",
     txt: "Cliente em implantação. Faça a alteração você mesmo, avise o que fez e mande o link da documentação para consulta futura. Não transfira a tarefa agora."
   },
   {
-    id: "rampa",
-    rot: "30 a 90 dias",
-    modo: "Faço junto e mostro",
-    txt: "Cliente aprendendo. Conduza na tela — chamada ou passo a passo com print — e deixe o cliente clicar. Confirme no fim que ele sabe repetir sozinho."
-  },
-  {
+    
     id: "velho",
-    rot: "Mais de 90 dias",
+    rot: "Mais de 45 dias",
     modo: "Oriento e ele executa",
-    txt: "Cliente maduro. Mande o caminho na plataforma e o link da documentação. Só assuma a execução se ele pedir explicitamente ou estiver bloqueado."
+    txt: "Cliente maduro. Mande o caminho na plataforma e confirme no final que se tiver alguma dúvida, só chamar. Só assuma a execução se ele pedir. Caso peça diariamente, explique que ele precisa ter autonomia na plataforma e peça para tentar executar uma vez que você irá checar se está correto ou não"
   }
 ];
 
