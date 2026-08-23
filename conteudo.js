@@ -52,17 +52,17 @@ const D = "https://dionisio.gitbook.io/documentacao-dionisio";
 
 
 /* [2] ═══════════════════════════════════════════════════════════════════════
-   NOMES DAS 6 ETAPAS
+   NOMES DAS 5 ETAPAS
 
-   Aparecem na trilha numerada do topo da tela. São só rótulos — mudar o
-   nome não muda a ordem nem o comportamento. Mantenha seis itens.
+   São os rótulos das abas. Mudar o nome não muda a ordem nem o
+   comportamento, mas a quantidade de itens define quantas abas existem.
+   Hoje o motor sabe montar cinco: três de checklist, o guia e o follow-up.
    ═════════════════════════════════════════════════════════════════════════ */
 
 const ETAPAS = [
   "Ler a conversa do Cliente",
   "Entender o problema",
   "Criar o ticket",
-  "Verificar o tema",
   "Guia de Atendimento",
   "Follow-up e encerrar"
 ];
@@ -72,7 +72,8 @@ const ETAPAS = [
    ETAPAS 1, 2 E 3 — as travadas em sequência
 
    São os três cards que abrem a tela. Cada um só libera o próximo depois
-   do botão. Em cada bloco:
+   do botão. A etapa 3 traz também a escolha da natureza e do módulo, que
+   é o que abre o guia de atendimento. Em cada bloco:
 
      titulo  = nome do card
      lead    = frase de abertura, em cinza
@@ -685,25 +686,26 @@ const SEV_POR_CATEGORIA = {
    ═════════════════════════════════════════════════════════════════════════ */
 
 const FUP = {
-  esperaHoras: 2,
-  limiteHoras: 1,
+  /* em MINUTOS. Total máximo do silêncio = espera + limite. */
+  esperaMin: 30,
+  limiteMin: 30,
 
   /* --- primeiro follow-up --- */
   f1Nome: "FUP 1",
-  f1Quando: "imediatamente após explicar",
-  f1Mensagem: "&ldquo;Consegue conferir aí pra mim? Ficou como você precisava?&rdquo;",
+  f1Quando: "antes de encerrar o atendimento",
+  f1Mensagem: "&ldquo;Ficou alguma dúvida sobre o que ajustamos?&rdquo;",
   f1SimTitulo: "Respondeu",
-  f1SimTexto: "<strong>Encerre o ticket.</strong> Registre a confirmação do cliente e as tags. Sem isso o encerramento não vale como resolvido.",
+  f1SimTexto: "<strong>Encerre o ticket.</strong> Registre a confirmação do cliente. Sem isso o encerramento não vale como resolvido.",
   f1NaoTitulo: "Sem resposta",
-  f1NaoTexto: "<strong>Agende o FUP 2 para {espera} horas depois.</strong> Deixe o ticket aberto aguardando cliente — não encerre e não fique reenviando no meio.",
+  f1NaoTexto: "<strong>Pergunte mais uma vez {espera} minutos depois.</strong> Deixe o ticket aberto aguardando cliente — não encerre e não fique reenviando no meio.",
 
   /* --- segundo follow-up --- */
   f2Nome: "FUP 2",
-  f2Quando: "{espera} horas depois do FUP 1",
+  f2Quando: "{espera} minutos depois do FUP 1",
   f2Mensagem: "&ldquo;Passando pra confirmar se ficou tudo certo. Se eu não tiver retorno, vou encerrar por aqui — e é só chamar de novo que a gente reabre.&rdquo;",
   f2SimTitulo: "Respondeu",
   f2SimTexto: "<strong>Encerre o ticket</strong> com a confirmação registrada.",
-  f2NaoTitulo: "Silêncio por {limite} hora",
+  f2NaoTitulo: "Silêncio por {limite} minutos",
   f2NaoTexto: "<strong>Encerre por inatividade</strong>. Deixe escrito no ticket que o cliente pode reabrir a qualquer momento.",
 
   /* --- botões --- */
@@ -723,10 +725,10 @@ const FUP = {
   /* --- resumo da regra, sempre visível --- */
   tituloRegra: "A regra em uma linha",
   regra: [
-    ["FUP 1",  "Assim que explicar. Respondeu → encerra."],
-    ["FUP 2",  "{espera}h depois, se houve silêncio. Respondeu → encerra."],
-    ["Limite", "{limite}h de silêncio após o FUP 2 → encerra por inatividade."],
-    ["Total",  "Silêncio absoluto encerra {total}h após a explicação."]
+    ["FUP 1",  "Antes de encerrar, pergunte se ficou dúvida. Respondeu → encerra."],
+    ["FUP 2",  "{espera} min depois, se houve silêncio. Respondeu → encerra."],
+    ["Limite", "{limite} min de silêncio após o FUP 2 → encerra por inatividade."],
+    ["Total",  "Silêncio absoluto encerra em {total} min, no máximo 1 hora."]
   ]
 };
 
@@ -780,11 +782,10 @@ const TEXTOS = {
   etapaConcluida: "concluído",
   etapaNaoFaca: "Não faça",
 
-  /* --- etapa 4 bloqueada --- */
+  /* --- etapas ainda não liberadas ---
+     Não existe atalho: o atendente passa por todas as etapas, em ordem. */
   bloqueioEyebrow: "Ainda não liberado",
-  bloqueioTexto: "A verificação por tema abre depois do ticket criado. Assim a classificação fica registrada e mensurável, em vez de viver só na cabeça de quem atendeu.",
-  bloqueioBotao: "Emergência: liberar agora",
-  bloqueioAviso: "Use só em P1 com a loja parada. O desvio fica marcado no ticket com a tag <code>etapas:puladas</code>.",
+  bloqueioTexto: "Conclua as etapas anteriores para chegar aqui. Não há atalho: cada etapa depende da anterior.",
 
   /* --- etapa 4 liberada --- */
   eixo1Eyebrow: "",
@@ -792,8 +793,11 @@ const TEXTOS = {
   eixo1Nota: "Você classifica, não o cliente. Pode reclassificar a qualquer momento.",
   eixo2Eyebrow: "",
   eixo2Titulo: "Módulo da plataforma",
-  eixo2Nota: "Onde olhar e qual documentação mandar.",
-  eixoVazio: "Selecione {falta} para ver o direcionamento. Ou busque pelo sintoma no painel à esquerda.",
+  eixo2Nota: "O assunto do ticket. Define os casos conhecidos e a documentação do guia.",
+  eixoVazio: "Escolha {falta} na etapa 3 para abrir o guia de atendimento.",
+  eixoTag: "Classifique o ticket",
+  eixoFaltaBotao: "Escolha a natureza e o módulo para concluir esta etapa.",
+  temaTag: "Ticket classificado como",
 
   /* --- etapa 5: resultado, coluna esquerda --- */
   resEyebrow: "",

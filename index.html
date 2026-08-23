@@ -389,6 +389,33 @@
   .p-dono { color: var(--accent); background: var(--accent-suave); border-color: var(--accent-linha); }
   .p-line { color: var(--ink-3); background: var(--surface-2); border-color: var(--line); }
 
+  /* ============ ESCOLHA DO TEMA, DENTRO DA ETAPA 3 ============ */
+  .eixos {
+    display: flex; flex-direction: column; gap: var(--s5);
+    padding: var(--s4); border: 1px solid var(--line);
+    border-left: 3px solid var(--accent); border-radius: var(--r-sm);
+    background: var(--surface-2);
+  }
+  .eixos-tag {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    letter-spacing: .11em; text-transform: uppercase; color: var(--accent);
+  }
+  .eixo { display: flex; flex-direction: column; gap: var(--s3); }
+  .eixo .step-h h3 { margin: 0; font-size: var(--t-base); font-weight: 650; }
+
+  /* ============ RESUMO DO TEMA, NO GUIA ============ */
+  .tema { display: flex; align-items: center; gap: var(--s3); flex-wrap: wrap; }
+  .tema-tag {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    letter-spacing: .11em; text-transform: uppercase; color: var(--ink-3);
+  }
+  .tema-chips { display: flex; gap: var(--s1); flex-wrap: wrap; }
+  .tema-chip {
+    font-size: var(--t-base); font-weight: 650; color: var(--accent);
+    background: var(--accent-suave); border: 1px solid var(--accent-linha);
+    border-radius: 99px; padding: 3px var(--s3);
+  }
+
   /* etapa 5: os dois caminhos em cima, o material do assunto embaixo */
   .rsolo { padding: var(--s5); display: flex; flex-direction: column; gap: var(--s6); }
   .rduo { display: grid; grid-template-columns: repeat(auto-fit, minmax(304px,1fr)); gap: var(--s6); }
@@ -617,7 +644,6 @@
 
     <main>
       <section class="flow" id="flow"></section>
-      <section id="axes"></section>
       <section id="out" aria-live="polite"></section>
       <section id="fup"></section>
 
@@ -775,7 +801,6 @@ const state = {
   tempo:"novo",
   feito:{ ia:false, problema:false, ticket:false },
   aba:1,
-  pulou:false,
   mapa:false,
   cat:null, mod:null,
   fup:"pendente",
@@ -832,9 +857,9 @@ function perguntarIA() {
 /* troca {espera}, {limite}, {total} e {falta} pelos valores reais */
 function fmt(s, extra) {
   const v = Object.assign({
-    espera: FUP.esperaHoras,
-    limite: FUP.limiteHoras,
-    total: FUP.esperaHoras + FUP.limiteHoras
+    espera: FUP.esperaMin,
+    limite: FUP.limiteMin,
+    total: FUP.esperaMin + FUP.limiteMin
   }, extra || {});
   return String(s).replace(/\{(\w+)\}/g, (m,k) => (k in v ? v[k] : m));
 }
@@ -878,14 +903,14 @@ function renderMoldura() {
 
 /* uma aba por passo: mostra so a seção da aba atual */
 function renderAbaVisivel() {
-  const mapa = { flow: state.aba <= 3, axes: state.aba === 4, out: state.aba === 5, fup: state.aba === 6 };
+  const mapa = { flow: state.aba <= 3, out: state.aba === 4, fup: state.aba === 5 };
   for (const id in mapa) document.getElementById(id).hidden = !mapa[id];
 
-  /* a central de dúvidas aparece na etapa 5, que é onde se resolve de fato.
+  /* a central de dúvidas aparece só no guia de atendimento, onde se resolve.
      Nas outras, o conteúdo ocupa a largura inteira. */
   const rail = document.querySelector(".rail");
   const grid = document.querySelector(".grid");
-  const naEtapaDeResolver = state.aba === 5;
+  const naEtapaDeResolver = state.aba === 4;
   if (rail) rail.hidden = !naEtapaDeResolver;
   if (grid) grid.classList.toggle("sem-rail", !naEtapaDeResolver);
 }
@@ -967,6 +992,9 @@ function renderFlow() {
   p.itens.forEach(x => ul.append(el("li","",x)));
   body.append(ul);
 
+  /* a classificação do ticket acontece aqui, na etapa que cria o ticket */
+  if (p.id === "ticket") body.append(blocoEixos());
+
 
   const stop = el("div","callout c-stop");
   stop.append(el("span","ch", TEXTOS.etapaNaoFaca));
@@ -976,10 +1004,12 @@ function renderFlow() {
   body.append(stop);
 
   const adv = el("div","advance");
+  const temaFalta = p.id === "ticket" && (!state.cat || !state.mod);
   const b = el("button","btn", (feito ? "✓ " : "") + p.cta);
   b.type = "button";
+  b.disabled = temaFalta;
   b.onclick = () => { state.feito[p.id] = true; irParaAba(state.aba + 1); };
-  adv.append(b, el("span","why", p.why));
+  adv.append(b, el("span","why", temaFalta ? TEXTOS.eixoFaltaBotao : p.why));
   body.append(adv);
 
   card.append(body);
@@ -1017,63 +1047,56 @@ function blocoModoEntrega() {
 function poeEyebrow(pai, txt) { if (txt) pai.append(el("span","eyebrow", txt)); }
 
 /* ---------- etapa 4 ---------- */
-function renderAxes() {
-  const host = document.getElementById("axes");
-  host.textContent = "";
+/* A escolha do tema mora dentro da etapa 3, junto da criacao do ticket.
+   Sem ela o botao da etapa 3 nao libera, porque e o tema que monta o guia. */
+function blocoEixos() {
+  const caixa = src(el("div","eixos"), "[6] CATEGORIAS + [7] MODULOS");
+  caixa.append(el("span","eixos-tag", TEXTOS.eixoTag));
 
-  if (!portoesOk()) {
-    const lock = src(el("div","lock"), "[10] bloqueio*");
-    lock.append(el("span","eyebrow", TEXTOS.bloqueioEyebrow));
-    lock.append(el("p","", TEXTOS.bloqueioTexto));
-    const ol = el("ol");
-    PORTOES.filter(p => !state.feito[p.id]).forEach(p => ol.append(el("li","",p.titulo)));
-    lock.append(ol);
-    const esc = el("button","btn ghost sm", TEXTOS.bloqueioBotao);
-    esc.type = "button";
-    esc.onclick = () => {
-      state.feito.ia = state.feito.problema = state.feito.ticket = true;
-      state.pulou = true;
-      irParaAba(4);
-    };
-    lock.append(esc);
-    lock.append(el("p","", '<span class="microhint">' + TEXTOS.bloqueioAviso + "</span>"));
-    host.append(lock);
-    return;
-  }
-
-  const wrapCat = src(el("section","step"), "[6] CATEGORIAS");
-  const hc = el("div","step-h");
-  poeEyebrow(hc, TEXTOS.eixo1Eyebrow);
-  hc.append(el("h2","", TEXTOS.eixo1Titulo), el("span","note", TEXTOS.eixo1Nota));
-  wrapCat.append(hc);
-  const gc = el("div","cards");
+  const bloco1 = el("div","eixo");
+  const h1 = el("div","step-h");
+  poeEyebrow(h1, TEXTOS.eixo1Eyebrow);
+  h1.append(el("h3","", TEXTOS.eixo1Titulo), el("span","note", TEXTOS.eixo1Nota));
+  bloco1.append(h1);
+  const g1 = el("div","cards");
   CATEGORIAS.forEach(c => {
     const b = el("button","card");
     b.type = "button";
     b.setAttribute("aria-pressed", String(state.cat === c.id));
-    b.append(el("span","ct",c.trilha), el("span","cn",c.nome), el("span","cd",c.desc));
+    b.append(el("span","ct", c.trilha), el("span","cn", c.nome), el("span","cd", c.desc));
     b.onclick = () => { state.cat = state.cat === c.id ? null : c.id; resetFup(); render(); };
-    gc.append(b);
+    g1.append(b);
   });
-  wrapCat.append(gc);
-  host.append(wrapCat);
+  bloco1.append(g1);
 
-  const wrapMod = src(el("section","step"), "[7] MODULOS");
-  const hm = el("div","step-h");
-  poeEyebrow(hm, TEXTOS.eixo2Eyebrow);
-  hm.append(el("h2","", TEXTOS.eixo2Titulo), el("span","note", TEXTOS.eixo2Nota));
-  wrapMod.append(hm);
-  const gm = el("div","cards densa");
+  const bloco2 = el("div","eixo");
+  const h2 = el("div","step-h");
+  poeEyebrow(h2, TEXTOS.eixo2Eyebrow);
+  h2.append(el("h3","", TEXTOS.eixo2Titulo), el("span","note", TEXTOS.eixo2Nota));
+  bloco2.append(h2);
+  const g2 = el("div","cards densa");
   MODULOS.forEach(m => {
     const b = el("button","card");
     b.type = "button";
     b.setAttribute("aria-pressed", String(state.mod === m.id));
-    b.append(el("span","ct",m.area), el("span","cn",m.nome));
+    b.append(el("span","ct", m.area), el("span","cn", m.nome));
     b.onclick = () => { state.mod = state.mod === m.id ? null : m.id; resetFup(); render(); };
-    gm.append(b);
+    g2.append(b);
   });
-  wrapMod.append(gm);
-  host.append(wrapMod);
+  bloco2.append(g2);
+
+  caixa.append(bloco1, bloco2);
+  return caixa;
+}
+
+/* resumo do tema escolhido, mostrado no guia de atendimento */
+function blocoTema(c, m) {
+  const box = el("div","tema");
+  box.append(el("span","tema-tag", TEXTOS.temaTag));
+  const chips = el("div","tema-chips");
+  chips.append(el("span","tema-chip", c.nome), el("span","tema-chip", m.nome));
+  box.append(chips);
+  return box;
 }
 
 /* ---------- etapa 5 ---------- */
@@ -1099,10 +1122,13 @@ function renderOut() {
   /* o tema vem escolhido da etapa anterior: aparece como identidade, nao como pergunta */
   const head = el("div","rhead");
   poeEyebrow(head, TEXTOS.resEyebrow);
-  head.append(el("h2","rtitle", c.nome + ' <span class="sep">/</span> ' + m.nome));
+  head.append(el("h2","rtitle", ETAPAS[3]));
   wrap.append(head);
 
   const corpo = el("div","rsolo");
+
+  /* o tema vem da etapa 3: aqui so aparece a escolha, sem pedir de novo */
+  corpo.append(blocoTema(c, m));
 
   /* a decisao: quem executa o ajuste */
   corpo.append(blocoModoEntrega());
@@ -1191,8 +1217,8 @@ function renderFup() {
     n.type = "button";
     n.onclick = () => {
       const agora = new Date();
-      state.fup2_em = new Date(agora.getTime() + FUP.esperaHoras*3600e3);
-      state.fup2_limite = new Date(agora.getTime() + (FUP.esperaHoras + FUP.limiteHoras)*3600e3);
+      state.fup2_em = new Date(agora.getTime() + FUP.esperaMin*60e3);
+      state.fup2_limite = new Date(agora.getTime() + (FUP.esperaMin + FUP.limiteMin)*60e3);
       state.fup = "fup1_sem_resposta";
       render();
     };
@@ -1322,7 +1348,7 @@ function renderResults() {
 /* ---------- boot ---------- */
 function render() {
   renderMoldura(); renderSpine();
-  renderFlow(); renderAxes(); renderOut(); renderFup();
+  renderFlow(); renderOut(); renderFup();
   renderAbaVisivel();
   medirTopo();
 }
@@ -1360,7 +1386,6 @@ document.getElementById("btn-mapa").addEventListener("click", () => {
 document.getElementById("reset").addEventListener("click", () => {
   state.feito = { ia:false, problema:false, ticket:false };
   state.aba = 1;
-  state.pulou = false;
   state.cat = null; state.mod = null;
   resetFup();
   document.getElementById("q").value = "";

@@ -1,6 +1,6 @@
 # Playbook de Atendimento — Dionísio
 
-Playbook interativo para o time de Atendimentos. Guia o atendente pelas seis etapas
+Playbook interativo para o time de Atendimentos. Guia o atendente pelas cinco etapas
 do atendimento, da leitura da conversa da IA até o encerramento com follow-up.
 
 **No ar em:** https://murilobolzan.github.io/playbook-atendimento/
@@ -33,28 +33,36 @@ aperta Ctrl+F, procura `[6]` e cai exatamente no lugar certo.
 
 ## Uma etapa por aba
 
-As seis etapas são abas. A tela mostra **uma só por vez**, com "← Etapa anterior" e
-"Próxima etapa →" no rodapé e o indicador "Etapa N de 6" no meio. Clicar direto numa
-aba também funciona, então dá para voltar e conferir sem perder nada.
+As cinco etapas são abas. A tela mostra **uma só por vez**, com "← Etapa anterior" e
+"Próxima etapa →" no rodapé e o indicador "Etapa N de 5" no meio.
 
-As abas 4, 5 e 6 só abrem depois do ticket criado: na trilha do topo elas ficam
-desligadas até os três portões serem concluídos, para ninguém pular direto para a
-solução. Quem chega nelas pelo botão "Próxima etapa" vê o que ainda falta.
+| Aba | O que acontece |
+|---|---|
+| 1 | Ler a conversa do cliente |
+| 2 | Entender o problema |
+| 3 | Criar o ticket — e **classificar** natureza e módulo |
+| 4 | Guia de atendimento — quem executa, casos conhecidos e documentação |
+| 5 | Follow-up e encerramento |
+
+**Não existe atalho.** O botão de emergência que liberava as etapas travadas foi
+removido: o atendente passa por todas, em ordem. A etapa 3 só libera depois que a
+natureza e o módulo forem escolhidos, porque é a classificação que monta o guia.
+
+As abas 4 e 5 abrem antes disso, mas em vez de conteúdo mostram o que falta.
 
 O **tempo de plataforma do cliente** é a única pergunta de contexto e vive na
-**etapa 5**, junto da entrega: são dois cards lado a lado, "até 45 dias" e "mais de
-45 dias", e o escolhido define quem executa o ajuste. A pergunta "a loja está em
-operação?" saiu do fluxo — a severidade agora vem só da natureza do ticket.
+**etapa 4**, junto da entrega: dois cards lado a lado, "até 45 dias" e "mais de 45
+dias", e o escolhido define quem executa o ajuste.
 
-A **central de dúvidas** aparece apenas na etapa 5, que é onde o atendente resolve
-de fato. Nas outras etapas o conteúdo ocupa a largura inteira da tela.
+A **central de dúvidas** aparece apenas na etapa 4, o guia de atendimento, que é onde
+o atendente resolve de fato. Nas outras, o conteúdo ocupa a largura inteira da tela.
 
 ---
 
 ## A documentação vive dentro do playbook
 
-O painel de dúvida fica **sempre visível, em todas as abas** — à direita no desktop,
-no topo no celular. É o foco da plataforma.
+O painel de dúvida vive na **etapa 4**, o guia de atendimento — à direita no desktop,
+no topo no celular. É o foco da plataforma, e fica onde a solução acontece.
 
 O atendente digita a dúvida e a documentação abre numa gaveta por cima do playbook,
 já com a pergunta feita para a IA que vive dentro dela — sem perder o atendimento em
@@ -79,13 +87,13 @@ Se preferir ir direto, cada seção tem um marcador. Ctrl+F com ele no `conteudo
 | Marcador | O que muda |
 |---|---|
 | `[1]` | Endereço da documentação (a base de todos os links) |
-| `[2]` | Nomes das 6 etapas, que são os rótulos das abas |
+| `[2]` | Nomes das 5 etapas, que são os rótulos das abas |
 | `[3]` | Etapas 1, 2 e 3 — as travadas: checklist, "não faça", texto do botão |
-| `[4]` | Tempo de plataforma — os dois modos de quem executa a ação (aparece na etapa 5) |
+| `[4]` | Tempo de plataforma — os dois modos de quem executa a ação (aparece na etapa 4) |
 | `[6]` | As 7 naturezas de ticket: quando escalar, não faça, tags |
 | `[7]` | Os 13 módulos: onde olhar, o que coletar, links, casos conhecidos |
 | `[8]` | Severidade e prazos de P1 / P2 / P3 |
-| `[9]` | Follow-up: os tempos (2h e 1h) e as frases prontas |
+| `[9]` | Follow-up: os tempos (30 min e 30 min) e as frases prontas |
 | `[10]` | Todo o texto fixo da tela: títulos, avisos, rótulos |
 
 ## Tarefas comuns
@@ -96,12 +104,11 @@ Se preferir ir direto, cada seção tem um marcador. Ctrl+F com ele no `conteudo
 | Mudar os prazos ou os nomes de P1 / P2 / P3 | `[8]`, bloco `SEV` |
 | Mudar qual severidade uma categoria recebe | `[8]`, bloco `SEV_POR_CATEGORIA` |
 | Mudar o corte de 45 dias do tempo de plataforma | `[4]` |
-| Mudar as horas do follow-up | `[9]`, `esperaHoras` e `limiteHoras` |
+| Mudar os minutos do follow-up | `[9]`, `esperaMin` e `limiteMin` |
 | Mudar a frase que o atendente manda no FUP | `[9]`, `f1Mensagem` e `f2Mensagem` |
 | Adicionar um caso conhecido novo | `[7]`, dentro de `casos` do módulo |
 | Adicionar ou trocar um link de documentação | `[7]`, dentro de `docs` do módulo |
 | Mudar as regras de escalonamento | `[6]`, dentro de `escalar` |
-| Tirar o botão "Emergência: liberar agora" | `[10]`, apague a linha `bloqueioBotao` |
 | Mudar o título ou o subtítulo do topo | `[10]`, `titulo` e `subtitulo` |
 | Mudar o texto do painel de dúvida | `[10]`, grupo `duvida*` e `busca*` |
 | Mudar os botões de navegação entre abas | `[10]`, grupo `nav*` |
@@ -171,7 +178,7 @@ não da operação real:
 - O corte de 45 dias do tempo de plataforma, na escada de autonomia (`[4]`)
 - A severidade por natureza de ticket e os prazos de P1 / P2 / P3 (`[8]`) — virou uma
   lista só depois de a pergunta "a casa está aberta?" sair do fluxo
-- Os tempos de follow-up, 2h e 1h (`[9]`)
+- Os tempos de follow-up, 30 min e 30 min (`[9]`)
 - Se o botão de emergência que libera as etapas travadas deve continuar existindo
 - Campos que o ticket realmente exige no sistema de vocês (etapa 3, em `[3]`)
 - Se existe identificador da conversa da IA para colar no ticket (etapa 1, em `[3]`)
