@@ -305,14 +305,6 @@
   .btn.sm { font-size: var(--t-sm); padding: 5px var(--s3); }
   .advance .why { font-size: var(--t-sm); color: var(--ink-3); }
 
-  .mapbtn {
-    font: inherit; font-family: var(--font-mono); font-size: var(--t-xs);
-    letter-spacing: .08em; text-transform: uppercase; cursor: pointer;
-    background: transparent; color: var(--ink-3);
-    border: 1px solid var(--line-forte); border-radius: var(--r-sm); padding: var(--s1) var(--s2);
-  }
-  .mapbtn:hover { border-color: var(--accent); color: var(--accent); }
-  .mapbtn[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-sobre); }
 
   /* ============ EIXOS ============ */
   #axes { display: flex; flex-direction: column; gap: var(--s6); }
@@ -388,6 +380,62 @@
   .p-calm { color: var(--calm); background: var(--calm-bg); border-color: color-mix(in srgb, var(--calm) 32%, transparent); }
   .p-dono { color: var(--accent); background: var(--accent-suave); border-color: var(--accent-linha); }
   .p-line { color: var(--ink-3); background: var(--surface-2); border-color: var(--line); }
+
+  /* ============ REGUA DE AVALIACAO (aba de consulta) ============ */
+  .mo-sep {
+    flex: 0 0 auto; align-self: center; width: 1px; height: 20px;
+    background: var(--line-forte); margin: 0 var(--s3);
+  }
+  .mo-extra .mo-t { font-style: italic; }
+
+  .grupo { display: flex; flex-direction: column; gap: var(--s3); }
+  .grupo-nome {
+    margin: 0; font-family: var(--font-mono); font-size: var(--t-xs);
+    font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--accent); padding-bottom: var(--s2);
+    border-bottom: 1px solid var(--accent-linha);
+  }
+  .crit {
+    border: 1px solid var(--line); border-left: 3px solid var(--line-forte);
+    border-radius: var(--r); background: var(--surface); overflow: hidden;
+  }
+  .crit-h {
+    display: flex; align-items: center; gap: var(--s3);
+    padding: var(--s3) var(--s4); background: var(--surface-2);
+    border-bottom: 1px solid var(--line);
+  }
+  .crit-n {
+    flex: 0 0 auto; font-family: var(--font-mono); font-size: var(--t-xs); font-weight: 700;
+    width: 22px; height: 22px; display: grid; place-items: center; border-radius: var(--r-sm);
+    color: var(--accent-sobre); background: var(--accent);
+  }
+  .crit-nome { margin: 0; font-size: var(--t-md); font-weight: 650; letter-spacing: -.01em; }
+  .crit-peso {
+    margin-left: auto; flex: 0 0 auto; white-space: nowrap;
+    font-family: var(--font-mono); font-size: var(--t-micro); font-weight: 700;
+    letter-spacing: .08em; text-transform: uppercase;
+    color: var(--accent); background: var(--accent-suave);
+    border: 1px solid var(--accent-linha); border-radius: 99px; padding: 3px var(--s2);
+  }
+  .crit-obs {
+    margin: 0; padding: var(--s3) var(--s4); font-size: var(--t-base);
+    color: var(--ink-2); line-height: 1.5; border-bottom: 1px solid var(--line);
+  }
+  .crit-obs strong { color: var(--ink); font-weight: 600; }
+
+  .regua { list-style: none; margin: 0; padding: var(--s2) var(--s3) var(--s3); display: flex; flex-direction: column; gap: 1px; }
+  .nivel { display: flex; align-items: flex-start; gap: var(--s3); padding: 7px var(--s2); border-radius: var(--r-sm); }
+  .nivel:nth-child(odd) { background: var(--surface-2); }
+  .nivel-n {
+    flex: 0 0 auto; font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    width: 19px; height: 19px; display: grid; place-items: center; margin-top: 1px;
+    border: 1px solid var(--line-forte); border-radius: 50%;
+    color: var(--ink-3); background: var(--surface);
+  }
+  .nivel:last-child .nivel-n { color: var(--calm); background: var(--calm-bg); border-color: color-mix(in srgb, var(--calm) 40%, transparent); }
+  .nivel:first-child .nivel-n { color: var(--crit); background: var(--crit-bg); border-color: color-mix(in srgb, var(--crit) 40%, transparent); }
+  .nivel-t { font-size: var(--t-base); color: var(--ink-2); line-height: 1.5; }
+  .nivel:last-child .nivel-t { color: var(--ink); font-weight: 600; }
 
   /* ============ ESCOLHA DO TEMA, DENTRO DA ETAPA 3 ============ */
   .eixos {
@@ -526,29 +574,6 @@
     text-align: center; color: var(--ink-3); font-size: var(--t-base); background: var(--surface-2);
   }
 
-  /* ============ MODO MAPA ============ */
-  .mapaviso { display: none; background: var(--accent-suave); border-bottom: 1px solid var(--accent-linha); font-size: var(--t-sm); color: var(--ink); }
-  .mapaviso > div { max-width: 1240px; margin: 0 auto; padding: var(--s2) var(--s5); }
-  .mapaviso code {
-    font-family: var(--font-mono); font-size: var(--t-xs); background: var(--surface);
-    border: 1px solid var(--accent-linha); border-radius: var(--r-sm); padding: 1px 5px;
-  }
-  body.mapa .mapaviso { display: block; }
-  body.mapa [data-src] { position: relative; outline: 1px dashed var(--accent); outline-offset: 5px; }
-  body.mapa [data-src]::before {
-    content: attr(data-src);
-    position: absolute; top: -11px; left: -1px;
-    font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: .05em;
-    background: var(--accent); color: var(--accent-sobre);
-    padding: 1px 5px; border-radius: var(--r-sm); line-height: 1.5;
-    z-index: 6; pointer-events: none; white-space: nowrap;
-  }
-  body.mapa main { gap: var(--s8); }
-  body.mapa #axes { gap: var(--s8); }
-  body.mapa .rcol { gap: var(--s7); }
-  body.mapa .panel-b { gap: var(--s6); }
-  body.mapa .flow { gap: var(--s5); }
-
   /* ============ GAVETA DA DOCUMENTACAO ============ */
   .gaveta { position: fixed; inset: 0; z-index: 60; display: flex; justify-content: flex-end; }
   .gaveta[hidden] { display: none; }
@@ -622,17 +647,8 @@
       <h1 id="t-titulo"></h1>
     </div>
     <span class="sub" id="t-sub"></span>
-    <button class="mapbtn" id="btn-mapa" type="button" aria-pressed="false"></button>
   </div>
 </header>
-
-<div class="mapaviso">
-  <div>
-    Cada etiqueta roxa mostra de onde vem aquele bloco. Abra o arquivo
-    <code>conteudo.js</code> no GitHub e use Ctrl+F com o marcador da etiqueta,
-    por exemplo <code>[6]</code>, para pular direto ao lugar certo.
-  </div>
-</div>
 
 <nav class="spine" aria-label="Etapas do atendimento">
   <div class="spine-in" id="spine"></div>
@@ -646,6 +662,7 @@
       <section class="flow" id="flow"></section>
       <section id="out" aria-live="polite"></section>
       <section id="fup"></section>
+      <section id="aval"></section>
 
       <nav class="passos" aria-label="Navegação entre etapas">
         <button class="btn ghost" id="btn-voltar" type="button"></button>
@@ -728,6 +745,7 @@
   if (typeof MODULOS === "undefined") faltando.push("MODULOS");
   if (typeof FUP === "undefined") faltando.push("FUP");
   if (typeof TEXTOS === "undefined") faltando.push("TEXTOS");
+  if (typeof AVALIACAO === "undefined") faltando.push("AVALIACAO");
   if (!faltando.length) return;
 
   var REPO = "https://github.com/murilobolzan/playbook-atendimento";
@@ -801,7 +819,6 @@ const state = {
   tempo:"novo",
   feito:{ ia:false, problema:false, ticket:false },
   aba:1,
-  mapa:false,
   cat:null, mod:null,
   fup:"pendente",
   fup2_em:null,
@@ -884,11 +901,6 @@ function renderMoldura() {
   document.getElementById("reset").textContent = TEXTOS.rodapeBotao;
   document.getElementById("t-rodape").innerHTML = TEXTOS.rodapeAviso;
 
-  const bm = document.getElementById("btn-mapa");
-  bm.textContent = TEXTOS.botaoMapa;
-  bm.setAttribute("aria-pressed", String(state.mapa));
-  document.body.classList.toggle("mapa", state.mapa);
-
   src(document.getElementById("p-ia"), "[10] duvida* + busca*");
 
   const voltar = document.getElementById("btn-voltar");
@@ -897,13 +909,15 @@ function renderMoldura() {
   avancar.textContent = TEXTOS.navAvancar;
   voltar.disabled = state.aba <= 1;
   avancar.disabled = state.aba >= ETAPAS.length;
-  document.getElementById("t-onde").textContent =
-    fmt(TEXTOS.navOnde, { atual: state.aba, total: ETAPAS.length });
+  document.getElementById("t-onde").textContent = state.aba === ABA_AVAL()
+    ? TEXTOS.navRegua
+    : fmt(TEXTOS.navOnde, { atual: state.aba, total: ETAPAS.length });
 }
 
 /* uma aba por passo: mostra so a seção da aba atual */
 function renderAbaVisivel() {
-  const mapa = { flow: state.aba <= 3, out: state.aba === 4, fup: state.aba === 5 };
+  const mapa = { flow: state.aba <= 3, out: state.aba === 4, fup: state.aba === 5,
+                 aval: state.aba === ABA_AVAL() };
   for (const id in mapa) document.getElementById(id).hidden = !mapa[id];
 
   /* a central de dúvidas aparece só no guia de atendimento, onde se resolve.
@@ -915,8 +929,11 @@ function renderAbaVisivel() {
   if (grid) grid.classList.toggle("sem-rail", !naEtapaDeResolver);
 }
 
+/* a regua de avaliacao e uma aba a parte, depois das etapas do atendimento */
+const ABA_AVAL = () => ETAPAS.length + 1;
+
 function irParaAba(n) {
-  state.aba = Math.min(Math.max(n, 1), ETAPAS.length);
+  state.aba = Math.min(Math.max(n, 1), ABA_AVAL());
   render();
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
@@ -964,6 +981,19 @@ function renderSpine() {
     b.append(el("span","mo-n", concluida && !atual ? "✓" : String(n)), el("span","mo-t", titulo));
     host.append(b);
   });
+
+  /* separador e a aba de consulta, que nao faz parte da sequencia */
+  host.append(el("span","mo-sep"));
+  const na = state.aba === ABA_AVAL();
+  const ba = el("button", "mo mo-extra" + (na ? " on" : ""));
+  ba.type = "button";
+  ba.setAttribute("role", "tab");
+  ba.setAttribute("aria-selected", String(na));
+  ba.title = AVALIACAO.titulo;
+  ba.onclick = () => irParaAba(ABA_AVAL());
+  ba.append(el("span","mo-t", AVALIACAO.aba));
+  host.append(ba);
+
   src(host, "[2] ETAPAS");
 }
 
@@ -1304,6 +1334,56 @@ function renderFup() {
   host.append(wrap);
 }
 
+/* ---------- aba de consulta: a regua de avaliacao ---------- */
+function renderAvaliacao() {
+  const host = document.getElementById("aval");
+  host.textContent = "";
+
+  const wrap = el("div","result");
+
+  const head = el("div","rhead");
+  head.append(el("h2","rtitle", AVALIACAO.titulo));
+  head.append(el("p","rprazo", AVALIACAO.subtitulo));
+  wrap.append(head);
+
+  const corpo = src(el("div","rsolo"), "[11] AVALIACAO");
+
+  AVALIACAO.grupos.forEach(g => {
+    const bloco = el("section","grupo");
+    bloco.append(el("h3","grupo-nome", g.nome));
+
+    g.criterios.forEach(c => {
+      const card = el("article","crit");
+
+      const ch = el("header","crit-h");
+      ch.append(el("span","crit-n", String(c.n)));
+      ch.append(el("h4","crit-nome", c.nome));
+      ch.append(el("span","crit-peso", AVALIACAO.pesoLabel + " " + c.peso));
+      card.append(ch);
+
+      const obs = el("p","crit-obs");
+      obs.innerHTML = "<strong>" + AVALIACAO.observarLabel + ":</strong> " + c.observar;
+      card.append(obs);
+
+      const ol = el("ol","regua");
+      c.niveis.forEach((txt, n) => {
+        const li = el("li","nivel");
+        li.append(el("span","nivel-n", String(n)), el("span","nivel-t", txt));
+        ol.append(li);
+      });
+      card.append(ol);
+
+      bloco.append(card);
+    });
+
+    corpo.append(bloco);
+  });
+
+  corpo.append(el("p","microhint", AVALIACAO.comoCalcula));
+  wrap.append(corpo);
+  host.append(wrap);
+}
+
 /* ---------- busca ---------- */
 /* tira acento e caixa: quem digita "pedido nao chega" acha "não chegam" */
 const DIACRITICOS = new RegExp("[\\u0300-\\u036f]", "g");
@@ -1348,7 +1428,7 @@ function renderResults() {
 /* ---------- boot ---------- */
 function render() {
   renderMoldura(); renderSpine();
-  renderFlow(); renderOut(); renderFup();
+  renderFlow(); renderOut(); renderFup(); renderAvaliacao();
   renderAbaVisivel();
   medirTopo();
 }
@@ -1377,11 +1457,6 @@ document.addEventListener("keydown", (e) => {
 
 document.getElementById("btn-voltar").addEventListener("click", () => irParaAba(state.aba - 1));
 document.getElementById("btn-avancar").addEventListener("click", () => irParaAba(state.aba + 1));
-
-document.getElementById("btn-mapa").addEventListener("click", () => {
-  state.mapa = !state.mapa;
-  render();
-});
 
 document.getElementById("reset").addEventListener("click", () => {
   state.feito = { ia:false, problema:false, ticket:false };

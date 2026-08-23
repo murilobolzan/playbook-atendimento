@@ -19,15 +19,10 @@ altere → **Commit changes**. Cerca de 40 segundos depois o site já mostra a v
 
 ---
 
-## Não procure no código: use o Modo mapa
+## Como achar o que você quer mudar
 
-Abra o playbook e clique em **Modo mapa** no canto superior direito.
-
-Cada bloco da tela ganha uma etiqueta vinho com um marcador, tipo `[6] escalar`.
-Esse marcador é o endereço dentro do `conteudo.js`. Aí você abre o arquivo,
-aperta Ctrl+F, procura `[6]` e cai exatamente no lugar certo.
-
-É o caminho mais rápido: você olha a tela, não o código.
+Abra o `conteudo.js`, aperte Ctrl+F e procure o marcador da seção, por exemplo
+`[6]`. O índice completo está logo abaixo, e também no topo do próprio arquivo.
 
 ---
 
@@ -43,6 +38,10 @@ As cinco etapas são abas. A tela mostra **uma só por vez**, com "← Etapa ant
 | 3 | Criar o ticket — e **classificar** natureza e módulo |
 | 4 | Guia de atendimento — quem executa, casos conhecidos e documentação |
 | 5 | Follow-up e encerramento |
+
+Depois delas, separada por uma barra na trilha, fica a aba **Avaliação** — a régua de
+avaliação de atendimento. Ela é de consulta: não faz parte da sequência, não dá nota,
+só mostra os quatro critérios com seus pesos e as notas de 0 a 5.
 
 **Não existe atalho.** O botão de emergência que liberava as etapas travadas foi
 removido: o atendente passa por todas, em ordem. A etapa 3 só libera depois que a
@@ -95,6 +94,7 @@ Se preferir ir direto, cada seção tem um marcador. Ctrl+F com ele no `conteudo
 | `[8]` | Severidade e prazos de P1 / P2 / P3 |
 | `[9]` | Follow-up: os tempos (30 min e 30 min) e as frases prontas |
 | `[10]` | Todo o texto fixo da tela: títulos, avisos, rótulos |
+| `[11]` | A régua de avaliação: grupos, critérios, pesos e as notas de 0 a 5 |
 
 ## Tarefas comuns
 
@@ -112,6 +112,9 @@ Se preferir ir direto, cada seção tem um marcador. Ctrl+F com ele no `conteudo
 | Mudar o título ou o subtítulo do topo | `[10]`, `titulo` e `subtitulo` |
 | Mudar o texto do painel de dúvida | `[10]`, grupo `duvida*` e `busca*` |
 | Mudar os botões de navegação entre abas | `[10]`, grupo `nav*` |
+| Mudar um nível da régua de avaliação | `[11]`, dentro de `niveis` do critério |
+| Mudar o peso de um critério | `[11]`, o campo `peso` |
+| Mudar o nome que aparece no canto da tela | `[10]`, `marca` |
 
 ### Adicionar uma categoria nova
 

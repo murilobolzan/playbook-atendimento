@@ -9,22 +9,18 @@
    COMO ACHAR O QUE VOCÊ QUER MUDAR
    ─────────────────────────────────────────────────────────────────────────
 
-   Jeito 1 — pela tela: abra o playbook, clique em "Modo mapa" no topo.
-   Cada bloco ganha uma etiqueta com o nome do bloco daqui. Aí você
-   procura esse nome neste arquivo.
-
-   Jeito 2 — pelo índice: aperte Ctrl+F e procure o marcador, ex: "[6]"
+   Aperte Ctrl+F e procure o marcador da seção, por exemplo "[6]"
 
      [1]   ENDEREÇO DA DOCUMENTAÇÃO
-     [2]   NOMES DAS 6 ETAPAS ................ trilha numerada do topo
-     [3]   ETAPAS 1, 2 E 3 ................... as etapas travadas em sequência
-     [4]   TEMPO DE CASA ..................... quem executa a ação
-     [5]   LOJA EM OPERAÇÃO .................. as duas opções do painel
+     [2]   NOMES DAS 5 ETAPAS ................ os rótulos das abas
+     [3]   ETAPAS 1, 2 E 3 ................... checklists, e a classificação
+     [4]   TEMPO DE PLATAFORMA ............... quem executa o ajuste
      [6]   AS 7 NATUREZAS DE TICKET .......... ajuste, dúvida, bug...
      [7]   OS 13 MÓDULOS ..................... reserva, delivery, cardápio...
-     [8]   SEVERIDADE E PRAZOS ............... P1, P2, P3
+     [8]   SEVERIDADE ........................ hoje fora da tela
      [9]   FOLLOW-UP ......................... tempos e frases do FUP
      [10]  TÍTULOS E AVISOS DA TELA .......... todo o resto do texto fixo
+     [11]  AVALIAÇÃO DE ATENDIMENTO .......... a régua, na aba separada
 
    ─────────────────────────────────────────────────────────────────────────
    QUATRO REGRAS PARA NÃO QUEBRAR
@@ -743,10 +739,9 @@ const FUP = {
 const TEXTOS = {
 
   /* --- cabeçalho --- */
-  marca: "DIO",
+  marca: "Dionísio",
   titulo: "Playbook de Atendimento",
   subtitulo: "Uso interno — time de Atendimentos",
-  botaoMapa: "Modo mapa",
 
   /* --- painel de dúvida: o foco da plataforma ---
      Aparece na ETAPA 5, que é onde o atendente resolve de fato. O que ele
@@ -766,6 +761,7 @@ const TEXTOS = {
   navVoltar: "← Etapa anterior",
   navAvancar: "Próxima etapa →",
   navOnde: "Etapa {atual} de {total}",
+  navRegua: "Régua de avaliação · consulta",
   abaTrancada: "Esta etapa abre depois do ticket criado. Voltar para a etapa 3.",
   spineTrancada: "abre depois do ticket criado",
   abaSemTema: "Escolha a natureza e o módulo na etapa 4 para ver o follow-up.",
@@ -836,4 +832,103 @@ const TEXTOS = {
   /* --- rodapé --- */
   rodapeBotao: "Reiniciar atendimento",
   rodapeAviso: "<strong>Rascunho para revisão.</strong> O corte de 45 dias e os tempos de follow-up são propostas a calibrar. Os links apontam para a documentação real da plataforma."
+};
+
+
+/* [11] ══════════════════════════════════════════════════════════════════════
+   AVALIAÇÃO DE ATENDIMENTO — a aba separada, fora do fluxo das 5 etapas
+
+   É uma aba de consulta: mostra a régua, não dá nota. Quatro critérios,
+   notas de 0 a 5, média ponderada pelos pesos.
+
+     grupos    = os blocos temáticos, na ordem em que aparecem
+     n         = o número do critério, como ele é conhecido pelo time
+     peso      = quanto o critério vale na média ponderada
+     observar  = a linha "o que observar"
+     niveis    = os textos das notas 0 a 5, nessa ordem
+
+   Somando os pesos dá 10, então a nota máxima possível é 50 pontos.
+   ═════════════════════════════════════════════════════════════════════════ */
+
+const AVALIACAO = {
+  aba: "Avaliação",
+  titulo: "Avaliação de Atendimento — CS Dionísio",
+  subtitulo: "Régua de avaliação: 4 critérios, notas de 0 a 5, média ponderada.",
+  pesoLabel: "peso",
+  observarLabel: "O que observar",
+  comoCalcula: "Os pesos somam 10. A média ponderada é a soma de cada nota multiplicada pelo seu peso, dividida por 10 — então ela sai na mesma escala de 0 a 5.",
+
+  grupos: [
+    {
+      nome: "Resolução & Eficácia",
+      criterios: [
+        {
+          n: 1,
+          nome: "Entendeu o problema de fato",
+          peso: 2,
+          observar: "Investigou antes de responder; não presumiu.",
+          niveis: [
+            "Não entendeu e não buscou entender.",
+            "Não entendeu e respondeu por suposição, sem perguntar nada ao cliente.",
+            "Não entendeu o problema do cliente, mas buscou entender.",
+            "Entendeu parcialmente o problema do cliente.",
+            "Entendeu parcialmente o problema do cliente e buscou entender a fundo.",
+            "Entendeu completamente o problema do cliente."
+          ]
+        },
+        {
+          n: 2,
+          nome: "Resolveu de fato",
+          peso: 3,
+          observar: "Resolveu e confirmou o entendimento; não empurrou nem fechou prematuro.",
+          niveis: [
+            "Não conseguiu resolver.",
+            "Respondeu parcialmente as dúvidas do cliente e não garantiu que ele entendeu.",
+            "Respondeu parcialmente as dúvidas do cliente e garantiu que ele entendeu.",
+            "Respondeu o cliente, mas sem garantir que ele entendeu.",
+            "Resolveu o problema do cliente.",
+            "Resolveu o problema do cliente garantindo que ele entendeu."
+          ]
+        }
+      ]
+    },
+    {
+      nome: "Qualidade Técnica",
+      criterios: [
+        {
+          n: 3,
+          nome: "Qualidade técnica da resposta",
+          peso: 3,
+          observar: "Sem informação errada ou incompleta; profundidade técnica adequada.",
+          niveis: [
+            "Respondeu de forma equivocada ao cliente.",
+            "Resposta abaixo do esperado na qualidade técnica: incompleta e sem clareza.",
+            "Resposta correta no geral, mas com informação faltando — o cliente teve que perguntar de novo.",
+            "Resposta sem profundidade técnica, porém correta e ajustada ao caso.",
+            "Resposta tecnicamente boa, que resolveu o problema do cliente garantindo que ele entendeu.",
+            "Resposta tecnicamente excelente, que resolveu o problema do cliente garantindo que ele entendeu."
+          ]
+        }
+      ]
+    },
+    {
+      nome: "Relacionamento & Comunicação",
+      criterios: [
+        {
+          n: 4,
+          nome: "Tom adequado, empático e no padrão Dionísio",
+          peso: 2,
+          observar: "Cordial, humano, escrita cuidada e alinhado à marca.",
+          niveis: [
+            "Desrespeitou o cliente.",
+            "Respondeu de forma seca ou ríspida, sem nenhuma empatia.",
+            "Respondeu de forma desleixada.",
+            "Respondeu com alguns erros de digitação e pontuação e sem saudação inicial.",
+            "Respondeu com alguns erros de digitação e pontuação.",
+            "Respondeu de forma cordial e no padrão Dionísio."
+          ]
+        }
+      ]
+    }
+  ]
 };
