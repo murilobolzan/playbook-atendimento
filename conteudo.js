@@ -1050,7 +1050,7 @@ const RESPOSTAS = [
       { id: "res-proximas", sub: "Próximas Reservas", itens: [] },
       { id: "res-pendentes", sub: "Reservas Pendentes", itens: [] },
       {
-         {
+         
         id: "reservas-bloqueio",
         sub: "Bloqueio",
         itens: [
