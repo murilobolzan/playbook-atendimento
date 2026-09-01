@@ -113,67 +113,134 @@
     letter-spacing: .13em; text-transform: uppercase;
     color: var(--ink-3); font-weight: 600;
   }
-  .shell { max-width: 1240px; margin: 0 auto; padding: 0 var(--s5) var(--s8); }
 
-  /* ============ TOPO FIXO ============ */
-  .topo { position: sticky; top: 0; z-index: 40; }
-  .topbar { border-bottom: 1px solid var(--line); background: var(--surface); }
+  /* ============ CABECALHO ============ */
+  .topbar {
+    border-bottom: 1px solid var(--line); background: var(--surface);
+    position: sticky; top: 0; z-index: 40;
+  }
   .topbar-in {
-    max-width: 1240px; margin: 0 auto; padding: var(--s3) var(--s5);
+    max-width: 1560px; margin: 0 auto; padding: var(--s3) var(--s5);
     display: flex; align-items: center; gap: var(--s3); flex-wrap: wrap;
   }
   .brand { display: flex; align-items: center; gap: var(--s2); min-width: 0; }
   .brand-mark {
     font-family: var(--font-mono); font-size: var(--t-sm); font-weight: 700;
     color: var(--accent-sobre); background: var(--accent);
-    padding: var(--s1) 7px; border-radius: var(--r-sm); letter-spacing: .06em;
+    padding: var(--s1) var(--s2); border-radius: var(--r-sm); letter-spacing: .04em;
   }
   h1 { font-size: var(--t-lg); font-weight: 650; margin: 0; letter-spacing: -.015em; }
   .topbar .sub { color: var(--ink-3); font-size: var(--t-sm); margin-left: auto; }
 
-  /* ============ TRILHA DAS ETAPAS ============ */
-  .spine { background: var(--surface-2); border-bottom: 1px solid var(--line); }
-  .spine-in {
-    max-width: 1240px; margin: 0 auto; padding: 0 var(--s5);
-    display: flex; gap: 2px; overflow-x: auto; scrollbar-width: thin;
+  .menu-btn {
+    display: none; font: inherit; font-size: var(--t-lg); line-height: 1; cursor: pointer;
+    background: transparent; color: var(--ink-2);
+    border: 1px solid var(--line-forte); border-radius: var(--r-sm); padding: 4px 10px;
   }
-  .mo {
-    display: flex; align-items: center; gap: 7px;
-    padding: var(--s3) var(--s3) 10px; white-space: nowrap; flex: 0 0 auto;
-    border: 0; border-bottom: 2px solid transparent;
-    font: inherit; background: transparent; text-align: left;
-  }
-  button.mo { cursor: pointer; }
-  button.mo:hover { background: var(--accent-suave); }
-  button.mo:hover .mo-t { color: var(--accent); }
-  .mo[disabled] { opacity: .45; cursor: not-allowed; }
-  .mo[aria-selected="true"] { border-bottom-color: var(--accent); background: var(--surface); }
-  .mo-n {
-    font-family: var(--font-mono); font-size: 10px; font-weight: 700; color: var(--ink-3);
-    border: 1px solid var(--line-forte); width: 18px; height: 18px;
-    display: inline-grid; place-items: center; border-radius: 50%; flex: 0 0 auto;
-  }
-  .mo-t { font-size: var(--t-sm); color: var(--ink-3); }
-  .mo.on .mo-n { color: var(--accent-sobre); background: var(--accent); border-color: var(--accent); }
-  .mo.on .mo-t { color: var(--ink); font-weight: 600; }
-  .mo.ok .mo-n { color: var(--calm); background: var(--calm-bg); border-color: color-mix(in srgb, var(--calm) 40%, transparent); }
-  .mo.ok .mo-t { color: var(--ink-2); }
+  .menu-btn:hover { border-color: var(--accent); color: var(--accent); }
 
-  /* ============ ESTRUTURA ============ */
-  .grid {
-    display: grid; grid-template-columns: minmax(0,1fr) 356px;
-    gap: var(--s6); padding-top: var(--s6); align-items: start;
+  /* ============ ESTRUTURA: BARRA LATERAL + CONTEUDO ============ */
+  .app {
+    max-width: 1560px; margin: 0 auto; padding: 0 var(--s5) var(--s8);
+    display: grid; grid-template-columns: 300px minmax(0,1fr); gap: var(--s6);
+    align-items: start;
   }
-  @media (max-width: 1080px) { .grid { grid-template-columns: 1fr; gap: var(--s5); } }
-  .grid.sem-rail { grid-template-columns: minmax(0,1fr); }
-  .rail {
+  .conteudo { display: flex; flex-direction: column; gap: var(--s6); min-width: 0; padding-top: var(--s6); }
+
+  .side {
     position: sticky; top: calc(var(--stick) + var(--s5));
-    display: flex; flex-direction: column; gap: var(--s3);
+    max-height: calc(100vh - var(--stick) - var(--s7));
+    display: flex; flex-direction: column; gap: var(--s4);
+    padding-top: var(--s6);
   }
-  /* no mobile a dúvida sobe para o topo: é o foco da plataforma */
-  @media (max-width: 1080px) { .rail { position: static; order: -1; } }
-  main { display: flex; flex-direction: column; gap: var(--s6); min-width: 0; }
+  .side-nav { overflow-y: auto; overscroll-behavior: contain; padding-right: var(--s1); }
 
+  .véu { display: none; }
+
+  @media (max-width: 1080px) {
+    .app { grid-template-columns: 1fr; }
+    .menu-btn { display: inline-block; }
+    .side {
+      position: fixed; inset: 0 auto 0 0; z-index: 70; width: min(320px, 86vw);
+      max-height: none; padding: var(--s5); background: var(--surface);
+      border-right: 1px solid var(--line); box-shadow: 10px 0 40px -20px rgba(0,0,0,.5);
+      transform: translateX(-102%); transition: transform .18s ease;
+    }
+    body.menu-aberto .side { transform: translateX(0); }
+    body.menu-aberto .véu {
+      display: block; position: fixed; inset: 0; z-index: 65; background: rgba(20,12,28,.5);
+    }
+    .conteudo { padding-top: var(--s5); }
+  }
+  @media (prefers-reduced-motion: reduce) { .side { transition: none; } }
+
+  /* ============ BUSCA COM LUPA ============ */
+  .side-busca { display: flex; flex-direction: column; gap: 6px; flex: 0 0 auto; }
+  .lupa { position: relative; display: flex; align-items: center; }
+  .lupa-icone {
+    position: absolute; left: 11px; width: 16px; height: 16px; pointer-events: none;
+    fill: none; stroke: var(--ink-3); stroke-width: 1.8; stroke-linecap: round;
+  }
+  .lupa input {
+    width: 100%; font: inherit; font-size: var(--t-base);
+    padding: 10px var(--s7) 10px 34px;
+    background: var(--surface); color: var(--ink);
+    border: 1px solid var(--line-forte); border-radius: var(--r);
+  }
+  .lupa input::placeholder { color: var(--ink-3); }
+  .lupa input:focus { border-color: var(--accent); }
+  .lupa input:focus ~ .lupa-icone { stroke: var(--accent); }
+  .lupa-limpa {
+    position: absolute; right: 6px; font: inherit; font-size: 18px; line-height: 1;
+    cursor: pointer; background: transparent; border: 0; color: var(--ink-3);
+    padding: 2px 8px; border-radius: var(--r-sm);
+  }
+  .lupa-limpa:hover { color: var(--accent); background: var(--accent-suave); }
+  .side-dica { font-size: var(--t-xs); color: var(--ink-3); line-height: 1.45; }
+
+  /* ============ NAVEGACAO DA BARRA LATERAL ============ */
+  .nav-grupo { display: flex; flex-direction: column; gap: 2px; margin-bottom: var(--s4); }
+  .nav-titulo {
+    font-family: var(--font-mono); font-size: var(--t-micro); font-weight: 700;
+    letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3);
+    padding: 0 var(--s2) 6px;
+  }
+  .nav-item {
+    display: flex; align-items: center; gap: var(--s2); width: 100%;
+    font: inherit; font-size: var(--t-base); text-align: left; cursor: pointer;
+    background: transparent; color: var(--ink-2);
+    border: 1px solid transparent; border-radius: var(--r-sm);
+    padding: 7px var(--s2);
+  }
+  .nav-item:hover { background: var(--accent-suave); color: var(--accent); }
+  .nav-item.on { background: var(--accent-suave); border-color: var(--accent-linha); color: var(--accent); font-weight: 650; }
+  .nav-item[disabled] { opacity: .42; cursor: not-allowed; }
+  .nav-item[disabled]:hover { background: transparent; color: var(--ink-2); }
+  .nav-n {
+    flex: 0 0 auto; font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    width: 19px; height: 19px; display: grid; place-items: center; border-radius: 50%;
+    border: 1px solid var(--line-forte); color: var(--ink-3); background: var(--surface);
+  }
+  .nav-item.on .nav-n { background: var(--accent); border-color: var(--accent); color: var(--accent-sobre); }
+  .nav-item.ok .nav-n { color: var(--calm); background: var(--calm-bg); border-color: color-mix(in srgb, var(--calm) 40%, transparent); }
+  .nav-txt { min-width: 0; overflow-wrap: anywhere; }
+  .nav-conta {
+    margin-left: auto; flex: 0 0 auto; font-family: var(--font-mono); font-size: 10px;
+    color: var(--ink-3); background: var(--surface-2);
+    border: 1px solid var(--line); border-radius: 99px; padding: 1px 6px;
+  }
+  .nav-item.on .nav-conta { color: var(--accent); background: var(--surface); border-color: var(--accent-linha); }
+
+  /* aba pai, que abre e fecha as sub-abas */
+  .nav-pai { font-weight: 600; color: var(--ink); }
+  .nav-seta {
+    flex: 0 0 auto; width: 14px; text-align: center; font-size: 10px;
+    color: var(--ink-3); transition: transform .14s ease;
+  }
+  .nav-pai[aria-expanded="true"] .nav-seta { transform: rotate(90deg); }
+  .nav-filhos { display: flex; flex-direction: column; gap: 1px; margin: 2px 0 var(--s2) var(--s4); border-left: 1px solid var(--line); padding-left: var(--s2); }
+  .nav-filhos .nav-item { font-size: var(--t-sm); padding: 6px var(--s2); }
+  .nav-vazia .nav-txt { color: var(--ink-3); font-style: italic; }
   /* ============ PAINEIS DO TRILHO ============ */
   .panel {
     background: var(--surface); border: 1px solid var(--line);
@@ -381,12 +448,70 @@
   .p-dono { color: var(--accent); background: var(--accent-suave); border-color: var(--accent-linha); }
   .p-line { color: var(--ink-3); background: var(--surface-2); border-color: var(--line); }
 
-  /* ============ REGUA DE AVALIACAO (aba de consulta) ============ */
-  .mo-sep {
-    flex: 0 0 auto; align-self: center; width: 1px; height: 20px;
-    background: var(--line-forte); margin: 0 var(--s3);
+  /* ============ RESPOSTAS RAPIDAS ============ */
+  .rcard {
+    border: 1px solid var(--line); border-left: 3px solid var(--accent-linha);
+    border-radius: var(--r); background: var(--surface); overflow: hidden;
   }
-  .mo-extra .mo-t { font-style: italic; }
+  .rcard.interno { border-left-color: var(--warn); }
+  .rcard-h {
+    display: flex; align-items: center; gap: var(--s3); flex-wrap: wrap;
+    padding: var(--s2) var(--s4); background: var(--surface-2);
+    border-bottom: 1px solid var(--line);
+  }
+  .rcard-caminho {
+    font-family: var(--font-mono); font-size: var(--t-micro); font-weight: 600;
+    letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3);
+  }
+  .rcard-interno {
+    margin-left: auto; font-family: var(--font-mono); font-size: var(--t-micro);
+    font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+    color: var(--warn); background: var(--warn-bg);
+    border: 1px solid color-mix(in srgb, var(--warn) 35%, transparent);
+    border-radius: 99px; padding: 2px var(--s2);
+  }
+  .rcard-titulo {
+    margin: 0; padding: var(--s3) var(--s4) 0;
+    font-size: var(--t-md); font-weight: 650; letter-spacing: -.01em; text-wrap: balance;
+  }
+  .rcard-corpo { padding: var(--s2) var(--s4) var(--s3); display: flex; flex-direction: column; gap: var(--s3); }
+  .rcard-corpo p { margin: 0; font-size: var(--t-base); color: var(--ink-2); line-height: 1.6; }
+  .rcard-corpo strong { color: var(--ink); font-weight: 600; }
+  .rcard-pe {
+    display: flex; align-items: center; gap: var(--s3); flex-wrap: wrap;
+    padding: var(--s3) var(--s4); border-top: 1px solid var(--line); background: var(--surface-2);
+  }
+
+  mark { background: color-mix(in srgb, var(--accent) 24%, transparent); color: inherit; border-radius: 2px; padding: 0 2px; }
+
+  /* ============ RESULTADO DA BUSCA ============ */
+  .achado-lista { display: flex; flex-direction: column; gap: 2px; }
+  .achado {
+    display: grid; grid-template-columns: 128px minmax(0,1fr) auto; gap: var(--s3);
+    align-items: baseline; width: 100%; text-align: left; font: inherit; cursor: pointer;
+    background: transparent; border: 1px solid transparent; border-radius: var(--r-sm);
+    padding: var(--s2) var(--s3);
+  }
+  .achado:hover { background: var(--accent-suave); border-color: var(--accent-linha); }
+  .achado-tipo {
+    font-family: var(--font-mono); font-size: var(--t-micro); font-weight: 700;
+    letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3);
+  }
+  .achado-rot { font-size: var(--t-base); color: var(--ink); overflow-wrap: anywhere; }
+  .achado-onde { font-size: var(--t-xs); color: var(--ink-3); white-space: nowrap; }
+  @media (max-width: 640px) {
+    .achado { grid-template-columns: 1fr; gap: 2px; }
+    .achado-onde { white-space: normal; }
+  }
+
+  .busca-ia {
+    display: flex; align-items: center; gap: var(--s4); flex-wrap: wrap;
+    padding: var(--s4); border: 1px solid var(--accent-linha);
+    border-radius: var(--r); background: var(--accent-suave);
+  }
+  .busca-ia p { margin: 0; font-size: var(--t-base); color: var(--ink); font-weight: 600; }
+
+  /* ============ REGUA DE AVALIACAO (aba de consulta) ============ */
 
   .grupo { display: flex; flex-direction: column; gap: var(--s3); }
   .grupo-nome {
@@ -639,9 +764,9 @@
   .foot strong { color: var(--ink-2); }
 </style>
 
-<div class="topo">
 <header class="topbar">
   <div class="topbar-in">
+    <button class="menu-btn" id="btn-menu" type="button" aria-expanded="false" aria-controls="side">☰</button>
     <div class="brand">
       <span class="brand-mark" id="t-marca"></span>
       <h1 id="t-titulo"></h1>
@@ -650,52 +775,45 @@
   </div>
 </header>
 
-<nav class="spine" aria-label="Etapas do atendimento">
-  <div class="spine-in" id="spine"></div>
-</nav>
-</div>
+<div class="app">
 
-<div class="shell">
-  <div class="grid">
-
-    <main>
-      <section class="flow" id="flow"></section>
-      <section id="out" aria-live="polite"></section>
-      <section id="fup"></section>
-      <section id="aval"></section>
-
-      <nav class="passos" aria-label="Navegação entre etapas">
-        <button class="btn ghost" id="btn-voltar" type="button"></button>
-        <span class="passos-onde" id="t-onde"></span>
-        <button class="btn" id="btn-avancar" type="button"></button>
-      </nav>
-
-      <div class="foot">
-        <button class="btn ghost sm" id="reset" type="button"></button>
-        <p id="t-rodape"></p>
+  <aside class="side" id="side">
+    <div class="side-busca">
+      <div class="lupa">
+        <svg class="lupa-icone" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+          <circle cx="8.5" cy="8.5" r="5.5" />
+          <line x1="12.7" y1="12.7" x2="17.2" y2="17.2" />
+        </svg>
+        <input type="search" id="q" autocomplete="off">
+        <button class="lupa-limpa" id="btn-limpa" type="button" hidden>×</button>
       </div>
-    </main>
+      <span class="side-dica" id="t-busca-dica"></span>
+    </div>
+    <nav class="side-nav" id="side-nav" aria-label="Seções do playbook"></nav>
+  </aside>
 
-    <aside class="rail">
-      <section class="panel duvida" id="p-ia">
-        <div class="panel-h">
-          <span class="eyebrow duvida-tag" id="t-duvida-tag"></span>
-          <h2 class="duvida-titulo" id="t-rail-busca"></h2>
-        </div>
-        <div class="panel-b">
-          <p class="duvida-hint" id="t-busca-hint"></p>
-          <div class="search"><input type="search" id="q" autocomplete="off"></div>
-          <button class="btn cheio" id="btn-ia" type="button"></button>
-          <div class="achados" id="achados" hidden>
-            <span class="eyebrow" id="t-casos-titulo"></span>
-            <ul class="results" id="results"></ul>
-          </div>
-          <p class="duvida-rodape" id="t-duvida-rodape"></p>
-        </div>
-      </section>
-    </aside>
+  <div class="véu" id="veu" hidden></div>
 
+  <div class="conteudo">
+    <section id="busca"></section>
+    <section class="flow" id="flow"></section>
+    <section id="out" aria-live="polite"></section>
+    <section id="fup"></section>
+    <section id="aval"></section>
+    <section id="resp"></section>
+
+    <nav class="passos" id="passos" aria-label="Navegação entre etapas">
+      <button class="btn ghost" id="btn-voltar" type="button"></button>
+      <span class="passos-onde" id="t-onde"></span>
+      <button class="btn" id="btn-avancar" type="button"></button>
+    </nav>
+
+    <div class="foot">
+      <button class="btn ghost sm" id="reset" type="button"></button>
+      <p id="t-rodape"></p>
+    </div>
   </div>
+
 </div>
 
 <!-- Gaveta que abre a documentacao por cima do playbook, sem perder o estado. -->
@@ -820,6 +938,10 @@ const state = {
   feito:{ ia:false, problema:false, ticket:false },
   aba:1,
   cat:null, mod:null,
+  secao:"guia",
+  sub:null,
+  busca:"",
+  abertos:{},
   fup:"pendente",
   fup2_em:null,
   fup2_limite:null
@@ -866,9 +988,45 @@ function linkDoc(a, url, titulo) {
 }
 
 function perguntarIA() {
-  const q = document.getElementById("q").value.trim();
+  const campo = document.getElementById("q-ia");
+  const q = campo ? campo.value.trim() : "";
   const url = q ? D + "?ask=" + encodeURIComponent(q) : D;
   abrirDoc(url, q || TEXTOS.docTitulo, !!q);
+}
+
+/* o painel de dúvida mora dentro do guia, que é onde a solução acontece */
+function blocoDuvida() {
+  const box = src(el("section","panel duvida"), "[10] duvida* + busca*");
+
+  const h = el("div","panel-h");
+  h.append(el("span","eyebrow duvida-tag", TEXTOS.duvidaTag));
+  h.append(el("h3","duvida-titulo", TEXTOS.railBusca));
+  box.append(h);
+
+  const b = el("div","panel-b");
+  b.append(el("p","duvida-hint", TEXTOS.buscaHint));
+
+  const cx = el("div","search");
+  const inp = document.createElement("input");
+  inp.type = "search";
+  inp.id = "q-ia";
+  inp.autocomplete = "off";
+  inp.placeholder = TEXTOS.buscaPlaceholder;
+  inp.setAttribute("aria-label", TEXTOS.railBusca);
+  inp.value = state.perguntaIA || "";
+  inp.addEventListener("input", () => { state.perguntaIA = inp.value; });
+  inp.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); perguntarIA(); } });
+  cx.append(inp);
+  b.append(cx);
+
+  const bt = el("button","btn cheio", TEXTOS.buscaBotao);
+  bt.type = "button";
+  bt.onclick = perguntarIA;
+  b.append(bt);
+
+  b.append(el("p","duvida-rodape", TEXTOS.duvidaRodape));
+  box.append(b);
+  return box;
 }
 
 /* troca {espera}, {limite}, {total} e {falta} pelos valores reais */
@@ -887,116 +1045,155 @@ function renderMoldura() {
   document.getElementById("t-marca").textContent = TEXTOS.marca;
   document.getElementById("t-titulo").textContent = TEXTOS.titulo;
   document.getElementById("t-sub").textContent = TEXTOS.subtitulo;
-  document.getElementById("t-duvida-tag").textContent = TEXTOS.duvidaTag;
-  document.getElementById("t-duvida-rodape").textContent = TEXTOS.duvidaRodape;
-  document.getElementById("t-rail-busca").textContent = TEXTOS.railBusca;
-  document.getElementById("t-busca-hint").textContent = TEXTOS.buscaHint;
-  document.getElementById("q").placeholder = TEXTOS.buscaPlaceholder;
-  document.getElementById("q").setAttribute("aria-label", TEXTOS.railBusca);
-  document.getElementById("btn-ia").textContent = TEXTOS.buscaBotao;
-  document.getElementById("t-casos-titulo").textContent = TEXTOS.buscaCasosTitulo;
-  document.getElementById("gaveta-nova-aba").textContent = TEXTOS.docNovaAba;
-  document.getElementById("gaveta-fechar").textContent = TEXTOS.docFechar;
-  document.getElementById("gaveta-nota").textContent = TEXTOS.docFalhou;
+  document.getElementById("t-busca-dica").textContent = TEXTOS.buscaGlobalDica;
+  document.getElementById("q").placeholder = TEXTOS.buscaGlobalPlaceholder;
+  document.getElementById("q").setAttribute("aria-label", TEXTOS.buscaGlobalPlaceholder);
+  document.getElementById("btn-limpa").setAttribute("aria-label", TEXTOS.buscaLimpar);
+  document.getElementById("btn-limpa").hidden = !state.busca;
   document.getElementById("reset").textContent = TEXTOS.rodapeBotao;
   document.getElementById("t-rodape").innerHTML = TEXTOS.rodapeAviso;
 
-  src(document.getElementById("p-ia"), "[10] duvida* + busca*");
-
-  const voltar = document.getElementById("btn-voltar");
-  const avancar = document.getElementById("btn-avancar");
-  voltar.textContent = TEXTOS.navVoltar;
-  avancar.textContent = TEXTOS.navAvancar;
-  voltar.disabled = state.aba <= 1;
-  avancar.disabled = state.aba >= ETAPAS.length;
-  document.getElementById("t-onde").textContent = state.aba === ABA_AVAL()
-    ? TEXTOS.navRegua
-    : fmt(TEXTOS.navOnde, { atual: state.aba, total: ETAPAS.length });
+  /* a navegação por etapa só faz sentido dentro do guia */
+  const passos = document.getElementById("passos");
+  const noGuia = state.secao === "guia" && !state.busca;
+  passos.hidden = !noGuia;
+  if (noGuia) {
+    const voltar = document.getElementById("btn-voltar");
+    const avancar = document.getElementById("btn-avancar");
+    voltar.textContent = TEXTOS.navVoltar;
+    avancar.textContent = TEXTOS.navAvancar;
+    voltar.disabled = state.aba <= 1;
+    avancar.disabled = state.aba >= ETAPAS.length;
+    document.getElementById("t-onde").textContent =
+      fmt(TEXTOS.navOnde, { atual: state.aba, total: ETAPAS.length });
+  }
 }
 
-/* uma aba por passo: mostra so a seção da aba atual */
+/* ---------- o que aparece na área de conteúdo ---------- */
 function renderAbaVisivel() {
-  const mapa = { flow: state.aba <= 3, out: state.aba === 4, fup: state.aba === 5,
-                 aval: state.aba === ABA_AVAL() };
+  const buscando = !!state.busca;
+  const guia = !buscando && state.secao === "guia";
+  const mapa = {
+    busca: buscando,
+    flow: guia && state.aba <= 3,
+    out:  guia && state.aba === 4,
+    fup:  guia && state.aba === 5,
+    aval: !buscando && state.secao === "criterios",
+    resp: !buscando && state.secao === "respostas"
+  };
   for (const id in mapa) document.getElementById(id).hidden = !mapa[id];
-
-  /* a central de dúvidas aparece só no guia de atendimento, onde se resolve.
-     Nas outras, o conteúdo ocupa a largura inteira. */
-  const rail = document.querySelector(".rail");
-  const grid = document.querySelector(".grid");
-  const naEtapaDeResolver = state.aba === 4;
-  if (rail) rail.hidden = !naEtapaDeResolver;
-  if (grid) grid.classList.toggle("sem-rail", !naEtapaDeResolver);
 }
 
-/* a regua de avaliacao e uma aba a parte, depois das etapas do atendimento */
-const ABA_AVAL = () => ETAPAS.length + 1;
-
-function irParaAba(n) {
-  state.aba = Math.min(Math.max(n, 1), ABA_AVAL());
+function irParaSecao(secao, extra) {
+  state.secao = secao;
+  state.busca = "";
+  document.getElementById("q").value = "";
+  if (secao === "guia" && extra) state.aba = extra;
+  if (secao === "respostas" && extra) state.sub = extra;
+  fecharMenu();
   render();
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
+function irParaAba(n) {
+  state.secao = "guia";
+  state.aba = Math.min(Math.max(n, 1), ETAPAS.length);
+  fecharMenu();
+  render();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function fecharMenu() {
+  document.body.classList.remove("menu-aberto");
+  document.getElementById("btn-menu").setAttribute("aria-expanded", "false");
+}
+
 /* ---------- altura do topo fixo ----------
-   O trilho da esquerda gruda logo abaixo do topo. Medir em vez de chutar
-   evita que ele passe por baixo do cabecalho quando o texto quebra linha. */
+   O trilho da esquerda gruda logo abaixo do cabeçalho. Medir em vez de
+   chutar evita que ele passe por baixo quando o texto quebra linha. */
 function medirTopo() {
-  const topo = document.querySelector(".topo");
+  const topo = document.querySelector(".topbar");
   if (!topo) return;
   const h = Math.round(topo.getBoundingClientRect().height);
   if (h > 0) document.documentElement.style.setProperty("--stick", h + "px");
 }
 
-/* O cabecalho muda de altura quando o texto quebra linha, quando o aviso do
-   modo mapa aparece e quando a janela muda de largura. Observar o elemento
-   mantem a medida sempre correta; medir uma vez sozinha fica desatualizada. */
 let observadorTopo = null;   /* guardar a referência: observador sem dono pode ser coletado */
 
 function observarTopo() {
-  const topo = document.querySelector(".topo");
+  const topo = document.querySelector(".topbar");
   if (!topo || typeof ResizeObserver === "undefined") return;
   observadorTopo = new ResizeObserver(medirTopo);
   observadorTopo.observe(topo);
 }
 
-/* ---------- trilha do topo ---------- */
-function renderSpine() {
-  const host = document.getElementById("spine");
+/* ---------- barra lateral ---------- */
+function renderSidebar() {
+  const host = document.getElementById("side-nav");
   host.textContent = "";
-  host.setAttribute("role", "tablist");
+
+  /* grupo 1: o guia, etapa por etapa */
+  const g1 = el("div","nav-grupo");
+  g1.append(el("span","nav-titulo", TEXTOS.navGuia));
   ETAPAS.forEach((titulo, i) => {
     const n = i + 1;
     const concluida = n <= 3 && state.feito[PORTOES[n-1].id];
-    const atual = n === state.aba;
-    /* etapas 4 a 6 só abrem depois dos três portões: sem atalho na trilha */
+    const atual = state.secao === "guia" && !state.busca && n === state.aba;
     const trancada = n >= 4 && !portoesOk();
-    const b = el("button", "mo" + (atual ? " on" : "") + (concluida && !atual ? " ok" : ""));
+    const b = el("button","nav-item" + (atual ? " on" : "") + (concluida && !atual ? " ok" : ""));
     b.type = "button";
-    b.setAttribute("role", "tab");
-    b.setAttribute("aria-selected", String(atual));
     b.disabled = trancada;
     b.title = trancada ? titulo + " — " + TEXTOS.spineTrancada : titulo;
+    b.append(el("span","nav-n", concluida && !atual ? "✓" : String(n)), el("span","nav-txt", titulo));
     b.onclick = () => { if (!trancada) irParaAba(n); };
-    b.append(el("span","mo-n", concluida && !atual ? "✓" : String(n)), el("span","mo-t", titulo));
-    host.append(b);
+    g1.append(b);
   });
+  host.append(g1);
 
-  /* separador e a aba de consulta, que nao faz parte da sequencia */
-  host.append(el("span","mo-sep"));
-  const na = state.aba === ABA_AVAL();
-  const ba = el("button", "mo mo-extra" + (na ? " on" : ""));
-  ba.type = "button";
-  ba.setAttribute("role", "tab");
-  ba.setAttribute("aria-selected", String(na));
-  ba.title = AVALIACAO.titulo;
-  ba.onclick = () => irParaAba(ABA_AVAL());
-  ba.append(el("span","mo-t", AVALIACAO.aba));
-  host.append(ba);
+  /* grupo 2: a régua de avaliação */
+  const g2 = el("div","nav-grupo");
+  g2.append(el("span","nav-titulo", TEXTOS.navCriterios));
+  const bc = el("button","nav-item" + (state.secao === "criterios" && !state.busca ? " on" : ""));
+  bc.type = "button";
+  bc.append(el("span","nav-txt", AVALIACAO.aba));
+  bc.onclick = () => irParaSecao("criterios");
+  g2.append(bc);
+  host.append(g2);
 
-  src(host, "[2] ETAPAS");
+  /* grupo 3: as respostas rápidas, aba por aba */
+  const g3 = el("div","nav-grupo");
+  g3.append(el("span","nav-titulo", TEXTOS.navRespostas));
+  RESPOSTAS.forEach(a => {
+    const temSelecionada = a.subs.some(x => x.id === state.sub);
+    const aberto = state.abertos[a.id] !== undefined
+      ? state.abertos[a.id]
+      : (temSelecionada && state.secao === "respostas");
+
+    const pai = el("button","nav-item nav-pai");
+    pai.type = "button";
+    pai.setAttribute("aria-expanded", String(aberto));
+    const total = a.subs.reduce((s,x) => s + x.itens.length, 0);
+    pai.append(el("span","nav-seta","▶"), el("span","nav-txt", a.aba), el("span","nav-conta", String(total)));
+    pai.onclick = () => { state.abertos[a.id] = !aberto; render(); };
+    g3.append(pai);
+
+    if (aberto) {
+      const filhos = el("div","nav-filhos");
+      a.subs.forEach(x => {
+        const atual = state.secao === "respostas" && !state.busca && state.sub === x.id;
+        const vazia = x.itens.length === 0;
+        const b = el("button","nav-item" + (atual ? " on" : "") + (vazia ? " nav-vazia" : ""));
+        b.type = "button";
+        b.append(el("span","nav-txt", x.sub));
+        if (!vazia) b.append(el("span","nav-conta", String(x.itens.length)));
+        b.onclick = () => irParaSecao("respostas", x.id);
+        filhos.append(b);
+      });
+      g3.append(filhos);
+    }
+  });
+  host.append(g3);
 }
-
 /* ---------- etapas 1 a 3 ---------- */
 function renderFlow() {
   const host = document.getElementById("flow");
@@ -1193,6 +1390,7 @@ function renderOut() {
   duo.append(dk);
 
   corpo.append(duo);
+  corpo.append(blocoDuvida());
   wrap.append(corpo);
   host.append(wrap);
 }
@@ -1384,54 +1582,248 @@ function renderAvaliacao() {
   host.append(wrap);
 }
 
-/* ---------- busca ---------- */
-/* tira acento e caixa: quem digita "pedido nao chega" acha "não chegam" */
-const DIACRITICOS = new RegExp("[\\u0300-\\u036f]", "g");
-const norm = s => String(s).normalize("NFD").replace(DIACRITICOS, "").toLowerCase();
+/* ---------- respostas rápidas ---------- */
+function achaSub(id) {
+  for (const a of RESPOSTAS) {
+    const x = a.subs.find(s => s.id === id);
+    if (x) return { aba: a, sub: x };
+  }
+  return null;
+}
 
-const INDEX = [];
-MODULOS.forEach(m => {
-  INDEX.push({ label:m.nome, mod:m.id, cat:null, hay:norm(m.nome + " " + m.area + " " + m.onde) });
-  m.casos.forEach(k => INDEX.push({ label:k.s, mod:m.id, cat:k.cat, hay:norm(k.s + " " + k.c + " " + m.nome) }));
-});
+/* um card de resposta, com botão de copiar */
+function cardResposta(item, aba, sub, destacar) {
+  const card = el("article","rcard" + (item.interno ? " interno" : ""));
 
-function renderResults() {
-  const q = norm(document.getElementById("q").value.trim());
-  const host = document.getElementById("results");
-  const caixa = document.getElementById("achados");
+  const topo = el("header","rcard-h");
+  const cam = el("span","rcard-caminho", aba + " › " + sub);
+  topo.append(cam);
+  if (item.interno) topo.append(el("span","rcard-interno", TEXTOS.respInterno));
+  card.append(topo);
+
+  card.append(el("h3","rcard-titulo", realce(item.titulo, destacar)));
+
+  const corpo = el("div","rcard-corpo");
+  item.resposta.forEach(p => corpo.append(el("p","", realce(p, destacar))));
+  card.append(corpo);
+
+  const pe = el("footer","rcard-pe");
+  const copiar = el("button","btn ghost sm", TEXTOS.respCopiar);
+  copiar.type = "button";
+  copiar.onclick = () => copiarResposta(item, copiar);
+  pe.append(copiar);
+  if (item.tags && item.tags.length) {
+    const tw = el("div","tags");
+    item.tags.forEach(t => tw.append(el("span","tag", t)));
+    pe.append(tw);
+  }
+  card.append(pe);
+  return card;
+}
+
+/* copia o texto limpo, sem as marcações de negrito */
+function copiarResposta(item, botao) {
+  const txt = item.resposta.map(p => p.replace(/<[^>]+>/g, "").replace(/&gt;/g, ">").replace(/&lt;/g, "<").replace(/&amp;/g, "&")).join("\n\n");
+  const feito = () => {
+    botao.textContent = TEXTOS.respCopiado;
+    setTimeout(() => { botao.textContent = TEXTOS.respCopiar; }, 1800);
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(txt).then(feito, () => copiaAntiga(txt, feito));
+  } else {
+    copiaAntiga(txt, feito);
+  }
+}
+
+function copiaAntiga(txt, feito) {
+  const ta = document.createElement("textarea");
+  ta.value = txt;
+  ta.setAttribute("readonly", "");
+  ta.style.position = "fixed";
+  ta.style.left = "-9999px";
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand("copy"); feito(); } catch (e) { /* sem clipboard: o texto fica na tela mesmo */ }
+  document.body.removeChild(ta);
+}
+
+function renderRespostas() {
+  const host = document.getElementById("resp");
   host.textContent = "";
-  if (q.length < 2) { caixa.hidden = true; return; }
-  caixa.hidden = false;
-  const hits = INDEX.filter(i => q.split(/\s+/).every(w => i.hay.includes(w))).slice(0, 12);
-  if (!hits.length) {
-    host.append(el("li","", '<span class="nores">' + TEXTOS.buscaVazia + "</span>"));
+
+  const achado = state.sub ? achaSub(state.sub) : null;
+  if (!achado) {
+    host.append(el("div","empty", TEXTOS.respEscolha));
     return;
   }
-  hits.forEach(h => {
-    const li = el("li");
-    const b = el("button");
-    b.type = "button";
-    b.innerHTML = h.label + '<span class="rmod">' + mod(h.mod).nome + (h.cat ? " · " + cat(h.cat).nome : "") + "</span>";
-    b.onclick = () => {
-      state.mod = h.mod;
-      if (h.cat) state.cat = h.cat;
-      resetFup();
-      document.getElementById("q").value = "";
-      renderResults();
-      irParaAba(portoesOk() ? 5 : 4);
-    };
-    li.append(b);
-    host.append(li);
-  });
+
+  const wrap = el("div","result");
+  const head = el("div","rhead");
+  head.append(el("span","eyebrow", achado.aba.aba));
+  head.append(el("h2","rtitle", achado.sub.sub));
+  head.append(el("p","rprazo", fmt(TEXTOS.respQuantas, { n: achado.sub.itens.length })));
+  wrap.append(head);
+
+  const corpo = src(el("div","rsolo"), "[12] RESPOSTAS");
+  if (!achado.sub.itens.length) {
+    corpo.append(el("div","empty", TEXTOS.respVazia));
+  } else {
+    achado.sub.itens.forEach(it => corpo.append(cardResposta(it, achado.aba.aba, achado.sub.sub, "")));
+  }
+  wrap.append(corpo);
+  host.append(wrap);
 }
+
+/* ---------- busca global ----------
+   Procura em título, corpo, tags, nome da aba e da sub-aba, e também nas
+   etapas do guia e nos critérios de avaliação. */
+const INDICE = [];
+
+function montarIndice() {
+  INDICE.length = 0;
+
+  RESPOSTAS.forEach(a => a.subs.forEach(s => s.itens.forEach(it => {
+    INDICE.push({
+      tipo: "resposta",
+      rotulo: it.titulo,
+      onde: a.aba + " › " + s.sub,
+      hay: norm([it.titulo, a.aba, s.sub, (it.tags || []).join(" "), it.resposta.join(" ")].join(" ")),
+      ir: () => irParaSecao("respostas", s.id),
+      item: it, aba: a.aba, sub: s.sub
+    });
+  })));
+
+  PORTOES.forEach((p, i) => INDICE.push({
+    tipo: "guia",
+    rotulo: p.titulo,
+    onde: fmt(TEXTOS.navOnde, { atual: i + 1, total: ETAPAS.length }),
+    hay: norm([p.titulo, p.lead, p.itens.join(" "), p.nunca.join(" "), p.cta, p.why].join(" ")),
+    ir: () => irParaAba(i + 1)
+  }));
+
+  MODULOS.forEach(m => m.casos.forEach(k => INDICE.push({
+    tipo: "caso",
+    rotulo: k.s,
+    onde: TEXTOS.buscaCasoEm + " " + m.nome,
+    hay: norm([k.s, k.c, m.nome, m.area].join(" ")),
+    ir: () => { state.mod = m.id; irParaAba(portoesOk() ? 4 : 3); }
+  })));
+
+  AVALIACAO.grupos.forEach(g => g.criterios.forEach(c => INDICE.push({
+    tipo: "criterio",
+    rotulo: c.n + ". " + c.nome,
+    onde: g.nome,
+    hay: norm([c.nome, g.nome, c.observar, c.niveis.join(" ")].join(" ")),
+    ir: () => irParaSecao("criterios")
+  })));
+}
+
+/* envolve o que casou com a busca, para o olho achar na hora */
+function realce(html, termo) {
+  if (!termo) return html;
+  const palavras = termo.split(/\s+/).filter(p => p.length >= 2);
+  if (!palavras.length) return html;
+  /* trabalha só fora das tags, para não quebrar o <strong> */
+  return html.replace(/>?([^<>]+)</g, (m, texto) => m.replace(texto, marcaTexto(texto, palavras)));
+}
+
+function marcaTexto(texto, palavras) {
+  let saida = "";
+  let i = 0;
+  const alvo = norm(texto);
+  while (i < texto.length) {
+    let achou = null;
+    palavras.forEach(p => {
+      const pos = alvo.indexOf(p, i);
+      if (pos >= 0 && (!achou || pos < achou.pos)) achou = { pos, len: p.length };
+    });
+    if (!achou) { saida += texto.slice(i); break; }
+    saida += texto.slice(i, achou.pos) + "<mark>" + texto.slice(achou.pos, achou.pos + achou.len) + "</mark>";
+    i = achou.pos + achou.len;
+  }
+  return saida;
+}
+
+function renderBusca() {
+  const host = document.getElementById("busca");
+  host.textContent = "";
+  if (!state.busca) return;
+
+  const termo = norm(state.busca);
+  const palavras = termo.split(/\s+/).filter(Boolean);
+  const achados = INDICE.filter(i => palavras.every(p => i.hay.includes(p)));
+
+  const wrap = el("div","result");
+  const head = el("div","rhead");
+  head.append(el("span","eyebrow", TEXTOS.buscaEyebrow));
+  head.append(el("h2","rtitle", fmt(TEXTOS.buscaTitulo, { n: achados.length, termo: state.busca })));
+  wrap.append(head);
+
+  const corpo = el("div","rsolo");
+
+  if (!achados.length) {
+    corpo.append(el("div","empty", TEXTOS.buscaNada));
+  } else {
+    /* as respostas prontas vêm primeiro: é o que resolve o atendimento */
+    const respostas = achados.filter(a => a.tipo === "resposta");
+    const outros = achados.filter(a => a.tipo !== "resposta");
+
+    if (respostas.length) {
+      const bloco = el("section","grupo");
+      bloco.append(el("h3","grupo-nome", fmt(TEXTOS.buscaGrupoRespostas, { n: respostas.length })));
+      respostas.forEach(a => bloco.append(cardResposta(a.item, a.aba, a.sub, termo)));
+      corpo.append(bloco);
+    }
+
+    if (outros.length) {
+      const bloco = el("section","grupo");
+      bloco.append(el("h3","grupo-nome", fmt(TEXTOS.buscaGrupoOutros, { n: outros.length })));
+      const lista = el("div","achado-lista");
+      outros.forEach(a => {
+        const b = el("button","achado");
+        b.type = "button";
+        b.append(el("span","achado-tipo", TEXTOS.buscaTipos[a.tipo] || a.tipo));
+        b.append(el("span","achado-rot", realce(a.rotulo, termo)));
+        b.append(el("span","achado-onde", a.onde));
+        b.onclick = a.ir;
+        lista.append(b);
+      });
+      bloco.append(lista);
+      corpo.append(lista.children.length ? bloco : el("span"));
+    }
+  }
+
+  /* saída sempre disponível: perguntar para a IA da documentação */
+  const saida = el("div","busca-ia");
+  saida.append(el("p","", TEXTOS.buscaSemSorte));
+  const b = el("button","btn sm", TEXTOS.buscaBotao);
+  b.type = "button";
+  b.onclick = () => {
+    const url = D + "?ask=" + encodeURIComponent(state.busca);
+    abrirDoc(url, state.busca, true);
+  };
+  saida.append(b);
+  corpo.append(saida);
+
+  wrap.append(corpo);
+  host.append(wrap);
+}
+
+
+/* ---------- normalizacao usada pela busca ----------
+   Tira acento e caixa: quem digita "reserva paga" acha "Reservas Pagas". */
+const DIACRITICOS = new RegExp("[\u0300-\u036f]", "g");
+const norm = s => String(s).normalize("NFD").replace(DIACRITICOS, "").toLowerCase();
 
 /* ---------- boot ---------- */
 function render() {
-  renderMoldura(); renderSpine();
-  renderFlow(); renderOut(); renderFup(); renderAvaliacao();
+  renderMoldura(); renderSidebar(); renderBusca();
+  renderFlow(); renderOut(); renderFup(); renderAvaliacao(); renderRespostas();
   renderAbaVisivel();
   medirTopo();
 }
+
+montarIndice();
 
 window.addEventListener("resize", medirTopo);
 window.addEventListener("load", medirTopo);
@@ -1441,30 +1833,61 @@ observarTopo();
    depois do boot a medida ja e a definitiva */
 requestAnimationFrame(() => requestAnimationFrame(medirTopo));
 
-document.getElementById("q").addEventListener("input", renderResults);
+/* ---- busca global ---- */
+const campo = document.getElementById("q");
+campo.addEventListener("input", () => { state.busca = campo.value.trim(); render(); });
+campo.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && state.busca) { e.preventDefault(); limparBusca(); }
+});
+document.getElementById("btn-limpa").addEventListener("click", limparBusca);
 
-document.getElementById("q").addEventListener("keydown", (e) => {
-  if (e.key === "Enter") { e.preventDefault(); perguntarIA(); }
+function limparBusca() {
+  state.busca = "";
+  document.getElementById("q").value = "";
+  render();
+}
+
+/* atalho: barra ou Ctrl+K colocam o cursor na busca */
+document.addEventListener("keydown", (e) => {
+  const digitando = /^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName);
+  if ((e.key === "/" && !digitando) || ((e.ctrlKey || e.metaKey) && e.key === "k")) {
+    e.preventDefault();
+    document.getElementById("q").focus();
+    document.getElementById("q").select();
+  }
 });
 
-document.getElementById("btn-ia").addEventListener("click", perguntarIA);
+/* ---- menu no celular ---- */
+document.getElementById("btn-menu").addEventListener("click", () => {
+  const aberto = document.body.classList.toggle("menu-aberto");
+  document.getElementById("btn-menu").setAttribute("aria-expanded", String(aberto));
+});
+document.getElementById("veu").addEventListener("click", fecharMenu);
+
+/* ---- gaveta da documentacao ---- */
 document.getElementById("gaveta-fechar").addEventListener("click", fecharDoc);
 document.getElementById("gaveta-fundo").addEventListener("click", fecharDoc);
 
 document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape" && !document.getElementById("gaveta").hidden) fecharDoc();
+  if (e.key !== "Escape") return;
+  if (!document.getElementById("gaveta").hidden) { fecharDoc(); return; }
+  if (document.body.classList.contains("menu-aberto")) fecharMenu();
 });
 
+/* ---- navegacao entre etapas ---- */
 document.getElementById("btn-voltar").addEventListener("click", () => irParaAba(state.aba - 1));
 document.getElementById("btn-avancar").addEventListener("click", () => irParaAba(state.aba + 1));
 
 document.getElementById("reset").addEventListener("click", () => {
   state.feito = { ia:false, problema:false, ticket:false };
+  state.secao = "guia";
   state.aba = 1;
   state.cat = null; state.mod = null;
-  resetFup();
+  state.sub = null;
+  state.busca = "";
   document.getElementById("q").value = "";
-  renderResults(); render();
+  resetFup();
+  render();
   window.scrollTo({ top:0, behavior:"smooth" });
 });
 

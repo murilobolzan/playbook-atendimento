@@ -1,7 +1,8 @@
 # Playbook de Atendimento — Dionísio
 
-Playbook interativo para o time de Atendimentos. Guia o atendente pelas cinco etapas
-do atendimento, da leitura da conversa da IA até o encerramento com follow-up.
+Ferramenta interna do time de Atendimentos, com três seções na barra lateral:
+o **guia de atendimento** em cinco etapas, os **critérios de avaliação** e as
+**respostas rápidas** — a biblioteca de respostas padrão, com busca por palavra-chave.
 
 **No ar em:** https://murilobolzan.github.io/playbook-atendimento/
 
@@ -19,7 +20,28 @@ altere → **Commit changes**. Cerca de 40 segundos depois o site já mostra a v
 
 ---
 
-## Como achar o que você quer mudar
+## As três seções
+
+A barra da esquerda tem uma **lupa** no topo e três grupos abaixo dela.
+
+| Seção | O que é |
+|---|---|
+| **Guia de atendimento** | As cinco etapas, uma por tela, na ordem |
+| **Critérios de avaliação** | A régua de 4 critérios, de consulta |
+| **Respostas rápidas** | As respostas padrão, por aba e sub-aba da plataforma |
+
+### A lupa procura em tudo
+
+Digite uma palavra e a busca varre **título, corpo, tags, nome da aba e da sub-aba**,
+e ainda as etapas do guia, os casos conhecidos e os critérios. Funciona com ou sem
+acento: "satisfacao" acha "Satisfação".
+
+As respostas prontas aparecem primeiro, com o termo destacado e um botão de **copiar**.
+O resto vem numa lista abaixo. Atalho para o cursor: tecla `/` ou `Ctrl+K`.
+
+Se nada servir, o rodapé da busca sempre oferece **perguntar para a IA da documentação**.
+
+## Como achar o que você quer mudar no arquivo
 
 Abra o `conteudo.js`, aperte Ctrl+F e procure o marcador da seção, por exemplo
 `[6]`. O índice completo está logo abaixo, e também no topo do próprio arquivo.
@@ -95,6 +117,7 @@ Se preferir ir direto, cada seção tem um marcador. Ctrl+F com ele no `conteudo
 | `[9]` | Follow-up: os tempos (30 min e 30 min) e as frases prontas |
 | `[10]` | Todo o texto fixo da tela: títulos, avisos, rótulos |
 | `[11]` | A régua de avaliação: grupos, critérios, pesos e as notas de 0 a 5 |
+| `[12]` | As respostas rápidas: abas, sub-abas e as respostas padrão |
 
 ## Tarefas comuns
 
@@ -115,6 +138,10 @@ Se preferir ir direto, cada seção tem um marcador. Ctrl+F com ele no `conteudo
 | Mudar um nível da régua de avaliação | `[11]`, dentro de `niveis` do critério |
 | Mudar o peso de um critério | `[11]`, o campo `peso` |
 | Mudar o nome que aparece no canto da tela | `[10]`, `marca` |
+| **Adicionar uma aba de respostas** | `[12]`, copie um bloco `{ id, aba, subs }` |
+| **Adicionar uma sub-aba** | `[12]`, dentro de `subs`, um bloco `{ id, sub, itens }` |
+| **Adicionar uma resposta pronta** | `[12]`, dentro de `itens`, um `{ titulo, tags, resposta }` |
+| Fazer a busca achar por outra palavra | `[12]`, acrescente em `tags` |
 
 ### Adicionar uma categoria nova
 

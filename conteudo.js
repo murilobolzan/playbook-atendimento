@@ -743,6 +743,39 @@ const TEXTOS = {
   titulo: "Playbook de Atendimento",
   subtitulo: "Uso interno — time de Atendimentos",
 
+  /* --- barra lateral: os títulos dos três grupos --- */
+  navGuia: "Guia de atendimento",
+  navCriterios: "Critérios de avaliação",
+  navRespostas: "Respostas rápidas",
+
+  /* --- busca global, a lupa do topo da barra lateral ---
+     Procura em título, corpo, tag, nome da aba e da sub-aba, e também nas
+     etapas do guia, nos casos conhecidos e nos critérios de avaliação. */
+  buscaGlobalPlaceholder: "Buscar resposta, etapa ou critério...",
+  buscaGlobalDica: "Busca por palavra-chave em tudo: título, texto e tags. Atalho: / ou Ctrl+K.",
+  buscaLimpar: "Limpar busca",
+  buscaEyebrow: "Resultado da busca",
+  buscaTitulo: "{n} resultado(s) para “{termo}”",
+  buscaGrupoRespostas: "Respostas prontas ({n})",
+  buscaGrupoOutros: "Também encontrei ({n})",
+  buscaCasoEm: "Caso conhecido em",
+  buscaNada: "Nada encontrado com essas palavras. Tente outra palavra-chave, ou pergunte para a IA da documentação abaixo.",
+  buscaSemSorte: "Não achou o que precisava aqui?",
+  buscaTipos: {
+    resposta: "Resposta",
+    guia: "Etapa do guia",
+    caso: "Caso conhecido",
+    criterio: "Critério"
+  },
+
+  /* --- respostas rápidas --- */
+  respEscolha: "Escolha uma aba na barra da esquerda para ver as respostas prontas daquele assunto.",
+  respVazia: "Nenhuma resposta cadastrada nesta sub-aba ainda. Para adicionar, veja [12] no conteudo.js.",
+  respQuantas: "{n} resposta(s) cadastrada(s)",
+  respCopiar: "Copiar resposta",
+  respCopiado: "✓ Copiado",
+  respInterno: "Interno · não enviar ao cliente",
+
   /* --- painel de dúvida: o foco da plataforma ---
      Aparece na ETAPA 5, que é onde o atendente resolve de fato. O que ele
      digita vai direto para a IA que vive dentro da documentação, e a resposta
@@ -932,3 +965,277 @@ const AVALIACAO = {
     }
   ]
 };
+
+
+/* [12] ══════════════════════════════════════════════════════════════════════
+   RESPOSTAS RÁPIDAS — a biblioteca de respostas padrão
+
+   Espelha as abas da plataforma Dionísio. Dois níveis: aba e sub-aba.
+   A busca do topo encontra por título, corpo, tag, nome da aba e da sub-aba.
+
+   PARA ADICIONAR UMA ABA NOVA
+   Copie um bloco { id, aba, subs: [...] } inteiro, cole antes do ] final e
+   troque o id por um nome curto, sem espaço nem acento.
+
+   PARA ADICIONAR UMA SUB-ABA
+   Dentro de subs, copie um bloco { id, sub, itens: [...] }.
+
+   PARA ADICIONAR UMA RESPOSTA
+   Dentro de itens, copie um bloco { titulo, tags, resposta }.
+     titulo   = a dúvida como o cliente costuma trazer. Barras separam
+                variações da mesma pergunta.
+     tags     = palavras-chave extras para a busca achar. Escreva como as
+                pessoas digitam, inclusive sem acento ou abreviado.
+     resposta = uma linha por parágrafo. Aceita <strong>negrito</strong>.
+     interno  = opcional. Com true, marca a resposta como procedimento
+                interno, que não deve ser enviado ao cliente.
+
+   Sub-aba com itens: [] aparece como "sem resposta cadastrada". É
+   proposital: mostra onde ainda falta preencher.
+   ═════════════════════════════════════════════════════════════════════════ */
+
+const RESPOSTAS = [
+  {
+    id: "reservas",
+    aba: "Reservas",
+    subs: [
+      { id: "res-visao", sub: "Visão Geral", itens: [] },
+      { id: "res-nova", sub: "Nova Reserva", itens: [] },
+      { id: "res-proximas", sub: "Próximas Reservas", itens: [] },
+      { id: "res-pendentes", sub: "Reservas Pendentes", itens: [] },
+      {
+        id: "res-areas",
+        sub: "Áreas e Mesas",
+        itens: [
+          {
+            titulo: "Tempo de antecedência / Dias de antecedência / Horário limite para fazer uma reserva",
+            tags: ["antecedencia", "horario limite", "configuracoes avancadas", "mesmo dia", "23:59"],
+            resposta: [
+              "Em <strong>Reservas &gt; Áreas e Mesas &gt; Configurações Avançadas</strong>, o horário limite geral para reservas no mesmo dia estava configurado como XX:XX.",
+              "Para que a configuração de antecedência das reservas, definida dentro da edição dos horários de cada área, funcione corretamente, é necessário que esse limite geral esteja configurado para <strong>23:59</strong>. Dessa forma, a antecedência definida em cada área será considerada corretamente pela plataforma."
+            ]
+          },
+          {
+            titulo: "Reservas pagas: como configurar, taxa e repasse",
+            tags: ["reserva paga", "caucao", "consumacao", "taxa", "10%", "pix", "cartao", "repasse", "D+1", "D+30", "chave pix"],
+            resposta: [
+              "Podemos configurar essa questão diretamente em <strong>Reservas &gt; Áreas e Mesas</strong>. Para isso, só preciso que você me informe exatamente como gostaria que essa dinâmica funcionasse, para conseguirmos realizar a configuração corretamente.",
+              "Também conseguimos configurar o pagamento como <strong>caução</strong> ou, se preferirem, fazer com que o valor pago seja revertido em <strong>consumação</strong> no estabelecimento. Essa pode ser uma alternativa interessante para tornar a reserva mais atrativa para o cliente.",
+              "Sobre os pagamentos realizados pela plataforma, é aplicada uma <strong>taxa de 10%</strong>, tanto para pagamentos via Pix quanto via cartão. O prazo de repasse é de <strong>D+1</strong> para pagamentos via Pix e <strong>D+30</strong> para pagamentos via cartão.",
+              "Para receber os valores, basta cadastrar a chave Pix de vocês na plataforma, e os repasses serão realizados diretamente para essa chave. O processo funciona de forma semelhante a uma intermediadora de pagamentos.",
+              "Caso prefiram, essa taxa também pode ser repassada ao cliente no momento do pagamento."
+            ]
+          }
+        ]
+      },
+      {
+        id: "res-historico",
+        sub: "Histórico",
+        itens: [
+          {
+            titulo: "Como consultar o histórico de reservas",
+            tags: ["historico", "filtro", "buscar reserva", "status", "cancelada", "salao", "periodo"],
+            resposta: [
+              "Na aba <strong>Reservas &gt; Histórico</strong>, você consegue consultar o histórico das reservas utilizando diferentes filtros. É possível buscar pelo nome, telefone ou e-mail do cliente, caso ele tenha informado esses dados, além de selecionar o período que deseja consultar.",
+              "Nessa mesma aba, também é possível verificar o status de cada reserva passada, como confirmada, cancelada pelo cliente, cancelada pelo estabelecimento, entre outros status disponíveis.",
+              "Além disso, você pode utilizar filtros específicos para consultar reservas de um determinado salão ou horário."
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: "whatsapp",
+    aba: "WhatsApp",
+    subs: [
+      {
+        id: "wpp-conectar",
+        sub: "Conectar WhatsApp",
+        itens: [
+          {
+            titulo: "Reclamação do erro que aparece na Meta",
+            tags: ["meta", "erro", "portfolio empresarial", "status", "limitacao", "aviso"],
+            resposta: [
+              "Recentemente, lançamos uma atualização no painel justamente para dar mais transparência sobre a conexão com a Meta. Agora, algumas informações que antes apareciam somente dentro do Portfólio Empresarial de vocês também ficam visíveis diretamente no nosso sistema.",
+              "Essa análise já era realizada pela própria Meta. A diferença é que, agora, nós também passamos a exibir esse status para vocês, facilitando o acompanhamento do número e deixando mais claro qualquer aviso ou limitação informada pela Meta."
+            ]
+          },
+          {
+            titulo: "A instância do WhatsApp ainda não foi provisionada",
+            tags: ["instancia", "provisionada", "zapi", "status zapi", "interno", "conectar"],
+            interno: true,
+            resposta: [
+              "O membro CS terá que ir na aba WhatsApp, conectar o WhatsApp e ativar a instância ao lado do <strong>Status ZApi</strong>.",
+              "Essa configuração interna da Dionísio não aparece para o cliente."
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: "links",
+    aba: "Links",
+    subs: [
+      {
+        id: "links-loja",
+        sub: "Links da Loja",
+        itens: [
+          {
+            titulo: "Quais links a loja tem e para que serve cada um",
+            tags: ["link rastreavel", "bio instagram", "anuncio meta", "origem", "campanha", "utm"],
+            resposta: [
+              "Na aba <strong>Links &gt; Links da Loja</strong>, você consegue obter links rastreáveis para cada tipo de operação da loja, como, por exemplo, as reservas.",
+              "Para as reservas, você pode utilizar diferentes tipos de links: link simples, não rastreável; link específico para a bio do Instagram, rastreável; e link para anúncios da Meta, também rastreável.",
+              "Ao utilizar o link específico de cada canal ou campanha, conseguimos identificar a origem dos clientes que estão realizando as ações pela plataforma. Dessa forma, fica mais fácil acompanhar de onde estão vindo os clientes e quais canais estão gerando mais resultados."
+            ]
+          }
+        ]
+      },
+      {
+        id: "links-rastreaveis",
+        sub: "Links Rastreáveis",
+        itens: [
+          {
+            titulo: "Como adicionar e organizar links num só lugar",
+            tags: ["linktree", "adicionar link", "bio", "divulgacao", "pagina de links"],
+            resposta: [
+              "Na aba <strong>Links &gt; Links Rastreáveis</strong>, você consegue adicionar e organizar diferentes links em um único local, funcionando de forma semelhante ao Linktree.",
+              "Para adicionar um novo link, basta clicar na opção disponível no canto superior direito. A plataforma irá reunir os links cadastrados em uma única página, que você poderá utilizar para divulgação, por exemplo, na bio do Instagram ou em outros canais de comunicação."
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: "satisfacao",
+    aba: "Satisfação",
+    subs: [
+      {
+        id: "sat-nps",
+        sub: "Pesquisas NPS",
+        itens: [
+          {
+            titulo: "Como funcionam as pesquisas de NPS e quando são disparadas",
+            tags: ["nps", "pesquisa", "analytics", "notificacoes", "disparo", "3 horas", "fila", "sentado"],
+            resposta: [
+              "Dentro da aba <strong>Satisfação &gt; Pesquisas NPS</strong>, você consegue visualizar todas as pesquisas que estão sendo enviadas aos clientes em cada tipo de situação.",
+              "Ao clicar em uma pesquisa, é possível verificar as perguntas que estão sendo realizadas, as respostas recebidas e também acessar a aba de Analytics, para acompanhar os resultados.",
+              "Também é possível criar novas pesquisas com as perguntas que vocês desejarem, além de editar e modificar as perguntas das pesquisas que já foram criadas.",
+              "Já na aba <strong>Configurar o WhatsApp</strong>, localizada no canto superior direito, você será direcionado para a página de Notificações. Nessa área, consegue configurar qual pesquisa será enviada em cada situação e definir após quanto tempo ela deverá ser disparada.",
+              "No caso das reservas, o período configurado começa a ser contado após <strong>3 horas</strong> do horário de início da reserva, momento em que ela é considerada finalizada pela plataforma. Já no caso da fila, o período começa a ser contado a partir do momento em que o cliente é marcado como <strong>sentado</strong> no estabelecimento."
+            ]
+          }
+        ]
+      },
+      {
+        id: "sat-conversas",
+        sub: "Nas Conversas",
+        itens: [
+          {
+            titulo: "Não consigo visualizar esses feedbacks negativos / Como visualizo os feedbacks das conversas?",
+            tags: ["feedback", "elogio", "reclamacao", "conversas", "negativo"],
+            resposta: [
+              "Dentro da aba <strong>Satisfação</strong>, na sub-aba <strong>Nas Conversas</strong>, você consegue visualizar as mensagens de elogios ou reclamações que a IA identificou durante os atendimentos aos clientes. Assim, fica mais fácil acompanhar os principais feedbacks recebidos diretamente nas conversas."
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: "config-ia",
+    aba: "Configuração de IA",
+    subs: [
+      { id: "ia-identidade", sub: "Identidade", itens: [] },
+      {
+        id: "ia-canais",
+        sub: "Canais Conectados",
+        itens: [
+          {
+            titulo: "Como verificar se WhatsApp e Instagram estão conectados",
+            tags: ["canais conectados", "ativar ia", "inativar", "whatsapp", "instagram", "salvar"],
+            resposta: [
+              "Em <strong>Configuração de IA &gt; Identidade &gt; Canais Conectados</strong>, você consegue verificar se o seu WhatsApp e Instagram estão conectados à plataforma.",
+              "Nessa mesma área, também é possível ativar ou inativar a IA para cada canal. Após realizar qualquer alteração, lembre-se sempre de <strong>salvar</strong> as configurações para que ela seja aplicada corretamente."
+            ]
+          }
+        ]
+      },
+      {
+        id: "ia-caracteristicas",
+        sub: "Características Geral da IA",
+        itens: [
+          {
+            titulo: "Nome e Gênero, Tamanho das Respostas, Tom de Voz, Recursos",
+            tags: ["nome", "genero", "tom de voz", "tamanho da resposta", "emoji", "bullet points", "recursos"],
+            resposta: [
+              "Dentro da aba <strong>Configuração de IA &gt; Identidade</strong>, conseguimos configurar diferentes características da assistente, como o nome e gênero da assistente, o tamanho das respostas que ela irá enviar e o tom de voz utilizado durante os atendimentos.",
+              "Também dá para escolher os recursos que a IA poderá utilizar, como emojis, bullet points, que ajudam a organizar as informações por tópicos, respostas em formato de perguntas e respostas, além da possibilidade de reagir às mensagens dos clientes.",
+              "Essas configurações vão ajudar a definir a forma como a IA irá se comunicar e se comportar durante os atendimentos."
+            ]
+          }
+        ]
+      },
+      {
+        id: "ia-regras",
+        sub: "Regras de Comportamento e Gírias e Expressões",
+        itens: [
+          {
+            titulo: "Regras de Comportamento e Gírias e Expressões",
+            tags: ["regras", "comportamento", "girias", "expressoes", "vendedora", "formal", "emoji", "regional"],
+            resposta: [
+              "Dentro da aba <strong>Configuração de IA &gt; Identidade</strong>, nos dois últimos tópicos, você encontra as opções <strong>Regras de Comportamento</strong> e <strong>Gírias e Expressões</strong>.",
+              "Em Regras de Comportamento, é possível definir como a IA deve se comportar durante os atendimentos, como ser mais vendedora, mais direta, menos repetitiva, mais animada, mais formal, entre outras orientações.",
+              "Já em Gírias e Expressões, você consegue definir gírias e expressões regionais que a IA poderá utilizar durante as conversas. Também é possível informar quais emojis a IA está autorizada a utilizar nas mensagens.",
+              "Caso tenha qualquer dúvida durante essa configuração, pode me chamar por aqui que te auxilio!"
+            ]
+          }
+        ]
+      },
+      {
+        id: "ia-informacoes",
+        sub: "Informações",
+        itens: [
+          {
+            titulo: "Como cadastrar, categorizar e editar uma informação da IA",
+            tags: ["informacoes", "adicionar", "categoria", "validade", "editar", "lapis", "barra de pesquisa"],
+            resposta: [
+              "Na aba <strong>Configuração de IA &gt; Informações</strong>, você pode clicar no botão <strong>Adicionar</strong> para cadastrar uma nova informação, preenchendo o título e o conteúdo referente a ela.",
+              "O conteúdo pode ser preenchido de forma simples e objetiva, com as informações necessárias para que a IA consiga entender o assunto e repassá-lo corretamente aos clientes.",
+              "A opção de <strong>Categorias</strong> serve apenas para facilitar a organização e a localização das informações dentro da plataforma. Caso vocês tenham muitas informações cadastradas, podem separá-las por categorias para encontrá-las com mais facilidade.",
+              "Também é possível definir a <strong>validade</strong> da informação, indicando se ela será válida por tempo indeterminado, para uma data específica ou durante um determinado período.",
+              "Caso uma informação já esteja cadastrada, basta pesquisá-la pela barra de pesquisa e clicar no ícone de lápis localizado abaixo do card para editá-la."
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: "minha-loja",
+    aba: "Minha Loja",
+    subs: [
+      { id: "loja-loja", sub: "Loja", itens: [] },
+      {
+        id: "loja-imagens",
+        sub: "Imagens",
+        itens: [
+          {
+            titulo: "Como adicionar uma imagem para a IA enviar?",
+            tags: ["imagem", "galeria", "foto", "enviar imagem", "cardapio foto"],
+            resposta: [
+              "Dentro da aba <strong>Minha Loja &gt; Loja</strong>, o último tópico é a <strong>Galeria de Imagens</strong>. Nessa área, você consegue cadastrar imagens para que a IA possa enviá-las aos clientes quando necessário.",
+              "Durante o cadastro, você pode adicionar um título e uma breve descrição para orientar a IA sobre em quais situações aquela imagem deve ser utilizada.",
+              "Caso tenha qualquer dúvida durante o processo de criação, pode me chamar por aqui que te ajudo!"
+            ]
+          }
+        ]
+      },
+      { id: "loja-pagamento", sub: "Formas de Pagamento", itens: [] },
+      { id: "loja-repasse", sub: "Repasse", itens: [] }
+    ]
+  }
+];
