@@ -484,6 +484,45 @@
 
   mark { background: color-mix(in srgb, var(--accent) 24%, transparent); color: inherit; border-radius: 2px; padding: 0 2px; }
 
+  .rcard-img { margin: 0; padding: 0 var(--s4) var(--s3); display: flex; flex-direction: column; gap: 6px; }
+  .rcard-img img {
+    width: 100%; height: auto; display: block; cursor: zoom-in;
+    border: 1px solid var(--line); border-radius: var(--r); background: var(--surface-2);
+  }
+  .rcard-img img:hover { border-color: var(--accent); }
+  .rcard-img figcaption { font-size: var(--t-xs); color: var(--ink-3); }
+
+  .zoom {
+    position: fixed; inset: 0; z-index: 80; display: flex; align-items: center; justify-content: center;
+    background: rgba(14,8,20,.86); padding: var(--s5); cursor: zoom-out;
+  }
+  .zoom img {
+    max-width: 100%; max-height: 100%; object-fit: contain;
+    border-radius: var(--r); box-shadow: 0 24px 70px -30px rgba(0,0,0,.9); cursor: default;
+  }
+  .zoom-fechar {
+    position: absolute; top: var(--s5); right: var(--s5); font: inherit; font-size: var(--t-base);
+    font-weight: 600; cursor: pointer; background: var(--surface); color: var(--ink);
+    border: 1px solid var(--line-forte); border-radius: var(--r-sm); padding: 7px var(--s4);
+  }
+  .zoom-fechar:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ============ SELETOR DE TOPICO NA BARRA ============ */
+  .topicos { display: flex; flex-direction: column; gap: 3px; padding-bottom: var(--s4); border-bottom: 1px solid var(--line); margin-bottom: var(--s4); }
+  .topico {
+    display: flex; align-items: center; width: 100%; font: inherit; font-size: var(--t-base);
+    font-weight: 600; text-align: left; cursor: pointer;
+    background: transparent; color: var(--ink-2);
+    border: 1px solid transparent; border-left: 3px solid transparent;
+    border-radius: var(--r-sm); padding: 9px var(--s3);
+  }
+  .topico:hover { background: var(--surface-2); color: var(--ink); }
+  .topico.on {
+    background: var(--accent-suave); border-color: var(--accent-linha);
+    border-left-color: var(--accent); color: var(--accent); font-weight: 650;
+  }
+  .topico-dentro { display: flex; flex-direction: column; gap: 2px; }
+
   /* ============ RESULTADO DA BUSCA ============ */
   .achado-lista { display: flex; flex-direction: column; gap: 2px; }
   .achado {
@@ -1132,68 +1171,109 @@ function renderSidebar() {
   const host = document.getElementById("side-nav");
   host.textContent = "";
 
-  /* grupo 1: o guia, etapa por etapa */
-  const g1 = el("div","nav-grupo");
-  g1.append(el("span","nav-titulo", TEXTOS.navGuia));
-  ETAPAS.forEach((titulo, i) => {
-    const n = i + 1;
-    const concluida = n <= 3 && state.feito[PORTOES[n-1].id];
-    const atual = state.secao === "guia" && !state.busca && n === state.aba;
-    const trancada = n >= 4 && !portoesOk();
-    const b = el("button","nav-item" + (atual ? " on" : "") + (concluida && !atual ? " ok" : ""));
+  /* o topo da barra troca de tópico; embaixo vem só o conteúdo do escolhido */
+  const topicos = [
+    { id: "guia",      rot: TEXTOS.navGuia },
+    { id: "criterios", rot: TEXTOS.navCriterios },
+    { id: "respostas", rot: TEXTOS.navRespostas }
+  ];
+
+  const troca = el("div","topicos");
+  troca.setAttribute("role","tablist");
+  topicos.forEach(t => {
+    const ativo = state.secao === t.id && !state.busca;
+    const b = el("button","topico" + (ativo ? " on" : ""));
     b.type = "button";
-    b.disabled = trancada;
-    b.title = trancada ? titulo + " — " + TEXTOS.spineTrancada : titulo;
-    b.append(el("span","nav-n", concluida && !atual ? "✓" : String(n)), el("span","nav-txt", titulo));
-    b.onclick = () => { if (!trancada) irParaAba(n); };
-    g1.append(b);
+    b.setAttribute("role","tab");
+    b.setAttribute("aria-selected", String(ativo));
+    b.append(el("span","topico-rot", t.rot));
+    b.onclick = () => {
+      if (t.id === "guia") irParaAba(state.aba);
+      else if (t.id === "respostas") irParaSecao("respostas", state.sub || primeiraSubComResposta());
+      else irParaSecao(t.id);
+    };
+    troca.append(b);
   });
-  host.append(g1);
+  host.append(troca);
 
-  /* grupo 2: a régua de avaliação */
-  const g2 = el("div","nav-grupo");
-  g2.append(el("span","nav-titulo", TEXTOS.navCriterios));
-  const bc = el("button","nav-item" + (state.secao === "criterios" && !state.busca ? " on" : ""));
-  bc.type = "button";
-  bc.append(el("span","nav-txt", AVALIACAO.aba));
-  bc.onclick = () => irParaSecao("criterios");
-  g2.append(bc);
-  host.append(g2);
+  /* e abaixo, só o que pertence ao tópico ativo */
+  const dentro = el("div","topico-dentro");
 
-  /* grupo 3: as respostas rápidas, aba por aba */
-  const g3 = el("div","nav-grupo");
-  g3.append(el("span","nav-titulo", TEXTOS.navRespostas));
-  RESPOSTAS.forEach(a => {
-    const temSelecionada = a.subs.some(x => x.id === state.sub);
-    const aberto = state.abertos[a.id] !== undefined
-      ? state.abertos[a.id]
-      : (temSelecionada && state.secao === "respostas");
+  if (state.secao === "guia") {
+    dentro.append(el("span","nav-titulo", TEXTOS.navEtapas));
+    ETAPAS.forEach((titulo, i) => {
+      const n = i + 1;
+      const concluida = n <= 3 && state.feito[PORTOES[n-1].id];
+      const atual = !state.busca && n === state.aba;
+      const trancada = n >= 4 && !portoesOk();
+      const b = el("button","nav-item" + (atual ? " on" : "") + (concluida && !atual ? " ok" : ""));
+      b.type = "button";
+      b.disabled = trancada;
+      b.title = trancada ? titulo + " — " + TEXTOS.spineTrancada : titulo;
+      b.append(el("span","nav-n", concluida && !atual ? "✓" : String(n)), el("span","nav-txt", titulo));
+      b.onclick = () => { if (!trancada) irParaAba(n); };
+      dentro.append(b);
+    });
+  }
 
-    const pai = el("button","nav-item nav-pai");
-    pai.type = "button";
-    pai.setAttribute("aria-expanded", String(aberto));
-    const total = a.subs.reduce((s,x) => s + x.itens.length, 0);
-    pai.append(el("span","nav-seta","▶"), el("span","nav-txt", a.aba), el("span","nav-conta", String(total)));
-    pai.onclick = () => { state.abertos[a.id] = !aberto; render(); };
-    g3.append(pai);
+  if (state.secao === "criterios") {
+    dentro.append(el("span","nav-titulo", AVALIACAO.titulo));
+    AVALIACAO.grupos.forEach(g => {
+      const b = el("button","nav-item");
+      b.type = "button";
+      b.append(el("span","nav-txt", g.nome), el("span","nav-conta", String(g.criterios.length)));
+      b.onclick = () => {
+        irParaSecao("criterios");
+        const alvo = [...document.querySelectorAll("#aval .grupo-nome")].find(x => x.textContent === g.nome);
+        if (alvo) alvo.scrollIntoView({ behavior: "smooth", block: "start" });
+      };
+      dentro.append(b);
+    });
+  }
 
-    if (aberto) {
-      const filhos = el("div","nav-filhos");
-      a.subs.forEach(x => {
-        const atual = state.secao === "respostas" && !state.busca && state.sub === x.id;
-        const vazia = x.itens.length === 0;
-        const b = el("button","nav-item" + (atual ? " on" : "") + (vazia ? " nav-vazia" : ""));
-        b.type = "button";
-        b.append(el("span","nav-txt", x.sub));
-        if (!vazia) b.append(el("span","nav-conta", String(x.itens.length)));
-        b.onclick = () => irParaSecao("respostas", x.id);
-        filhos.append(b);
-      });
-      g3.append(filhos);
-    }
-  });
-  host.append(g3);
+  if (state.secao === "respostas") {
+    dentro.append(el("span","nav-titulo", TEXTOS.navAbasPlataforma));
+    RESPOSTAS.forEach(a => {
+      const temSelecionada = a.subs.some(x => x.id === state.sub);
+      const aberto = state.abertos[a.id] !== undefined ? state.abertos[a.id] : temSelecionada;
+
+      const pai = el("button","nav-item nav-pai");
+      pai.type = "button";
+      pai.setAttribute("aria-expanded", String(aberto));
+      const total = a.subs.reduce((s,x) => s + x.itens.length, 0);
+      pai.append(el("span","nav-seta","▶"), el("span","nav-txt", a.aba), el("span","nav-conta", String(total)));
+      pai.onclick = () => { state.abertos[a.id] = !aberto; render(); };
+      dentro.append(pai);
+
+      if (aberto) {
+        const filhos = el("div","nav-filhos");
+        a.subs.forEach(x => {
+          const atual = !state.busca && state.sub === x.id;
+          const vazia = x.itens.length === 0;
+          const b = el("button","nav-item" + (atual ? " on" : "") + (vazia ? " nav-vazia" : ""));
+          b.type = "button";
+          b.append(el("span","nav-txt", x.sub));
+          if (!vazia) b.append(el("span","nav-conta", String(x.itens.length)));
+          b.onclick = () => irParaSecao("respostas", x.id);
+          filhos.append(b);
+        });
+        dentro.append(filhos);
+      }
+    });
+  }
+
+  host.append(dentro);
 }
+
+/* ao entrar em respostas sem nada escolhido, abre a primeira que tem conteúdo */
+function primeiraSubComResposta() {
+  for (const a of RESPOSTAS) {
+    const x = a.subs.find(s => s.itens.length > 0);
+    if (x) return x.id;
+  }
+  return null;
+}
+
 /* ---------- etapas 1 a 3 ---------- */
 function renderFlow() {
   const host = document.getElementById("flow");
@@ -1582,6 +1662,26 @@ function renderAvaliacao() {
   host.append(wrap);
 }
 
+/* ---------- ampliar um print ---------- */
+function ampliar(src, alt) {
+  const fundo = el("div","zoom");
+  const img = document.createElement("img");
+  img.src = src;
+  img.alt = alt;
+  const fechar = el("button","zoom-fechar", TEXTOS.docFechar);
+  fechar.type = "button";
+  const sair = () => { fundo.remove(); document.body.classList.remove("gaveta-aberta"); };
+  fechar.onclick = sair;
+  fundo.onclick = (e) => { if (e.target === fundo) sair(); };
+  document.addEventListener("keydown", function esc(e) {
+    if (e.key === "Escape") { sair(); document.removeEventListener("keydown", esc); }
+  });
+  fundo.append(fechar, img);
+  document.body.append(fundo);
+  document.body.classList.add("gaveta-aberta");
+  fechar.focus();
+}
+
 /* ---------- respostas rápidas ---------- */
 function achaSub(id) {
   for (const a of RESPOSTAS) {
@@ -1606,6 +1706,19 @@ function cardResposta(item, aba, sub, destacar) {
   const corpo = el("div","rcard-corpo");
   item.resposta.forEach(p => corpo.append(el("p","", realce(p, destacar))));
   card.append(corpo);
+
+  /* o print da tela, quando a resposta tem um */
+  if (item.imagem) {
+    const fig = el("figure","rcard-img");
+    const img = document.createElement("img");
+    img.src = item.imagem;
+    img.alt = TEXTOS.respImgAlt + ": " + item.titulo;
+    img.loading = "lazy";
+    img.onclick = () => ampliar(item.imagem, img.alt);
+    fig.append(img);
+    fig.append(el("figcaption","", TEXTOS.respImgLegenda));
+    card.append(fig);
+  }
 
   const pe = el("footer","rcard-pe");
   const copiar = el("button","btn ghost sm", TEXTOS.respCopiar);

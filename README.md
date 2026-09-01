@@ -22,9 +22,11 @@ altere → **Commit changes**. Cerca de 40 segundos depois o site já mostra a v
 
 ## As três seções
 
-A barra da esquerda tem uma **lupa** no topo e três grupos abaixo dela.
+A barra da esquerda tem uma **lupa** no topo e, logo abaixo, o **seletor de tópico**.
+São três tópicos separados: você está em um de cada vez, e a barra mostra só o
+conteúdo daquele. Guia e respostas rápidas nunca dividem a mesma tela.
 
-| Seção | O que é |
+| Tópico | O que é |
 |---|---|
 | **Guia de atendimento** | As cinco etapas, uma por tela, na ordem |
 | **Critérios de avaliação** | A régua de 4 critérios, de consulta |
@@ -142,6 +144,16 @@ Se preferir ir direto, cada seção tem um marcador. Ctrl+F com ele no `conteudo
 | **Adicionar uma sub-aba** | `[12]`, dentro de `subs`, um bloco `{ id, sub, itens }` |
 | **Adicionar uma resposta pronta** | `[12]`, dentro de `itens`, um `{ titulo, tags, resposta }` |
 | Fazer a busca achar por outra palavra | `[12]`, acrescente em `tags` |
+| Trocar o print de uma resposta | `[12]`, o campo `imagem`, e o arquivo em `img/` |
+
+### Imagens nas respostas
+
+Os prints ficam na pasta [`img/`](img) e são ligados à resposta pelo campo
+`imagem: "img/nome.png"` em `[12]`. Na tela aparecem abaixo do texto, e um clique
+abre em tamanho cheio.
+
+Para trocar um print: suba o arquivo novo em `img/` pelo GitHub e aponte o campo
+`imagem` para ele. Para adicionar onde não tem, é só acrescentar o campo.
 
 ### Adicionar uma categoria nova
 

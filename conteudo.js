@@ -747,6 +747,8 @@ const TEXTOS = {
   navGuia: "Guia de atendimento",
   navCriterios: "Critérios de avaliação",
   navRespostas: "Respostas rápidas",
+  navEtapas: "As cinco etapas, em ordem",
+  navAbasPlataforma: "Abas da plataforma",
 
   /* --- busca global, a lupa do topo da barra lateral ---
      Procura em título, corpo, tag, nome da aba e da sub-aba, e também nas
@@ -775,6 +777,8 @@ const TEXTOS = {
   respCopiar: "Copiar resposta",
   respCopiado: "✓ Copiado",
   respInterno: "Interno · não enviar ao cliente",
+  respImgAlt: "Print da tela",
+  respImgLegenda: "Clique para ampliar",
 
   /* --- painel de dúvida: o foco da plataforma ---
      Aparece na ETAPA 5, que é onde o atendente resolve de fato. O que ele
@@ -1010,6 +1014,7 @@ const RESPOSTAS = [
           {
             titulo: "Tempo de antecedência / Dias de antecedência / Horário limite para fazer uma reserva",
             tags: ["antecedencia", "horario limite", "configuracoes avancadas", "mesmo dia", "23:59"],
+            imagem: "img/res-areas-antecedencia.png",
             resposta: [
               "Em <strong>Reservas &gt; Áreas e Mesas &gt; Configurações Avançadas</strong>, o horário limite geral para reservas no mesmo dia estava configurado como XX:XX.",
               "Para que a configuração de antecedência das reservas, definida dentro da edição dos horários de cada área, funcione corretamente, é necessário que esse limite geral esteja configurado para <strong>23:59</strong>. Dessa forma, a antecedência definida em cada área será considerada corretamente pela plataforma."
@@ -1035,6 +1040,7 @@ const RESPOSTAS = [
           {
             titulo: "Como consultar o histórico de reservas",
             tags: ["historico", "filtro", "buscar reserva", "status", "cancelada", "salao", "periodo"],
+            imagem: "img/res-historico.png",
             resposta: [
               "Na aba <strong>Reservas &gt; Histórico</strong>, você consegue consultar o histórico das reservas utilizando diferentes filtros. É possível buscar pelo nome, telefone ou e-mail do cliente, caso ele tenha informado esses dados, além de selecionar o período que deseja consultar.",
               "Nessa mesma aba, também é possível verificar o status de cada reserva passada, como confirmada, cancelada pelo cliente, cancelada pelo estabelecimento, entre outros status disponíveis.",
@@ -1056,6 +1062,7 @@ const RESPOSTAS = [
           {
             titulo: "Reclamação do erro que aparece na Meta",
             tags: ["meta", "erro", "portfolio empresarial", "status", "limitacao", "aviso"],
+            imagem: "img/wpp-meta.png",
             resposta: [
               "Recentemente, lançamos uma atualização no painel justamente para dar mais transparência sobre a conexão com a Meta. Agora, algumas informações que antes apareciam somente dentro do Portfólio Empresarial de vocês também ficam visíveis diretamente no nosso sistema.",
               "Essa análise já era realizada pela própria Meta. A diferença é que, agora, nós também passamos a exibir esse status para vocês, facilitando o acompanhamento do número e deixando mais claro qualquer aviso ou limitação informada pela Meta."
@@ -1085,6 +1092,7 @@ const RESPOSTAS = [
           {
             titulo: "Quais links a loja tem e para que serve cada um",
             tags: ["link rastreavel", "bio instagram", "anuncio meta", "origem", "campanha", "utm"],
+            imagem: "img/links-loja.png",
             resposta: [
               "Na aba <strong>Links &gt; Links da Loja</strong>, você consegue obter links rastreáveis para cada tipo de operação da loja, como, por exemplo, as reservas.",
               "Para as reservas, você pode utilizar diferentes tipos de links: link simples, não rastreável; link específico para a bio do Instagram, rastreável; e link para anúncios da Meta, também rastreável.",
@@ -1100,6 +1108,7 @@ const RESPOSTAS = [
           {
             titulo: "Como adicionar e organizar links num só lugar",
             tags: ["linktree", "adicionar link", "bio", "divulgacao", "pagina de links"],
+            imagem: "img/links-rastreaveis.png",
             resposta: [
               "Na aba <strong>Links &gt; Links Rastreáveis</strong>, você consegue adicionar e organizar diferentes links em um único local, funcionando de forma semelhante ao Linktree.",
               "Para adicionar um novo link, basta clicar na opção disponível no canto superior direito. A plataforma irá reunir os links cadastrados em uma única página, que você poderá utilizar para divulgação, por exemplo, na bio do Instagram ou em outros canais de comunicação."
@@ -1120,6 +1129,7 @@ const RESPOSTAS = [
           {
             titulo: "Como funcionam as pesquisas de NPS e quando são disparadas",
             tags: ["nps", "pesquisa", "analytics", "notificacoes", "disparo", "3 horas", "fila", "sentado"],
+            imagem: "img/sat-nps.png",
             resposta: [
               "Dentro da aba <strong>Satisfação &gt; Pesquisas NPS</strong>, você consegue visualizar todas as pesquisas que estão sendo enviadas aos clientes em cada tipo de situação.",
               "Ao clicar em uma pesquisa, é possível verificar as perguntas que estão sendo realizadas, as respostas recebidas e também acessar a aba de Analytics, para acompanhar os resultados.",
@@ -1137,6 +1147,7 @@ const RESPOSTAS = [
           {
             titulo: "Não consigo visualizar esses feedbacks negativos / Como visualizo os feedbacks das conversas?",
             tags: ["feedback", "elogio", "reclamacao", "conversas", "negativo"],
+            imagem: "img/sat-conversas.png",
             resposta: [
               "Dentro da aba <strong>Satisfação</strong>, na sub-aba <strong>Nas Conversas</strong>, você consegue visualizar as mensagens de elogios ou reclamações que a IA identificou durante os atendimentos aos clientes. Assim, fica mais fácil acompanhar os principais feedbacks recebidos diretamente nas conversas."
             ]
@@ -1157,6 +1168,7 @@ const RESPOSTAS = [
           {
             titulo: "Como verificar se WhatsApp e Instagram estão conectados",
             tags: ["canais conectados", "ativar ia", "inativar", "whatsapp", "instagram", "salvar"],
+            imagem: "img/ia-canais.png",
             resposta: [
               "Em <strong>Configuração de IA &gt; Identidade &gt; Canais Conectados</strong>, você consegue verificar se o seu WhatsApp e Instagram estão conectados à plataforma.",
               "Nessa mesma área, também é possível ativar ou inativar a IA para cada canal. Após realizar qualquer alteração, lembre-se sempre de <strong>salvar</strong> as configurações para que ela seja aplicada corretamente."
@@ -1171,6 +1183,7 @@ const RESPOSTAS = [
           {
             titulo: "Nome e Gênero, Tamanho das Respostas, Tom de Voz, Recursos",
             tags: ["nome", "genero", "tom de voz", "tamanho da resposta", "emoji", "bullet points", "recursos"],
+            imagem: "img/ia-caracteristicas.png",
             resposta: [
               "Dentro da aba <strong>Configuração de IA &gt; Identidade</strong>, conseguimos configurar diferentes características da assistente, como o nome e gênero da assistente, o tamanho das respostas que ela irá enviar e o tom de voz utilizado durante os atendimentos.",
               "Também dá para escolher os recursos que a IA poderá utilizar, como emojis, bullet points, que ajudam a organizar as informações por tópicos, respostas em formato de perguntas e respostas, além da possibilidade de reagir às mensagens dos clientes.",
@@ -1186,6 +1199,7 @@ const RESPOSTAS = [
           {
             titulo: "Regras de Comportamento e Gírias e Expressões",
             tags: ["regras", "comportamento", "girias", "expressoes", "vendedora", "formal", "emoji", "regional"],
+            imagem: "img/ia-regras.png",
             resposta: [
               "Dentro da aba <strong>Configuração de IA &gt; Identidade</strong>, nos dois últimos tópicos, você encontra as opções <strong>Regras de Comportamento</strong> e <strong>Gírias e Expressões</strong>.",
               "Em Regras de Comportamento, é possível definir como a IA deve se comportar durante os atendimentos, como ser mais vendedora, mais direta, menos repetitiva, mais animada, mais formal, entre outras orientações.",
@@ -1202,6 +1216,7 @@ const RESPOSTAS = [
           {
             titulo: "Como cadastrar, categorizar e editar uma informação da IA",
             tags: ["informacoes", "adicionar", "categoria", "validade", "editar", "lapis", "barra de pesquisa"],
+            imagem: "img/ia-informacoes.png",
             resposta: [
               "Na aba <strong>Configuração de IA &gt; Informações</strong>, você pode clicar no botão <strong>Adicionar</strong> para cadastrar uma nova informação, preenchendo o título e o conteúdo referente a ela.",
               "O conteúdo pode ser preenchido de forma simples e objetiva, com as informações necessárias para que a IA consiga entender o assunto e repassá-lo corretamente aos clientes.",
@@ -1226,6 +1241,7 @@ const RESPOSTAS = [
           {
             titulo: "Como adicionar uma imagem para a IA enviar?",
             tags: ["imagem", "galeria", "foto", "enviar imagem", "cardapio foto"],
+            imagem: "img/loja-imagens.png",
             resposta: [
               "Dentro da aba <strong>Minha Loja &gt; Loja</strong>, o último tópico é a <strong>Galeria de Imagens</strong>. Nessa área, você consegue cadastrar imagens para que a IA possa enviá-las aos clientes quando necessário.",
               "Durante o cadastro, você pode adicionar um título e uma breve descrição para orientar a IA sobre em quais situações aquela imagem deve ser utilizada.",
