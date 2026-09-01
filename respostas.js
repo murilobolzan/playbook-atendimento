@@ -74,6 +74,15 @@ const RESPOSTAS = [
               "Para receber os valores, basta cadastrar a chave Pix de vocês na plataforma, e os repasses serão realizados diretamente para essa chave. O processo funciona de forma semelhante a uma intermediadora de pagamentos.",
               "Caso prefiram, essa taxa também pode ser repassada ao cliente no momento do pagamento."
             ]
+          },
+          {
+            titulo: "Dias de Antecedencia",
+            tags: ["reservas", "antecedencia", "dias", "tempo"],
+            imagem: "img/whatsapp-image-2026-09-01-at-17-12-45.png",
+            resposta: [
+              "Em “Reservas” > “Áreas e Mesas” > “Configurações Avançadas”, você consegue verificar por quantos dias de antecedência os clientes podem realizar uma reserva.",
+              "Ao alterar essa quantidade de dias, novos dias vão sendo liberados automaticamente para que os clientes consigam realizar as reservas dentro do período configurado."
+            ]
           }
         ]
       },
