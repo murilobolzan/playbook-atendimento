@@ -32,10 +32,12 @@ conteúdo daquele. Guia e respostas rápidas nunca dividem a mesma tela.
 | **Critérios de avaliação** | A régua de 4 critérios, de consulta |
 | **Respostas rápidas** | As respostas padrão, por aba e sub-aba da plataforma |
 
-### A lupa é das respostas rápidas
+### A busca fica no topo das respostas
 
-A busca aparece só no tópico **Respostas rápidas** e procura só ali: **título, corpo,
-tags, nome da aba e da sub-aba**. Funciona com ou sem acento — "satisfacao" acha
+Ela não mora mais na barra estreita: é uma faixa larga no alto do tópico **Respostas
+rápidas**, com a pergunta "O que o cliente perguntou?" e exemplos no campo. Procura em
+
+**título, corpo, tags, nome da aba e da sub-aba**, e só nas respostas. Funciona com ou sem acento — "satisfacao" acha
 "Satisfação". O termo encontrado vem destacado, e cada resposta tem botão de **copiar**.
 
 Atalho: tecla `/` ou `Ctrl+K` já leva para as respostas e põe o cursor na busca.

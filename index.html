@@ -157,6 +157,25 @@
   }
   .side-nav { overflow-y: auto; overscroll-behavior: contain; padding-right: var(--s1); }
 
+  .side-topo { display: flex; align-items: center; gap: var(--s2); padding: 0 var(--s2) var(--s2); }
+  .side-rot {
+    font-family: var(--font-mono); font-size: var(--t-micro); font-weight: 700;
+    letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3);
+  }
+  .side-recolher, .side-abrir {
+    font: inherit; font-size: var(--t-md); line-height: 1; cursor: pointer;
+    background: var(--surface); color: var(--ink-3);
+    border: 1px solid var(--line-forte); border-radius: var(--r-sm); padding: 2px 9px;
+  }
+  .side-recolher { margin-left: auto; }
+  .side-recolher:hover, .side-abrir:hover { border-color: var(--accent); color: var(--accent); }
+  .side-abrir {
+    position: sticky; top: calc(var(--stick) + var(--s5)); align-self: start;
+    margin-top: var(--s6); z-index: 6;
+  }
+  body.barra-recolhida .app { grid-template-columns: auto minmax(0,1fr); }
+  body.barra-recolhida .side { display: none; }
+
   /* puxador para alargar ou estreitar a barra, arrastando */
   .puxador {
     position: absolute; top: 0; right: calc(var(--s5) / -2); width: var(--s3); height: 100%;
@@ -164,10 +183,17 @@
   }
   .puxador::before {
     content: ""; position: absolute; top: 0; bottom: 0; left: 50%; width: 2px;
-    transform: translateX(-50%); background: transparent; border-radius: 2px;
-    transition: background .12s;
+    transform: translateX(-50%); background: var(--line); border-radius: 2px;
+    transition: background .12s, width .12s;
   }
-  .puxador:hover::before, .puxador:focus-visible::before, body.arrastando .puxador::before { background: var(--accent); }
+  /* três pontinhos no meio, para o puxador se anunciar */
+  .puxador::after {
+    content: ""; position: absolute; top: 50%; left: 50%; width: 4px; height: 26px;
+    transform: translate(-50%,-50%); border-radius: 4px;
+    background: repeating-linear-gradient(var(--line-forte) 0 3px, transparent 3px 6px);
+  }
+  .puxador:hover::before, .puxador:focus-visible::before, body.arrastando .puxador::before { background: var(--accent); width: 3px; }
+  .puxador:hover::after, body.arrastando .puxador::after { background: repeating-linear-gradient(var(--accent) 0 3px, transparent 3px 6px); }
   body.arrastando { cursor: col-resize; user-select: none; }
   @media (max-width: 1080px) { .puxador { display: none; } }
 
@@ -192,10 +218,13 @@
 
   /* ============ BUSCA COM LUPA ============ */
   .side-busca {
-    display: flex; flex-direction: column; gap: var(--s2); flex: 0 0 auto;
-    padding: var(--s3); margin-bottom: var(--s2);
+    display: flex; flex-direction: column; gap: var(--s2);
+    padding: var(--s4) var(--s5);
     background: var(--accent-suave); border: 1px solid var(--accent-linha);
-    border-radius: var(--r);
+    border-left: 3px solid var(--accent); border-radius: var(--r);
+  }
+  .busca-rot {
+    font-size: var(--t-md); font-weight: 650; color: var(--ink); letter-spacing: -.01em;
   }
   .lupa { position: relative; display: flex; align-items: center; }
   .lupa-icone {
@@ -905,23 +934,30 @@
 
   <aside class="side" id="side">
     <button class="puxador" id="puxador" type="button" aria-label="Ajustar largura da barra"></button>
-    <div class="side-busca">
+    <div class="side-topo">
+      <span class="side-rot" id="t-side-rot"></span>
+      <button class="side-recolher" id="btn-recolher" type="button" title="Recolher a barra">‹</button>
+    </div>
+    <nav class="side-nav" id="side-nav" aria-label="Seções do playbook"></nav>
+  </aside>
+
+  <button class="side-abrir" id="btn-abrir" type="button" title="Mostrar a barra" hidden>›</button>
+  <div class="véu" id="veu" hidden></div>
+
+  <div class="conteudo">
+    <div class="side-busca" id="caixa-busca">
+      <label class="busca-rot" for="q" id="t-busca-rot"></label>
       <div class="lupa">
         <svg class="lupa-icone" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
           <circle cx="8.5" cy="8.5" r="5.5" />
           <line x1="12.7" y1="12.7" x2="17.2" y2="17.2" />
         </svg>
         <input type="search" id="q" autocomplete="off">
-        <button class="lupa-limpa" id="btn-limpa" type="button" hidden>×</button>
+        <button class="lupa-limpa" id="btn-limpa" type="button">×</button>
       </div>
       <span class="side-dica" id="t-busca-dica"></span>
     </div>
-    <nav class="side-nav" id="side-nav" aria-label="Seções do playbook"></nav>
-  </aside>
 
-  <div class="véu" id="veu" hidden></div>
-
-  <div class="conteudo">
     <section id="busca"></section>
     <section class="flow" id="flow"></section>
     <section id="out" aria-live="polite"></section>
@@ -972,7 +1008,19 @@
     }
   });
 </script>
-<script src="conteudo.js"></script>
+<script>
+  /* O GitHub Pages guarda cada arquivo por 10 minutos, separadamente. Sem isto,
+     dava para pegar um index.html novo com um conteudo.js velho, e toda chave
+     de texto recem-criada virava undefined: botao sem legenda, campo sem rotulo.
+     A marca de minuto na URL faz os dois virem sempre da mesma leva. */
+  (function () {
+    var s = document.createElement("script");
+    s.src = "conteudo.js?t=" + Math.floor(Date.now() / 60000);
+    s.onload = function () { if (window.iniciar) window.iniciar(); };
+    s.onerror = function () { window.__erroConteudo = { msg: "conteudo.js nao carregou", linha: 0 }; if (window.iniciar) window.iniciar(); };
+    document.head.appendChild(s);
+  })();
+</script>
 <script>
 "use strict";
 
@@ -980,7 +1028,7 @@
    Se o conteudo.js tiver erro de sintaxe, o navegador aborta o arquivo
    inteiro e nenhuma das listas existe. Sem isso, a tela ficaria vazia
    e ninguém saberia por quê. */
-(function () {
+function conferirConteudo() {
   var faltando = [];
   if (typeof D === "undefined") faltando.push("D");
   if (typeof ETAPAS === "undefined") faltando.push("ETAPAS");
@@ -991,7 +1039,7 @@
   if (typeof FUP === "undefined") faltando.push("FUP");
   if (typeof TEXTOS === "undefined") faltando.push("TEXTOS");
   if (typeof AVALIACAO === "undefined") faltando.push("AVALIACAO");
-  if (!faltando.length) return;
+  if (!faltando.length) return true;
 
   var REPO = "https://github.com/murilobolzan/playbook-atendimento";
   var err = window.__erroConteudo || {};
@@ -1052,8 +1100,8 @@
     ".err-nota{font-size:12.5px;color:var(--ink-3)}";
   document.head.appendChild(css);
 
-  throw new Error("conteudo.js nao carregou: " + faltando.join(", "));
-})();
+  return false;
+}
 
 /* ═══════════════════════════════════════════════════════════════════════════
    MOTOR — lê tudo de conteudo.js. Não precisa editar nada aqui.
@@ -1173,13 +1221,15 @@ function renderMoldura() {
   document.getElementById("t-titulo").textContent = TEXTOS.titulo;
   document.getElementById("t-sub").textContent = TEXTOS.subtitulo;
   document.getElementById("t-busca-dica").textContent = TEXTOS.buscaGlobalDica;
+  document.getElementById("t-busca-rot").textContent = TEXTOS.buscaRotulo;
+  document.getElementById("t-side-rot").textContent = TEXTOS.sideRotulo;
   document.getElementById("q").placeholder = TEXTOS.buscaGlobalPlaceholder;
   document.getElementById("q").setAttribute("aria-label", TEXTOS.buscaGlobalPlaceholder);
   document.getElementById("btn-limpa").setAttribute("aria-label", TEXTOS.buscaLimpar);
   document.getElementById("btn-limpa").hidden = !state.busca;
 
   /* a lupa pertence ao tópico de respostas rápidas */
-  document.querySelector(".side-busca").hidden = state.secao !== "respostas";
+  document.getElementById("caixa-busca").hidden = state.secao !== "respostas";
   document.getElementById("reset").textContent = TEXTOS.rodapeBotao;
   document.getElementById("t-rodape").innerHTML = TEXTOS.rodapeAviso;
 
@@ -2371,6 +2421,11 @@ function render() {
   medirTopo();
 }
 
+function iniciar() {
+  if (iniciar.jaRodou) return;
+  iniciar.jaRodou = true;
+  if (!conferirConteudo()) return;
+
 window.addEventListener("resize", medirTopo);
 window.addEventListener("load", medirTopo);
 observarTopo();
@@ -2452,6 +2507,23 @@ function poeLargura(px) {
   alca.addEventListener("dblclick", () => poeLargura(PADRAO_BARRA));
 })();
 
+/* ---- recolher e mostrar a barra ---- */
+function poeBarra(recolhida) {
+  document.body.classList.toggle("barra-recolhida", recolhida);
+  document.getElementById("btn-abrir").hidden = !recolhida;
+  try { localStorage.setItem("barraRecolhida", recolhida ? "1" : "0"); } catch (e) { /* sem storage, só não lembra */ }
+  medirTopo();
+}
+
+document.getElementById("btn-recolher").addEventListener("click", () => poeBarra(true));
+document.getElementById("btn-abrir").addEventListener("click", () => poeBarra(false));
+
+(function lembraBarra() {
+  let v = null;
+  try { v = localStorage.getItem("barraRecolhida"); } catch (e) { /* segue com a barra aberta */ }
+  if (v === "1") poeBarra(true);
+})();
+
 /* ---- menu no celular ---- */
 document.getElementById("btn-menu").addEventListener("click", () => {
   const aberto = document.body.classList.toggle("menu-aberto");
@@ -2486,5 +2558,8 @@ document.getElementById("reset").addEventListener("click", () => {
   window.scrollTo({ top:0, behavior:"smooth" });
 });
 
-render();
+  render();
+}
+window.iniciar = iniciar;
+if (typeof TEXTOS !== "undefined") iniciar();   /* se ja chegou, comeca agora */
 </script>

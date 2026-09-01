@@ -753,7 +753,9 @@ const TEXTOS = {
   /* --- busca global, a lupa do topo da barra lateral ---
      Procura em título, corpo, tag, nome da aba e da sub-aba, e também nas
      etapas do guia, nos casos conhecidos e nos critérios de avaliação. */
-  buscaGlobalPlaceholder: "Buscar nas respostas rápidas...",
+  buscaRotulo: "O que o cliente perguntou?",
+  buscaGlobalPlaceholder: "Digite uma palavra: cupom, NPS, taxa, antecedência...",
+  sideRotulo: "Navegação",
   buscaGlobalDica: "Procura por palavra-chave no título, no texto e nas tags. Atalho: / ou Ctrl+K.",
   buscaLimpar: "Limpar busca",
   buscaEyebrow: "Respostas rápidas · busca",
