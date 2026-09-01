@@ -586,6 +586,22 @@
   .topico-dentro { display: flex; flex-direction: column; gap: 2px; }
 
   /* ============ EDITOR DE RESPOSTAS ============ */
+  .rcard-editar {
+    margin-left: auto; font: inherit; font-size: var(--t-xs); font-weight: 600; cursor: pointer;
+    background: transparent; color: var(--ink-3);
+    border: 1px solid var(--line-forte); border-radius: var(--r-sm); padding: 2px var(--s2);
+  }
+  .rcard-editar:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-suave); }
+  .rcard-editar + .rcard-apagar { margin-left: 0; }
+  .modal-passos { margin: 0; padding-left: var(--s5); display: flex; flex-direction: column; gap: 6px; font-size: var(--t-base); color: var(--ink-2); line-height: 1.5; }
+  .modal-aviso {
+    margin: 0; font-size: var(--t-sm); line-height: 1.5; color: var(--warn);
+    background: var(--warn-bg); border: 1px solid color-mix(in srgb, var(--warn) 30%, transparent);
+    border-radius: var(--r-sm); padding: var(--s3);
+  }
+  .modal-estado { margin: 0; font-size: var(--t-base); color: var(--ink-2); min-height: 1.4em; }
+  .modal-estado.ok { color: var(--calm); font-weight: 600; }
+  .modal-estado.ruim { color: var(--crit); font-weight: 600; }
   .side-acoes { display: flex; flex-direction: column; gap: var(--s2); padding-bottom: var(--s4); margin-bottom: var(--s2); border-bottom: 1px solid var(--line); }
   .btn.cheio { width: 100%; justify-content: center; }
   .rcard-rascunho {
@@ -1026,11 +1042,16 @@
      de texto recem-criada virava undefined: botao sem legenda, campo sem rotulo.
      A marca de minuto na URL faz os dois virem sempre da mesma leva. */
   (function () {
-    var s = document.createElement("script");
-    s.src = "conteudo.js?t=" + Math.floor(Date.now() / 60000);
-    s.onload = function () { if (window.iniciar) window.iniciar(); };
-    s.onerror = function () { window.__erroConteudo = { msg: "conteudo.js nao carregou", linha: 0 }; if (window.iniciar) window.iniciar(); };
-    document.head.appendChild(s);
+    var marca = Math.floor(Date.now() / 60000);
+    var faltam = 2;
+    function chegou() { if (--faltam === 0 && window.iniciar) window.iniciar(); }
+    ["conteudo.js", "respostas.js"].forEach(function (arq) {
+      var s = document.createElement("script");
+      s.src = arq + "?t=" + marca;
+      s.onload = chegou;
+      s.onerror = function () { window.__erroConteudo = { msg: arq + " nao carregou", linha: 0 }; chegou(); };
+      document.head.appendChild(s);
+    });
   })();
 </script>
 <script>
@@ -1051,6 +1072,7 @@ function conferirConteudo() {
   if (typeof FUP === "undefined") faltando.push("FUP");
   if (typeof TEXTOS === "undefined") faltando.push("TEXTOS");
   if (typeof AVALIACAO === "undefined") faltando.push("AVALIACAO");
+  if (typeof RESPOSTAS === "undefined") faltando.push("RESPOSTAS");
   if (!faltando.length) return true;
 
   var REPO = "https://github.com/murilobolzan/playbook-atendimento";
@@ -1392,6 +1414,10 @@ function renderSidebar() {
     novo.type = "button";
     novo.onclick = () => { const a = state.sub ? achaSub(state.sub) : null; abrirEditor(a && a.aba.aba, a && a.sub.sub); };
     acoes.append(novo);
+    const acesso = el("button","btn ghost sm cheio", temToken() ? TEXTOS.acessoBotaoOk : TEXTOS.acessoBotao);
+    acesso.type = "button";
+    acesso.onclick = abrirAcesso;
+    acoes.append(acesso);
     const quantos = leRascunhos().length;
     if (quantos) {
       const exp = el("button","btn ghost sm cheio", fmt(TEXTOS.editorExportar, { n: quantos }));
@@ -1851,6 +1877,236 @@ function ampliar(src, alt) {
   fechar.focus();
 }
 
+/* ---------- publicar direto no GitHub ----------
+   O site é estático, então para uma alteração valer para o time ela precisa
+   virar um commit no repositório. O playbook faz isso sozinho pela API do
+   GitHub, usando um token que fica guardado só neste navegador.
+
+   O token NUNCA entra no código publicado. Quem abre o site sem token só lê. */
+
+const REPO = { dono: "murilobolzan", nome: "playbook-atendimento", arquivo: "respostas.js", ramo: "main" };
+const CHAVE_TOKEN = "tokenGitHub";
+
+function pegaToken() {
+  try { return localStorage.getItem(CHAVE_TOKEN) || ""; } catch (e) { return ""; }
+}
+
+function guardaToken(t) {
+  try {
+    if (t) localStorage.setItem(CHAVE_TOKEN, t);
+    else localStorage.removeItem(CHAVE_TOKEN);
+  } catch (e) { /* modo privado: vale só nesta aba */ }
+}
+
+function temToken() { return !!pegaToken(); }
+
+function apiGitHub(caminho, opcoes) {
+  const o = opcoes || {};
+  return fetch("https://api.github.com/repos/" + REPO.dono + "/" + REPO.nome + caminho, {
+    method: o.metodo || "GET",
+    headers: {
+      "Authorization": "Bearer " + pegaToken(),
+      "Accept": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    body: o.corpo ? JSON.stringify(o.corpo) : undefined
+  }).then(r => r.json().then(j => {
+    if (!r.ok) throw new Error(j.message || ("HTTP " + r.status));
+    return j;
+  }));
+}
+
+/* base64 que aguenta acento */
+function paraBase64(txt) {
+  const bytes = new TextEncoder().encode(txt);
+  let bin = "";
+  bytes.forEach(b => { bin += String.fromCharCode(b); });
+  return btoa(bin);
+}
+
+/* ---------- serializa a árvore de volta para JavaScript ----------
+   Gerar o arquivo inteiro, em vez de emendar texto, é o que impede o tipo de
+   quebra que já aconteceu: um bloco colado no lugar errado. */
+function gerarArquivoRespostas(arv) {
+  const asp = t => JSON.stringify(String(t));
+  const linhas = [];
+
+  linhas.push("const RESPOSTAS = [");
+  arv.forEach((a, ia) => {
+    linhas.push("  {");
+    linhas.push("    id: " + asp(a.id) + ",");
+    linhas.push("    aba: " + asp(a.aba) + ",");
+    linhas.push("    subs: [");
+    a.subs.forEach((s, is) => {
+      if (!s.itens.length) {
+        linhas.push("      { id: " + asp(s.id) + ", sub: " + asp(s.sub) + ", itens: [] }" + (is < a.subs.length - 1 ? "," : ""));
+        return;
+      }
+      linhas.push("      {");
+      linhas.push("        id: " + asp(s.id) + ",");
+      linhas.push("        sub: " + asp(s.sub) + ",");
+      linhas.push("        itens: [");
+      s.itens.forEach((it, ii) => {
+        linhas.push("          {");
+        linhas.push("            titulo: " + asp(it.titulo) + ",");
+        linhas.push("            tags: [" + (it.tags || []).map(asp).join(", ") + "],");
+        if (it.interno) linhas.push("            interno: true,");
+        if (it.imagem) linhas.push("            imagem: " + asp(it.imagem) + ",");
+        linhas.push("            resposta: [");
+        linhas.push(it.resposta.map(p => "              " + asp(p)).join(",\n"));
+        linhas.push("            ]");
+        linhas.push("          }" + (ii < s.itens.length - 1 ? "," : ""));
+      });
+      linhas.push("        ]");
+      linhas.push("      }" + (is < a.subs.length - 1 ? "," : ""));
+    });
+    linhas.push("    ]");
+    linhas.push("  }" + (ia < arv.length - 1 ? "," : ""));
+  });
+  linhas.push("];");
+  return linhas.join("\n") + "\n";
+}
+
+/* pega o cabeçalho de comentário do arquivo atual, para não perdê-lo */
+function cabecalhoRespostas() {
+  return fetch("respostas.js?t=" + Date.now())
+    .then(r => r.text())
+    .then(txt => {
+      const i = txt.indexOf("const RESPOSTAS");
+      return i > 0 ? txt.slice(0, i) : "";
+    })
+    .catch(() => "");
+}
+
+/* ---------- publicar ---------- */
+function publicarRespostas(arvoreNova, mensagem) {
+  return apiGitHub("/contents/" + REPO.arquivo + "?ref=" + REPO.ramo)
+    .then(atual => cabecalhoRespostas().then(cab => ({ atual, cab })))
+    .then(({ atual, cab }) => apiGitHub("/contents/" + REPO.arquivo, {
+      metodo: "PUT",
+      corpo: {
+        message: mensagem,
+        content: paraBase64(cab + gerarArquivoRespostas(arvoreNova)),
+        sha: atual.sha,
+        branch: REPO.ramo
+      }
+    }));
+}
+
+function publicarImagem(nome, dataUrl) {
+  const base64 = String(dataUrl).split(",")[1];
+  return apiGitHub("/contents/img/" + nome + "?ref=" + REPO.ramo)
+    .then(a => a.sha, () => null)
+    .then(sha => apiGitHub("/contents/img/" + nome, {
+      metodo: "PUT",
+      corpo: {
+        message: "Print de resposta: " + nome,
+        content: base64,
+        sha: sha || undefined,
+        branch: REPO.ramo
+      }
+    }));
+}
+
+/* ---------- a árvore oficial, sem os rascunhos locais ---------- */
+function arvoreOficial() {
+  return RESPOSTAS.map(a => ({
+    id: a.id, aba: a.aba,
+    subs: a.subs.map(s => ({
+      id: s.id, sub: s.sub,
+      itens: s.itens.map(i => ({
+        titulo: i.titulo, tags: (i.tags || []).slice(),
+        resposta: i.resposta.slice(), imagem: i.imagem || null, interno: !!i.interno
+      }))
+    }))
+  }));
+}
+
+/* ---------- tela de configurar o acesso ---------- */
+function abrirAcesso() {
+  const fundo = el("div","modal");
+  const cx = el("div","modal-cx");
+
+  const topo = el("header","modal-topo");
+  topo.append(el("h2","modal-titulo", TEXTOS.acessoTitulo));
+  const xis = el("button","modal-x","×");
+  xis.type = "button";
+  topo.append(xis);
+  cx.append(topo);
+
+  const corpo = el("div","modal-corpo");
+  corpo.append(el("p","modal-nota", TEXTOS.acessoNota));
+
+  const passos = el("ol","modal-passos");
+  TEXTOS.acessoPassos.forEach(p => passos.append(el("li","", p)));
+  corpo.append(passos);
+
+  const link = el("a","btn ghost sm", TEXTOS.acessoCriarToken);
+  link.href = "https://github.com/settings/personal-access-tokens/new";
+  link.target = "_blank";
+  link.rel = "noopener";
+  corpo.append(link);
+
+  const campo = el("div","campo");
+  campo.append(el("label","", TEXTOS.acessoCampo));
+  const inp = document.createElement("input");
+  inp.type = "password";
+  inp.placeholder = "github_pat_...";
+  inp.value = pegaToken();
+  campo.append(inp, el("span","campo-dica", TEXTOS.acessoCampoDica));
+  corpo.append(campo);
+
+  const aviso = el("p","modal-aviso", TEXTOS.acessoAviso);
+  corpo.append(aviso);
+
+  const estado = el("p","modal-estado");
+  corpo.append(estado);
+  cx.append(corpo);
+
+  const pe = el("footer","modal-pe");
+  const testar = el("button","btn", TEXTOS.acessoTestar);
+  testar.type = "button";
+  const apagar = el("button","btn ghost", TEXTOS.acessoApagar);
+  apagar.type = "button";
+  const fecharBtn = el("button","btn ghost", TEXTOS.docFechar);
+  fecharBtn.type = "button";
+  pe.append(testar, apagar, fecharBtn);
+  cx.append(pe);
+
+  const fechar = () => { fundo.remove(); document.body.classList.remove("gaveta-aberta"); render(); };
+  xis.onclick = fechar;
+  fecharBtn.onclick = fechar;
+  fundo.onclick = (e) => { if (e.target === fundo) fechar(); };
+
+  testar.onclick = () => {
+    guardaToken(inp.value.trim());
+    estado.textContent = TEXTOS.acessoTestando;
+    estado.className = "modal-estado";
+    apiGitHub("")
+      .then(r => {
+        if (!r.permissions || !r.permissions.push) throw new Error(TEXTOS.acessoSemEscrita);
+        estado.textContent = TEXTOS.acessoOk;
+        estado.className = "modal-estado ok";
+      })
+      .catch(e => {
+        estado.textContent = TEXTOS.acessoFalhou + " " + e.message;
+        estado.className = "modal-estado ruim";
+      });
+  };
+
+  apagar.onclick = () => {
+    guardaToken("");
+    inp.value = "";
+    estado.textContent = TEXTOS.acessoApagado;
+    estado.className = "modal-estado";
+  };
+
+  fundo.append(cx);
+  document.body.append(fundo);
+  document.body.classList.add("gaveta-aberta");
+  setTimeout(() => inp.focus(), 30);
+}
+
 /* ---------- rascunhos locais: abas e respostas criadas pela tela ----------
    O site é estático, não tem servidor. Então o que você cria aqui fica
    guardado no SEU navegador e serve para usar na hora. Para virar oficial e
@@ -1876,7 +2132,11 @@ function idDe(txt) {
 function arvore() {
   const base = RESPOSTAS.map(a => ({
     id: a.id, aba: a.aba,
-    subs: a.subs.map(s => ({ id: s.id, sub: s.sub, itens: s.itens.slice() }))
+    subs: a.subs.map(s => ({
+      id: s.id, sub: s.sub,
+      /* carimba a origem: e assim que o lapis sabe qual item mexer */
+      itens: s.itens.map((it, i) => Object.assign({}, it, { ondeAba: a.id, ondeSub: s.id, ondeIndice: i }))
+    }))
   }));
 
   leRascunhos().forEach((r, i) => {
@@ -1895,14 +2155,14 @@ function arvore() {
 }
 
 /* ---------- formulário ---------- */
-function abrirEditor(preAba, preSub) {
+function abrirEditor(preAba, preSub, edicao) {
   const fundo = el("div","modal");
   const cx = el("form","modal-cx");
   cx.setAttribute("role","dialog");
   cx.setAttribute("aria-modal","true");
 
   const topo = el("header","modal-topo");
-  topo.append(el("h2","modal-titulo", TEXTOS.editorTitulo));
+  topo.append(el("h2","modal-titulo", edicao ? TEXTOS.editorTituloEditar : TEXTOS.editorTitulo));
   const xis = el("button","modal-x","×");
   xis.type = "button";
   topo.append(xis);
@@ -1911,6 +2171,7 @@ function abrirEditor(preAba, preSub) {
   const corpo = el("div","modal-corpo");
   corpo.append(el("p","modal-nota", TEXTOS.editorNota));
 
+  let chkPre = false;
   const arv = arvore();
 
   /* aba: escolher uma existente ou digitar uma nova */
@@ -1945,6 +2206,14 @@ function abrirEditor(preAba, preSub) {
   corpo.append(bImg);
 
   let imagemDados = null, imagemNome = null;
+
+  if (edicao) {
+    campoTitulo.poe(edicao.item.titulo);
+    campoTags.poe((edicao.item.tags || []).join(", "));
+    campoTexto2.poe(edicao.item.resposta.join(String.fromCharCode(10)));
+    chkPre = !!edicao.item.interno;
+    if (edicao.item.imagem) previa.append(el("span","campo-dica", fmt(TEXTOS.editorImagemAtual, { nome: edicao.item.imagem })));
+  }
   inpImg.addEventListener("change", () => {
     const arq = inpImg.files && inpImg.files[0];
     previa.textContent = "";
@@ -1965,19 +2234,34 @@ function abrirEditor(preAba, preSub) {
   const marcaInterno = el("label","campo-check");
   const chk = document.createElement("input");
   chk.type = "checkbox";
+  chk.checked = !!chkPre;
   marcaInterno.append(chk, el("span","", TEXTOS.editorInterno));
   corpo.append(marcaInterno);
 
   cx.append(corpo);
 
+  const situacao = el("p","modal-estado");
+  corpo.append(situacao);
+
   const pe = el("footer","modal-pe");
-  const salvar = el("button","btn", TEXTOS.editorSalvar);
-  salvar.type = "submit";
+  const publicar = el("button","btn", TEXTOS.editorPublicar);
+  publicar.type = "submit";
+  const salvar = el("button","btn ghost", TEXTOS.editorSalvar);
+  salvar.type = "button";
   const codigo = el("button","btn ghost", TEXTOS.editorCodigo);
   codigo.type = "button";
   const cancelar = el("button","btn ghost", TEXTOS.editorCancelar);
   cancelar.type = "button";
-  pe.append(salvar, codigo, cancelar);
+
+  if (temToken()) pe.append(publicar, salvar, cancelar);
+  else {
+    const config = el("button","btn", TEXTOS.editorConfigurar);
+    config.type = "button";
+    config.onclick = () => { fechar(); abrirAcesso(); };
+    salvar.className = "btn";
+    salvar.type = "submit";
+    pe.append(salvar, codigo, config, cancelar);
+  }
   cx.append(pe);
 
   const fechar = () => { fundo.remove(); document.body.classList.remove("gaveta-aberta"); };
@@ -2001,16 +2285,63 @@ function abrirEditor(preAba, preSub) {
     };
   };
 
-  cx.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const r = montaRegistro();
-    if (!r) return;
+  const guardaLocal = (r) => {
     const lista = leRascunhos();
     lista.push(r);
     gravaRascunhos(lista);
     fechar();
     irParaSecao("respostas", null);
     render();
+  };
+
+  salvar.onclick = () => { const r = montaRegistro(); if (r) guardaLocal(r); };
+
+  cx.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const r = montaRegistro();
+    if (!r) return;
+    if (!temToken()) { guardaLocal(r); return; }
+
+    publicar.disabled = true;
+    situacao.className = "modal-estado";
+    situacao.textContent = TEXTOS.editorEnviando;
+
+    const arvNova = arvoreOficial();
+    let a = arvNova.find(x => norm(x.aba) === norm(r.aba));
+    if (!a) { a = { id: idDe(r.aba), aba: r.aba, subs: [] }; arvNova.push(a); }
+    let sb = a.subs.find(x => norm(x.sub) === norm(r.sub));
+    if (!sb) { sb = { id: a.id + "-" + idDe(r.sub), sub: r.sub, itens: [] }; a.subs.push(sb); }
+
+    const antes = edicao && edicao.item.imagem ? edicao.item.imagem : null;
+    const novo = {
+      titulo: r.titulo, tags: r.tags, resposta: r.resposta,
+      imagem: r.imagemNome ? "img/" + r.imagemNome : antes,
+      interno: r.interno
+    };
+
+    if (edicao) {
+      const aOld = arvNova.find(x => x.id === edicao.abaId);
+      const sOld = aOld && aOld.subs.find(x => x.id === edicao.subId);
+      if (sOld) sOld.itens.splice(edicao.indice, 1);
+    }
+    sb.itens.push(novo);
+
+    const enviaImagem = r.imagemNome && r.imagem
+      ? publicarImagem(r.imagemNome, r.imagem)
+      : Promise.resolve();
+
+    enviaImagem
+      .then(() => publicarRespostas(arvNova, (edicao ? "Edita" : "Adiciona") + " resposta: " + r.titulo))
+      .then(() => {
+        situacao.className = "modal-estado ok";
+        situacao.textContent = TEXTOS.editorPublicado;
+        setTimeout(() => { location.reload(); }, 2600);
+      })
+      .catch(err => {
+        publicar.disabled = false;
+        situacao.className = "modal-estado ruim";
+        situacao.textContent = TEXTOS.editorErroEnvio + " " + err.message;
+      });
   });
 
   codigo.onclick = () => {
@@ -2033,7 +2364,7 @@ function campoTexto(rot, dica) {
   i.type = "text";
   bloco.append(i);
   if (dica) bloco.append(el("span","campo-dica", dica));
-  return { bloco, valor: () => i.value, foco: () => i.focus() };
+  return { bloco, valor: () => i.value, poe: v => { i.value = v; }, foco: () => i.focus() };
 }
 
 function campoArea(rot, dica) {
@@ -2043,7 +2374,7 @@ function campoArea(rot, dica) {
   t.rows = 7;
   bloco.append(t);
   if (dica) bloco.append(el("span","campo-dica", dica));
-  return { bloco, valor: () => t.value };
+  return { bloco, valor: () => t.value, poe: v => { t.value = v; } };
 }
 
 /* lista com opção de digitar um valor novo */
@@ -2181,6 +2512,18 @@ function mostrarCodigo(lista) {
   document.body.classList.add("gaveta-aberta");
 }
 
+function removerResposta(item) {
+  if (!confirm(TEXTOS.editorRemoverConfirma)) return;
+  const arv = arvoreOficial();
+  const a = arv.find(x => x.id === item.ondeAba);
+  const s = a && a.subs.find(x => x.id === item.ondeSub);
+  if (!s) return;
+  s.itens.splice(item.ondeIndice, 1);
+  publicarRespostas(arv, "Remove resposta: " + item.titulo)
+    .then(() => { alert(TEXTOS.editorRemovido); location.reload(); })
+    .catch(e => alert(TEXTOS.editorErroEnvio + " " + e.message));
+}
+
 function apagarRascunho(indice) {
   if (!confirm(TEXTOS.editorApagarConfirma)) return;
   const lista = leRascunhos();
@@ -2213,6 +2556,16 @@ function cardResposta(item, aba, sub, destacar) {
     apagar.title = TEXTOS.editorApagar;
     apagar.onclick = () => apagarRascunho(item.indice);
     topo.append(apagar);
+  } else if (temToken() && item.ondeAba) {
+    const lapis = el("button","rcard-editar", "✎ " + TEXTOS.editorEditar);
+    lapis.type = "button";
+    lapis.onclick = () => abrirEditor(aba, sub, { abaId: item.ondeAba, subId: item.ondeSub, indice: item.ondeIndice, item: item });
+    topo.append(lapis);
+    const lixo = el("button","rcard-apagar","×");
+    lixo.type = "button";
+    lixo.title = TEXTOS.editorRemover;
+    lixo.onclick = () => removerResposta(item);
+    topo.append(lixo);
   }
   card.append(topo);
 

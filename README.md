@@ -12,7 +12,8 @@ o **guia de atendimento** em cinco etapas, os **critérios de avaliação** e as
 
 | Arquivo | O que é |
 |---|---|
-| **[`conteudo.js`](conteudo.js)** | **Todo o texto do playbook. É aqui que você mexe.** |
+| **[`respostas.js`](respostas.js)** | As respostas rápidas. **Mexa pela tela, não pelo arquivo.** |
+| **[`conteudo.js`](conteudo.js)** | O texto do guia, dos critérios e dos rótulos. |
 | `index.html` | O motor. Não precisa abrir. |
 
 Para editar: clique em **[`conteudo.js`](conteudo.js)** → ícone de lápis (**Edit**) →
@@ -52,25 +53,33 @@ várias e você quer bater o olho na lista. Clicar de novo abre.
 O **print não aparece sozinho**: fica atrás do botão "Ver print da tela". Quando
 aberto, entra com no máximo 300px de altura, e um clique nele abre em tela cheia.
 
-### Criar resposta pela própria tela
+### Criar e editar resposta pela própria tela
 
-No tópico **Respostas rápidas**, a barra da esquerda tem o botão **＋ Nova resposta**. O formulário deixa
-escolher uma aba existente ou criar uma nova, o mesmo para a sub-aba, e aceita título,
-palavras-chave, o texto e um print.
+**Você não precisa mais mexer em código.** No tópico Respostas rápidas, a barra da
+esquerda tem **＋ Nova resposta**, e cada resposta tem **✎ Editar** e **×** no topo.
 
-Dois caminhos ao terminar:
+Para isso funcionar, configure a publicação uma vez:
 
-| Botão | O que faz |
-|---|---|
-| **Salvar neste navegador** | A resposta aparece na hora, marcada como *rascunho local*. Só você vê. |
-| **Gerar código** | Monta o bloco pronto para colar em `[12]` do `conteudo.js`. É isso que torna a resposta oficial para o time. |
+1. Clique em **🔑 Configurar publicação** na barra
+2. Siga os 5 passos da tela — ela abre o GitHub no lugar certo
+3. Cole o token e clique em **Testar acesso**
 
-O site é estático, sem servidor — por isso o rascunho não viaja para os colegas.
-O caminho oficial continua sendo o `conteudo.js`, e o gerador existe para você não
-precisar escrever o bloco na mão.
+Feito isso, **Salvar e publicar** grava a alteração no repositório sozinho, e o site
+atualiza em cerca de 40 segundos, para o time inteiro. Print também: escolher o arquivo
+já sobe para `img/`.
 
-Rascunhos entram na busca junto com as respostas oficiais, e cada um tem um **×** no
-canto para apagar.
+O token fica só no seu navegador e **nunca entra no código do site** — quem abre o
+playbook sem token só lê. Não configure em computador compartilhado.
+
+Sem token configurado, dá para salvar como rascunho local e gerar o código para colar
+à mão, como antes.
+
+### Por que as respostas mudaram de arquivo
+
+Elas saíram do `conteudo.js` e vivem em [`respostas.js`](respostas.js). Assim o
+playbook consegue **reescrever o arquivo inteiro** a cada alteração, em vez de emendar
+texto no meio — que foi exatamente o que quebrou a página quando um bloco foi colado
+no lugar errado. Gerando o arquivo do zero, ele nunca sai com sintaxe inválida.
 
 ### A barra tem largura ajustável
 
@@ -154,7 +163,7 @@ Se preferir ir direto, cada seção tem um marcador. Ctrl+F com ele no `conteudo
 | `[9]` | Follow-up: os tempos (30 min e 30 min) e as frases prontas |
 | `[10]` | Todo o texto fixo da tela: títulos, avisos, rótulos |
 | `[11]` | A régua de avaliação: grupos, critérios, pesos e as notas de 0 a 5 |
-| `[12]` | As respostas rápidas: abas, sub-abas e as respostas padrão |
+| — | As respostas rápidas saíram daqui: agora vivem em `respostas.js` |
 
 ## Tarefas comuns
 
