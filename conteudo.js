@@ -753,15 +753,15 @@ const TEXTOS = {
   /* --- busca global, a lupa do topo da barra lateral ---
      Procura em título, corpo, tag, nome da aba e da sub-aba, e também nas
      etapas do guia, nos casos conhecidos e nos critérios de avaliação. */
-  buscaGlobalPlaceholder: "Buscar resposta, etapa ou critério...",
-  buscaGlobalDica: "Busca por palavra-chave em tudo: título, texto e tags. Atalho: / ou Ctrl+K.",
+  buscaGlobalPlaceholder: "Buscar nas respostas rápidas...",
+  buscaGlobalDica: "Procura por palavra-chave no título, no texto e nas tags. Atalho: / ou Ctrl+K.",
   buscaLimpar: "Limpar busca",
-  buscaEyebrow: "Resultado da busca",
+  buscaEyebrow: "Respostas rápidas · busca",
   buscaTitulo: "{n} resultado(s) para “{termo}”",
   buscaGrupoRespostas: "Respostas prontas ({n})",
   buscaGrupoOutros: "Também encontrei ({n})",
   buscaCasoEm: "Caso conhecido em",
-  buscaNada: "Nada encontrado com essas palavras. Tente outra palavra-chave, ou pergunte para a IA da documentação abaixo.",
+  buscaNada: "Nenhuma resposta com essas palavras. Tente outra palavra-chave, ou pergunte para a IA da documentação abaixo.",
   buscaSemSorte: "Não achou o que precisava aqui?",
   buscaTipos: {
     resposta: "Resposta",

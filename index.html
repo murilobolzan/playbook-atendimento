@@ -100,6 +100,8 @@
 
   /* ============ BASE ============ */
   * { box-sizing: border-box; }
+  /* sem isto, uma classe com display:flex vence o atributo hidden e a seção vaza */
+  [hidden] { display: none !important; }
   body {
     margin: 0; background: var(--ground); color: var(--ink);
     font-family: var(--font-ui); font-size: var(--t-md); line-height: 1.55;
@@ -142,18 +144,32 @@
   /* ============ ESTRUTURA: BARRA LATERAL + CONTEUDO ============ */
   .app {
     max-width: 1560px; margin: 0 auto; padding: 0 var(--s5) var(--s8);
-    display: grid; grid-template-columns: 300px minmax(0,1fr); gap: var(--s6);
+    display: grid; grid-template-columns: var(--larg-barra, 232px) minmax(0,1fr); gap: var(--s5);
     align-items: start;
   }
   .conteudo { display: flex; flex-direction: column; gap: var(--s6); min-width: 0; padding-top: var(--s6); }
 
   .side {
-    position: sticky; top: calc(var(--stick) + var(--s5));
+    position: sticky; top: calc(var(--stick) + var(--s5)); /* ancora o puxador */
     max-height: calc(100vh - var(--stick) - var(--s7));
     display: flex; flex-direction: column; gap: var(--s4);
     padding-top: var(--s6);
   }
   .side-nav { overflow-y: auto; overscroll-behavior: contain; padding-right: var(--s1); }
+
+  /* puxador para alargar ou estreitar a barra, arrastando */
+  .puxador {
+    position: absolute; top: 0; right: calc(var(--s5) / -2); width: var(--s3); height: 100%;
+    cursor: col-resize; background: transparent; border: 0; padding: 0; z-index: 5;
+  }
+  .puxador::before {
+    content: ""; position: absolute; top: 0; bottom: 0; left: 50%; width: 2px;
+    transform: translateX(-50%); background: transparent; border-radius: 2px;
+    transition: background .12s;
+  }
+  .puxador:hover::before, .puxador:focus-visible::before, body.arrastando .puxador::before { background: var(--accent); }
+  body.arrastando { cursor: col-resize; user-select: none; }
+  @media (max-width: 1080px) { .puxador { display: none; } }
 
   .véu { display: none; }
 
@@ -817,6 +833,7 @@
 <div class="app">
 
   <aside class="side" id="side">
+    <button class="puxador" id="puxador" type="button" aria-label="Ajustar largura da barra"></button>
     <div class="side-busca">
       <div class="lupa">
         <svg class="lupa-icone" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
@@ -1089,6 +1106,9 @@ function renderMoldura() {
   document.getElementById("q").setAttribute("aria-label", TEXTOS.buscaGlobalPlaceholder);
   document.getElementById("btn-limpa").setAttribute("aria-label", TEXTOS.buscaLimpar);
   document.getElementById("btn-limpa").hidden = !state.busca;
+
+  /* a lupa pertence ao tópico de respostas rápidas */
+  document.querySelector(".side-busca").hidden = state.secao !== "respostas";
   document.getElementById("reset").textContent = TEXTOS.rodapeBotao;
   document.getElementById("t-rodape").innerHTML = TEXTOS.rodapeAviso;
 
@@ -1792,42 +1812,17 @@ function renderRespostas() {
    etapas do guia e nos critérios de avaliação. */
 const INDICE = [];
 
+/* Só as respostas rápidas entram no índice: a lupa é a busca daquele tópico,
+   não uma busca do playbook inteiro. */
 function montarIndice() {
   INDICE.length = 0;
-
   RESPOSTAS.forEach(a => a.subs.forEach(s => s.itens.forEach(it => {
     INDICE.push({
-      tipo: "resposta",
       rotulo: it.titulo,
       onde: a.aba + " › " + s.sub,
       hay: norm([it.titulo, a.aba, s.sub, (it.tags || []).join(" "), it.resposta.join(" ")].join(" ")),
-      ir: () => irParaSecao("respostas", s.id),
       item: it, aba: a.aba, sub: s.sub
     });
-  })));
-
-  PORTOES.forEach((p, i) => INDICE.push({
-    tipo: "guia",
-    rotulo: p.titulo,
-    onde: fmt(TEXTOS.navOnde, { atual: i + 1, total: ETAPAS.length }),
-    hay: norm([p.titulo, p.lead, p.itens.join(" "), p.nunca.join(" "), p.cta, p.why].join(" ")),
-    ir: () => irParaAba(i + 1)
-  }));
-
-  MODULOS.forEach(m => m.casos.forEach(k => INDICE.push({
-    tipo: "caso",
-    rotulo: k.s,
-    onde: TEXTOS.buscaCasoEm + " " + m.nome,
-    hay: norm([k.s, k.c, m.nome, m.area].join(" ")),
-    ir: () => { state.mod = m.id; irParaAba(portoesOk() ? 4 : 3); }
-  })));
-
-  AVALIACAO.grupos.forEach(g => g.criterios.forEach(c => INDICE.push({
-    tipo: "criterio",
-    rotulo: c.n + ". " + c.nome,
-    onde: g.nome,
-    hay: norm([c.nome, g.nome, c.observar, c.niveis.join(" ")].join(" ")),
-    ir: () => irParaSecao("criterios")
   })));
 }
 
@@ -1877,33 +1872,7 @@ function renderBusca() {
   if (!achados.length) {
     corpo.append(el("div","empty", TEXTOS.buscaNada));
   } else {
-    /* as respostas prontas vêm primeiro: é o que resolve o atendimento */
-    const respostas = achados.filter(a => a.tipo === "resposta");
-    const outros = achados.filter(a => a.tipo !== "resposta");
-
-    if (respostas.length) {
-      const bloco = el("section","grupo");
-      bloco.append(el("h3","grupo-nome", fmt(TEXTOS.buscaGrupoRespostas, { n: respostas.length })));
-      respostas.forEach(a => bloco.append(cardResposta(a.item, a.aba, a.sub, termo)));
-      corpo.append(bloco);
-    }
-
-    if (outros.length) {
-      const bloco = el("section","grupo");
-      bloco.append(el("h3","grupo-nome", fmt(TEXTOS.buscaGrupoOutros, { n: outros.length })));
-      const lista = el("div","achado-lista");
-      outros.forEach(a => {
-        const b = el("button","achado");
-        b.type = "button";
-        b.append(el("span","achado-tipo", TEXTOS.buscaTipos[a.tipo] || a.tipo));
-        b.append(el("span","achado-rot", realce(a.rotulo, termo)));
-        b.append(el("span","achado-onde", a.onde));
-        b.onclick = a.ir;
-        lista.append(b);
-      });
-      bloco.append(lista);
-      corpo.append(lista.children.length ? bloco : el("span"));
-    }
+    achados.forEach(a => corpo.append(cardResposta(a.item, a.aba, a.sub, termo)));
   }
 
   /* saída sempre disponível: perguntar para a IA da documentação */
@@ -1965,10 +1934,59 @@ document.addEventListener("keydown", (e) => {
   const digitando = /^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName);
   if ((e.key === "/" && !digitando) || ((e.ctrlKey || e.metaKey) && e.key === "k")) {
     e.preventDefault();
+    if (state.secao !== "respostas") irParaSecao("respostas", state.sub || primeiraSubComResposta());
     document.getElementById("q").focus();
     document.getElementById("q").select();
   }
 });
+
+/* ---- largura da barra: arrastar o puxador ---- */
+const MIN_BARRA = 180, MAX_BARRA = 460, PADRAO_BARRA = 232;
+
+function poeLargura(px) {
+  const v = Math.round(Math.min(Math.max(px, MIN_BARRA), MAX_BARRA));
+  document.documentElement.style.setProperty("--larg-barra", v + "px");
+  try { localStorage.setItem("larguraBarra", String(v)); } catch (e) { /* modo privado: só não lembra */ }
+}
+
+(function lembraLargura() {
+  let v = null;
+  try { v = localStorage.getItem("larguraBarra"); } catch (e) { /* sem storage, usa o padrão */ }
+  if (v) poeLargura(parseInt(v, 10));
+})();
+
+(function ligaPuxador() {
+  const alca = document.getElementById("puxador");
+  const barra = document.getElementById("side");
+  if (!alca || !barra) return;
+
+  alca.addEventListener("pointerdown", (e) => {
+    e.preventDefault();
+    alca.setPointerCapture(e.pointerId);
+    document.body.classList.add("arrastando");
+    const inicioX = e.clientX;
+    const inicioL = barra.getBoundingClientRect().width;
+
+    const mover = (ev) => poeLargura(inicioL + (ev.clientX - inicioX));
+    const soltar = () => {
+      document.body.classList.remove("arrastando");
+      alca.removeEventListener("pointermove", mover);
+      alca.removeEventListener("pointerup", soltar);
+      alca.removeEventListener("pointercancel", soltar);
+    };
+    alca.addEventListener("pointermove", mover);
+    alca.addEventListener("pointerup", soltar);
+    alca.addEventListener("pointercancel", soltar);
+  });
+
+  /* teclado: setas ajustam, duplo clique volta ao padrão */
+  alca.addEventListener("keydown", (e) => {
+    const atual = barra.getBoundingClientRect().width;
+    if (e.key === "ArrowLeft")  { e.preventDefault(); poeLargura(atual - 16); }
+    if (e.key === "ArrowRight") { e.preventDefault(); poeLargura(atual + 16); }
+  });
+  alca.addEventListener("dblclick", () => poeLargura(PADRAO_BARRA));
+})();
 
 /* ---- menu no celular ---- */
 document.getElementById("btn-menu").addEventListener("click", () => {

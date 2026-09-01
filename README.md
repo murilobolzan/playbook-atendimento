@@ -32,16 +32,21 @@ conteúdo daquele. Guia e respostas rápidas nunca dividem a mesma tela.
 | **Critérios de avaliação** | A régua de 4 critérios, de consulta |
 | **Respostas rápidas** | As respostas padrão, por aba e sub-aba da plataforma |
 
-### A lupa procura em tudo
+### A lupa é das respostas rápidas
 
-Digite uma palavra e a busca varre **título, corpo, tags, nome da aba e da sub-aba**,
-e ainda as etapas do guia, os casos conhecidos e os critérios. Funciona com ou sem
-acento: "satisfacao" acha "Satisfação".
+A busca aparece só no tópico **Respostas rápidas** e procura só ali: **título, corpo,
+tags, nome da aba e da sub-aba**. Funciona com ou sem acento — "satisfacao" acha
+"Satisfação". O termo encontrado vem destacado, e cada resposta tem botão de **copiar**.
 
-As respostas prontas aparecem primeiro, com o termo destacado e um botão de **copiar**.
-O resto vem numa lista abaixo. Atalho para o cursor: tecla `/` ou `Ctrl+K`.
+Atalho: tecla `/` ou `Ctrl+K` já leva para as respostas e põe o cursor na busca.
 
-Se nada servir, o rodapé da busca sempre oferece **perguntar para a IA da documentação**.
+Se nada servir, o rodapé sempre oferece **perguntar para a IA da documentação**.
+
+### A barra tem largura ajustável
+
+Arraste a borda direita da barra para alargar ou estreitar, entre 180 e 460 pixels.
+Duplo clique volta ao padrão, e as setas do teclado ajustam de 16 em 16 quando o
+puxador está focado. A largura escolhida fica lembrada no navegador.
 
 ## Como achar o que você quer mudar no arquivo
 
