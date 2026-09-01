@@ -522,10 +522,19 @@
     border-radius: 99px; padding: 2px var(--s2);
   }
   .rcard-titulo {
-    margin: 0; padding: var(--s3) var(--s4) 0;
-    font-size: var(--t-md); font-weight: 650; letter-spacing: -.01em; text-wrap: balance;
+    display: flex; align-items: flex-start; gap: var(--s2); width: 100%;
+    margin: 0; padding: var(--s3) var(--s4);
+    font: inherit; font-size: var(--t-md); font-weight: 650; letter-spacing: -.01em;
+    text-align: left; cursor: pointer; color: var(--ink);
+    background: transparent; border: 0;
   }
-  .rcard-corpo { padding: var(--s2) var(--s4) var(--s3); display: flex; flex-direction: column; gap: var(--s3); }
+  .rcard-titulo:hover { color: var(--accent); }
+  .rcard-seta { flex: 0 0 auto; font-size: 11px; color: var(--ink-3); margin-top: 4px; }
+  .rcard-titulo:hover .rcard-seta { color: var(--accent); }
+  .rcard-tit-txt { min-width: 0; text-wrap: balance; }
+  .rcard.encolhido { border-left-color: var(--line-forte); }
+  .rcard.encolhido .rcard-titulo { padding-bottom: var(--s3); }
+  .rcard-corpo { padding: 0 var(--s4) var(--s3); display: flex; flex-direction: column; gap: var(--s3); }
   .rcard-corpo p { margin: 0; font-size: var(--t-base); color: var(--ink-2); line-height: 1.6; }
   .rcard-corpo strong { color: var(--ink); font-weight: 600; }
   .rcard-pe {
@@ -535,9 +544,11 @@
 
   mark { background: color-mix(in srgb, var(--accent) 24%, transparent); color: inherit; border-radius: 2px; padding: 0 2px; }
 
-  .rcard-img { margin: 0; padding: 0 var(--s4) var(--s3); display: flex; flex-direction: column; gap: 6px; }
+  .rcard-print { padding: 0 var(--s4) var(--s3); display: flex; flex-direction: column; gap: var(--s2); align-items: flex-start; }
+  .rcard-img { margin: 0; display: flex; flex-direction: column; gap: 6px; width: 100%; }
   .rcard-img img {
-    width: 100%; height: auto; display: block; cursor: zoom-in;
+    width: 100%; max-height: 300px; object-fit: cover; object-position: top;
+    display: block; cursor: zoom-in;
     border: 1px solid var(--line); border-radius: var(--r); background: var(--surface-2);
   }
   .rcard-img img:hover { border-color: var(--accent); }
@@ -575,7 +586,8 @@
   .topico-dentro { display: flex; flex-direction: column; gap: 2px; }
 
   /* ============ EDITOR DE RESPOSTAS ============ */
-  .resp-acoes { display: flex; gap: var(--s2); flex-wrap: wrap; }
+  .side-acoes { display: flex; flex-direction: column; gap: var(--s2); padding-bottom: var(--s4); margin-bottom: var(--s2); border-bottom: 1px solid var(--line); }
+  .btn.cheio { width: 100%; justify-content: center; }
   .rcard-rascunho {
     font-family: var(--font-mono); font-size: var(--t-micro); font-weight: 700;
     letter-spacing: .06em; text-transform: uppercase;
@@ -1117,6 +1129,8 @@ const state = {
   sub:null,
   busca:"",
   abertos:{},
+  cardsFechados:{},   /* resposta encolhida, so o titulo */
+  printsAbertos:{},   /* print visivel dentro da resposta */
   fup:"pendente",
   fup2_em:null,
   fup2_limite:null
@@ -1373,6 +1387,20 @@ function renderSidebar() {
   }
 
   if (state.secao === "respostas") {
+    const acoes = el("div","side-acoes");
+    const novo = el("button","btn sm cheio", TEXTOS.editorNovo);
+    novo.type = "button";
+    novo.onclick = () => { const a = state.sub ? achaSub(state.sub) : null; abrirEditor(a && a.aba.aba, a && a.sub.sub); };
+    acoes.append(novo);
+    const quantos = leRascunhos().length;
+    if (quantos) {
+      const exp = el("button","btn ghost sm cheio", fmt(TEXTOS.editorExportar, { n: quantos }));
+      exp.type = "button";
+      exp.onclick = () => mostrarCodigo(leRascunhos());
+      acoes.append(exp);
+    }
+    dentro.append(acoes);
+
     dentro.append(el("span","nav-titulo", TEXTOS.navAbasPlataforma));
     arvore().forEach(a => {
       const temSelecionada = a.subs.some(x => x.id === state.sub);
@@ -2188,24 +2216,56 @@ function cardResposta(item, aba, sub, destacar) {
   }
   card.append(topo);
 
-  card.append(el("h3","rcard-titulo", realce(item.titulo, destacar)));
+  /* o titulo abre e fecha a resposta */
+  const chave = idDe(aba + "-" + sub + "-" + item.titulo);
+  const fechado = !!state.cardsFechados[chave];
+  if (fechado) card.classList.add("encolhido");
 
-  const corpo = el("div","rcard-corpo");
-  item.resposta.forEach(p => corpo.append(el("p","", realce(p, destacar))));
-  card.append(corpo);
+  const cabeca = el("button","rcard-titulo");
+  cabeca.type = "button";
+  cabeca.setAttribute("aria-expanded", String(!fechado));
+  cabeca.append(el("span","rcard-seta", fechado ? "▸" : "▾"));
+  cabeca.append(el("span","rcard-tit-txt", realce(item.titulo, destacar)));
+  cabeca.onclick = () => {
+    if (fechado) delete state.cardsFechados[chave]; else state.cardsFechados[chave] = true;
+    render();
+  };
+  card.append(cabeca);
 
-  /* o print da tela, quando a resposta tem um */
-  if (item.imagem) {
-    const fig = el("figure","rcard-img");
-    const img = document.createElement("img");
-    img.src = item.imagem;
-    img.alt = TEXTOS.respImgAlt + ": " + item.titulo;
-    img.loading = "lazy";
-    img.onclick = () => ampliar(item.imagem, img.alt);
-    fig.append(img);
-    fig.append(el("figcaption","", TEXTOS.respImgLegenda));
-    card.append(fig);
+  if (!fechado) {
+    const corpo = el("div","rcard-corpo");
+    item.resposta.forEach(p => corpo.append(el("p","", realce(p, destacar))));
+    card.append(corpo);
+
+    /* o print fica guardado atras de um botao: nao ocupa a tela sem pedir */
+    if (item.imagem) {
+      const cxImg = el("div","rcard-print");
+      const aberto = !!state.printsAbertos[chave];
+
+      const btn = el("button","btn ghost sm", aberto ? TEXTOS.respImgOcultar : TEXTOS.respImgMostrar);
+      btn.type = "button";
+      btn.setAttribute("aria-expanded", String(aberto));
+      btn.onclick = () => {
+        if (aberto) delete state.printsAbertos[chave]; else state.printsAbertos[chave] = true;
+        render();
+      };
+      cxImg.append(btn);
+
+      if (aberto) {
+        const fig = el("figure","rcard-img");
+        const img = document.createElement("img");
+        img.src = item.imagem;
+        img.alt = TEXTOS.respImgAlt + ": " + item.titulo;
+        img.loading = "lazy";
+        img.onclick = () => ampliar(item.imagem, img.alt);
+        fig.append(img, el("figcaption","", TEXTOS.respImgLegenda));
+        cxImg.append(fig);
+      }
+      card.append(cxImg);
+    }
   }
+
+  if (fechado) return card;
 
   const pe = el("footer","rcard-pe");
   const copiar = el("button","btn sm", item.imagem ? TEXTOS.respCopiarTudo : TEXTOS.respCopiar);
@@ -2284,20 +2344,6 @@ function copiaAntiga(txt, feito) {
 function renderRespostas() {
   const host = document.getElementById("resp");
   host.textContent = "";
-
-  const barra = el("div","resp-acoes");
-  const novo = el("button","btn sm", TEXTOS.editorNovo);
-  novo.type = "button";
-  novo.onclick = () => { const a = state.sub ? achaSub(state.sub) : null; abrirEditor(a && a.aba.aba, a && a.sub.sub); };
-  barra.append(novo);
-  const quantos = leRascunhos().length;
-  if (quantos) {
-    const exp = el("button","btn ghost sm", fmt(TEXTOS.editorExportar, { n: quantos }));
-    exp.type = "button";
-    exp.onclick = () => mostrarCodigo(leRascunhos());
-    barra.append(exp);
-  }
-  host.append(barra);
 
   const achado = state.sub ? achaSub(state.sub) : null;
   if (!achado) {

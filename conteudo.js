@@ -783,7 +783,9 @@ const TEXTOS = {
   respCopiado: "✓ Copiado",
   respInterno: "Interno · não enviar ao cliente",
   respImgAlt: "Print da tela",
-  respImgLegenda: "Clique para ampliar",
+  respImgLegenda: "Clique na imagem para ver em tela cheia",
+  respImgMostrar: "🖼 Ver print da tela",
+  respImgOcultar: "Ocultar print",
 
   /* --- criar resposta pela própria tela ---
      O site é estático: o que se cria aqui fica só neste navegador. O botão

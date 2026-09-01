@@ -44,9 +44,17 @@ Atalho: tecla `/` ou `Ctrl+K` já leva para as respostas e põe o cursor na busc
 
 Se nada servir, o rodapé sempre oferece **perguntar para a IA da documentação**.
 
+### Cada resposta abre e fecha
+
+Clicar no título encolhe a resposta até sobrar só ele — útil quando a sub-aba tem
+várias e você quer bater o olho na lista. Clicar de novo abre.
+
+O **print não aparece sozinho**: fica atrás do botão "Ver print da tela". Quando
+aberto, entra com no máximo 300px de altura, e um clique nele abre em tela cheia.
+
 ### Criar resposta pela própria tela
 
-No tópico **Respostas rápidas** tem o botão **＋ Nova resposta**. O formulário deixa
+No tópico **Respostas rápidas**, a barra da esquerda tem o botão **＋ Nova resposta**. O formulário deixa
 escolher uma aba existente ou criar uma nova, o mesmo para a sub-aba, e aceita título,
 palavras-chave, o texto e um print.
 
