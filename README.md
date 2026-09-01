@@ -42,6 +42,26 @@ Atalho: tecla `/` ou `Ctrl+K` já leva para as respostas e põe o cursor na busc
 
 Se nada servir, o rodapé sempre oferece **perguntar para a IA da documentação**.
 
+### Criar resposta pela própria tela
+
+No tópico **Respostas rápidas** tem o botão **＋ Nova resposta**. O formulário deixa
+escolher uma aba existente ou criar uma nova, o mesmo para a sub-aba, e aceita título,
+palavras-chave, o texto e um print.
+
+Dois caminhos ao terminar:
+
+| Botão | O que faz |
+|---|---|
+| **Salvar neste navegador** | A resposta aparece na hora, marcada como *rascunho local*. Só você vê. |
+| **Gerar código** | Monta o bloco pronto para colar em `[12]` do `conteudo.js`. É isso que torna a resposta oficial para o time. |
+
+O site é estático, sem servidor — por isso o rascunho não viaja para os colegas.
+O caminho oficial continua sendo o `conteudo.js`, e o gerador existe para você não
+precisar escrever o bloco na mão.
+
+Rascunhos entram na busca junto com as respostas oficiais, e cada um tem um **×** no
+canto para apagar.
+
 ### A barra tem largura ajustável
 
 Arraste a borda direita da barra para alargar ou estreitar, entre 180 e 460 pixels.

@@ -775,10 +775,48 @@ const TEXTOS = {
   respVazia: "Nenhuma resposta cadastrada nesta sub-aba ainda. Para adicionar, veja [12] no conteudo.js.",
   respQuantas: "{n} resposta(s) cadastrada(s)",
   respCopiar: "Copiar resposta",
+  respCopiarTudo: "Copiar texto + imagem",
+  respCopiarSoTexto: "Só o texto",
+  respCopiadoTudo: "✓ Texto e imagem copiados",
   respCopiado: "✓ Copiado",
   respInterno: "Interno · não enviar ao cliente",
   respImgAlt: "Print da tela",
   respImgLegenda: "Clique para ampliar",
+
+  /* --- criar resposta pela própria tela ---
+     O site é estático: o que se cria aqui fica só neste navegador. O botão
+     "Gerar código" produz o bloco pronto para colar em [12], que é o que
+     torna a resposta oficial para o time todo. */
+  editorNovo: "＋ Nova resposta",
+  editorExportar: "Exportar {n} rascunho(s)",
+  editorTitulo: "Nova resposta rápida",
+  editorNota: "Salvar deixa a resposta disponível só neste navegador, para você usar agora. Para valer para o time, use Gerar código e cole o bloco no conteudo.js pelo GitHub.",
+  editorAba: "Aba da plataforma",
+  editorAbaNova: "＋ criar uma aba nova",
+  editorSub: "Sub-aba",
+  editorSubNova: "＋ criar uma sub-aba nova",
+  editorTituloResposta: "Título da dúvida",
+  editorTituloDica: "Como o cliente costuma perguntar. Use barra para separar variações.",
+  editorTags: "Palavras-chave",
+  editorTagsDica: "Separadas por vírgula. Escreva como as pessoas digitam, inclusive sem acento.",
+  editorResposta: "Resposta",
+  editorRespostaDica: "Um parágrafo por linha. Aceita <strong>negrito</strong>.",
+  editorImagem: "Print da tela (opcional)",
+  editorImagemDica: "Fica salvo neste navegador. Para publicar, suba o arquivo na pasta img/ do GitHub.",
+  editorImagemArquivo: "No código vai aparecer como img/{nome}",
+  editorInterno: "Procedimento interno — não enviar ao cliente",
+  editorSalvar: "Salvar neste navegador",
+  editorCodigo: "Gerar código",
+  editorCancelar: "Cancelar",
+  editorFalta: "Preencha aba, sub-aba, título e resposta.",
+  editorSemEspaco: "Não consegui salvar neste navegador. Use Gerar código para não perder o texto.",
+  editorSeloRascunho: "Rascunho local",
+  editorApagar: "Apagar este rascunho",
+  editorApagarConfirma: "Apagar este rascunho? Ele existe só neste navegador.",
+  editorCodigoTitulo: "Código para colar no conteudo.js",
+  editorCodigoNota: "Copie o bloco abaixo e cole na seção [12] do conteudo.js, seguindo o comentário de cada trecho. Depois é só Commit changes: em cerca de 40 segundos a resposta vale para o time inteiro.",
+  editorCopiarCodigo: "Copiar código",
+  editorAbrirGitHub: "Abrir o conteudo.js",
 
   /* --- painel de dúvida: o foco da plataforma ---
      Aparece na ETAPA 5, que é onde o atendente resolve de fato. O que ele

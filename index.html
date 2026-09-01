@@ -191,20 +191,25 @@
   @media (prefers-reduced-motion: reduce) { .side { transition: none; } }
 
   /* ============ BUSCA COM LUPA ============ */
-  .side-busca { display: flex; flex-direction: column; gap: 6px; flex: 0 0 auto; }
+  .side-busca {
+    display: flex; flex-direction: column; gap: var(--s2); flex: 0 0 auto;
+    padding: var(--s3); margin-bottom: var(--s2);
+    background: var(--accent-suave); border: 1px solid var(--accent-linha);
+    border-radius: var(--r);
+  }
   .lupa { position: relative; display: flex; align-items: center; }
   .lupa-icone {
-    position: absolute; left: 11px; width: 16px; height: 16px; pointer-events: none;
-    fill: none; stroke: var(--ink-3); stroke-width: 1.8; stroke-linecap: round;
+    position: absolute; left: 12px; width: 19px; height: 19px; pointer-events: none;
+    fill: none; stroke: var(--accent); stroke-width: 2.2; stroke-linecap: round;
   }
   .lupa input {
-    width: 100%; font: inherit; font-size: var(--t-base);
-    padding: 10px var(--s7) 10px 34px;
+    width: 100%; font: inherit; font-size: var(--t-md); font-weight: 500;
+    padding: 12px var(--s7) 12px 40px;
     background: var(--surface); color: var(--ink);
-    border: 1px solid var(--line-forte); border-radius: var(--r);
+    border: 2px solid var(--accent-linha); border-radius: var(--r);
   }
-  .lupa input::placeholder { color: var(--ink-3); }
-  .lupa input:focus { border-color: var(--accent); }
+  .lupa input::placeholder { color: var(--ink-3); font-weight: 400; }
+  .lupa input:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent); }
   .lupa input:focus ~ .lupa-icone { stroke: var(--accent); }
   .lupa-limpa {
     position: absolute; right: 6px; font: inherit; font-size: 18px; line-height: 1;
@@ -212,7 +217,8 @@
     padding: 2px 8px; border-radius: var(--r-sm);
   }
   .lupa-limpa:hover { color: var(--accent); background: var(--accent-suave); }
-  .side-dica { font-size: var(--t-xs); color: var(--ink-3); line-height: 1.45; }
+  .side-dica { font-size: var(--t-xs); color: var(--ink-2); line-height: 1.45; }
+  .rcard-pe .btn { flex: 0 0 auto; }
 
   /* ============ NAVEGACAO DA BARRA LATERAL ============ */
   .nav-grupo { display: flex; flex-direction: column; gap: 2px; margin-bottom: var(--s4); }
@@ -539,7 +545,72 @@
   }
   .topico-dentro { display: flex; flex-direction: column; gap: 2px; }
 
-  /* ============ RESULTADO DA BUSCA ============ */
+  /* ============ EDITOR DE RESPOSTAS ============ */
+  .resp-acoes { display: flex; gap: var(--s2); flex-wrap: wrap; }
+  .rcard-rascunho {
+    font-family: var(--font-mono); font-size: var(--t-micro); font-weight: 700;
+    letter-spacing: .06em; text-transform: uppercase;
+    color: var(--warn); background: var(--warn-bg);
+    border: 1px solid color-mix(in srgb, var(--warn) 35%, transparent);
+    border-radius: 99px; padding: 2px var(--s2);
+  }
+  .rcard-apagar {
+    margin-left: auto; font: inherit; font-size: 17px; line-height: 1; cursor: pointer;
+    background: transparent; border: 1px solid transparent; border-radius: var(--r-sm);
+    color: var(--ink-3); padding: 1px 8px;
+  }
+  .rcard-apagar:hover { color: var(--crit); background: var(--crit-bg); border-color: color-mix(in srgb, var(--crit) 30%, transparent); }
+
+  .modal {
+    position: fixed; inset: 0; z-index: 90; display: flex; align-items: flex-start;
+    justify-content: center; padding: var(--s6) var(--s5); overflow-y: auto;
+    background: rgba(14,8,20,.72);
+  }
+  .modal-cx {
+    width: min(680px, 100%); background: var(--surface);
+    border: 1px solid var(--accent-linha); border-radius: var(--r);
+    box-shadow: 0 24px 70px -30px rgba(0,0,0,.85);
+    display: flex; flex-direction: column; max-height: 100%;
+  }
+  .modal-topo {
+    display: flex; align-items: center; gap: var(--s3);
+    padding: var(--s4) var(--s5); border-bottom: 1px solid var(--line); background: var(--surface-2);
+  }
+  .modal-titulo { margin: 0; font-size: var(--t-lg); font-weight: 650; letter-spacing: -.015em; }
+  .modal-x {
+    margin-left: auto; font: inherit; font-size: 22px; line-height: 1; cursor: pointer;
+    background: transparent; border: 0; color: var(--ink-3); padding: 0 6px; border-radius: var(--r-sm);
+  }
+  .modal-x:hover { color: var(--accent); background: var(--accent-suave); }
+  .modal-corpo { padding: var(--s5); display: flex; flex-direction: column; gap: var(--s4); overflow-y: auto; }
+  .modal-nota { margin: 0; font-size: var(--t-sm); color: var(--ink-2); line-height: 1.55; }
+  .modal-pe {
+    display: flex; gap: var(--s2); flex-wrap: wrap;
+    padding: var(--s4) var(--s5); border-top: 1px solid var(--line); background: var(--surface-2);
+  }
+  .modal-pe .btn { text-decoration: none; }
+  .modal-previa img { max-width: 100%; border: 1px solid var(--line); border-radius: var(--r-sm); margin-top: var(--s2); }
+  .modal-codigo {
+    width: 100%; font-family: var(--font-mono); font-size: var(--t-sm); line-height: 1.5;
+    background: var(--surface-2); color: var(--ink);
+    border: 1px solid var(--line-forte); border-radius: var(--r-sm); padding: var(--s3);
+    resize: vertical;
+  }
+
+  .campo { display: flex; flex-direction: column; gap: 5px; }
+  .campo > label { font-size: var(--t-sm); font-weight: 650; color: var(--ink); }
+  .campo input[type="text"], .campo select, .campo textarea {
+    width: 100%; font: inherit; font-size: var(--t-base);
+    background: var(--surface-2); color: var(--ink);
+    border: 1px solid var(--line-forte); border-radius: var(--r-sm); padding: var(--s2) var(--s3);
+  }
+  .campo textarea { resize: vertical; line-height: 1.55; }
+  .campo input:focus, .campo select:focus, .campo textarea:focus { border-color: var(--accent); outline: none; }
+  .campo-dica { font-size: var(--t-xs); color: var(--ink-3); line-height: 1.45; }
+  .campo-linha { display: flex; flex-direction: column; gap: 5px; }
+  .campo-check { display: flex; align-items: center; gap: var(--s2); font-size: var(--t-base); color: var(--ink-2); cursor: pointer; }
+
+    /* ============ RESULTADO DA BUSCA ============ */
   .achado-lista { display: flex; flex-direction: column; gap: 2px; }
   .achado {
     display: grid; grid-template-columns: 128px minmax(0,1fr) auto; gap: var(--s3);
@@ -1253,7 +1324,7 @@ function renderSidebar() {
 
   if (state.secao === "respostas") {
     dentro.append(el("span","nav-titulo", TEXTOS.navAbasPlataforma));
-    RESPOSTAS.forEach(a => {
+    arvore().forEach(a => {
       const temSelecionada = a.subs.some(x => x.id === state.sub);
       const aberto = state.abertos[a.id] !== undefined ? state.abertos[a.id] : temSelecionada;
 
@@ -1287,7 +1358,7 @@ function renderSidebar() {
 
 /* ao entrar em respostas sem nada escolhido, abre a primeira que tem conteúdo */
 function primeiraSubComResposta() {
-  for (const a of RESPOSTAS) {
+  for (const a of arvore()) {
     const x = a.subs.find(s => s.itens.length > 0);
     if (x) return x.id;
   }
@@ -1702,9 +1773,347 @@ function ampliar(src, alt) {
   fechar.focus();
 }
 
+/* ---------- rascunhos locais: abas e respostas criadas pela tela ----------
+   O site é estático, não tem servidor. Então o que você cria aqui fica
+   guardado no SEU navegador e serve para usar na hora. Para virar oficial e
+   valer para o time inteiro, o formulário gera o bloco de código pronto para
+   colar em [12] do conteudo.js. */
+const CHAVE_RASCUNHO = "respostasExtras";
+
+function leRascunhos() {
+  try { return JSON.parse(localStorage.getItem(CHAVE_RASCUNHO) || "[]"); }
+  catch (e) { return []; }
+}
+
+function gravaRascunhos(lista) {
+  try { localStorage.setItem(CHAVE_RASCUNHO, JSON.stringify(lista)); }
+  catch (e) { alert(TEXTOS.editorSemEspaco); }
+}
+
+function idDe(txt) {
+  return norm(txt).replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40) || "novo";
+}
+
+/* junta o que veio do conteudo.js com os rascunhos deste navegador */
+function arvore() {
+  const base = RESPOSTAS.map(a => ({
+    id: a.id, aba: a.aba,
+    subs: a.subs.map(s => ({ id: s.id, sub: s.sub, itens: s.itens.slice() }))
+  }));
+
+  leRascunhos().forEach((r, i) => {
+    let a = base.find(x => norm(x.aba) === norm(r.aba));
+    if (!a) { a = { id: idDe(r.aba), aba: r.aba, subs: [], rascunho: true }; base.push(a); }
+    let s = a.subs.find(x => norm(x.sub) === norm(r.sub));
+    if (!s) { s = { id: a.id + "-" + idDe(r.sub), sub: r.sub, itens: [], rascunho: true }; a.subs.push(s); }
+    s.itens.push({
+      titulo: r.titulo, tags: r.tags, resposta: r.resposta,
+      imagem: r.imagem || null, interno: !!r.interno,
+      rascunho: true, indice: i
+    });
+  });
+
+  return base;
+}
+
+/* ---------- formulário ---------- */
+function abrirEditor(preAba, preSub) {
+  const fundo = el("div","modal");
+  const cx = el("form","modal-cx");
+  cx.setAttribute("role","dialog");
+  cx.setAttribute("aria-modal","true");
+
+  const topo = el("header","modal-topo");
+  topo.append(el("h2","modal-titulo", TEXTOS.editorTitulo));
+  const xis = el("button","modal-x","×");
+  xis.type = "button";
+  topo.append(xis);
+  cx.append(topo);
+
+  const corpo = el("div","modal-corpo");
+  corpo.append(el("p","modal-nota", TEXTOS.editorNota));
+
+  const arv = arvore();
+
+  /* aba: escolher uma existente ou digitar uma nova */
+  const campoAba = campoLista(TEXTOS.editorAba, arv.map(a => a.aba), preAba || "", TEXTOS.editorAbaNova);
+  corpo.append(campoAba.bloco);
+
+  /* sub-aba: a lista muda conforme a aba escolhida */
+  const campoSub = campoLista(TEXTOS.editorSub, [], preSub || "", TEXTOS.editorSubNova);
+  corpo.append(campoSub.bloco);
+
+  const atualizaSubs = () => {
+    const a = arv.find(x => norm(x.aba) === norm(campoAba.valor()));
+    campoSub.trocaOpcoes(a ? a.subs.map(s => s.sub) : []);
+  };
+  campoAba.aoMudar(atualizaSubs);
+  atualizaSubs();
+
+  const campoTitulo = campoTexto(TEXTOS.editorTituloResposta, TEXTOS.editorTituloDica);
+  const campoTags   = campoTexto(TEXTOS.editorTags, TEXTOS.editorTagsDica);
+  const campoTexto2 = campoArea(TEXTOS.editorResposta, TEXTOS.editorRespostaDica);
+  corpo.append(campoTitulo.bloco, campoTags.bloco, campoTexto2.bloco);
+
+  /* imagem opcional */
+  const bImg = el("div","campo");
+  bImg.append(el("label","", TEXTOS.editorImagem));
+  const inpImg = document.createElement("input");
+  inpImg.type = "file";
+  inpImg.accept = "image/*";
+  bImg.append(inpImg);
+  const previa = el("div","modal-previa");
+  bImg.append(previa, el("span","campo-dica", TEXTOS.editorImagemDica));
+  corpo.append(bImg);
+
+  let imagemDados = null, imagemNome = null;
+  inpImg.addEventListener("change", () => {
+    const arq = inpImg.files && inpImg.files[0];
+    previa.textContent = "";
+    imagemDados = imagemNome = null;
+    if (!arq) return;
+    imagemNome = idDe(arq.name.replace(/\.[^.]+$/, "")) + ".png";
+    const leitor = new FileReader();
+    leitor.onload = () => {
+      imagemDados = leitor.result;
+      const im = document.createElement("img");
+      im.src = imagemDados;
+      previa.append(im);
+      previa.append(el("span","campo-dica", fmt(TEXTOS.editorImagemArquivo, { nome: imagemNome })));
+    };
+    leitor.readAsDataURL(arq);
+  });
+
+  const marcaInterno = el("label","campo-check");
+  const chk = document.createElement("input");
+  chk.type = "checkbox";
+  marcaInterno.append(chk, el("span","", TEXTOS.editorInterno));
+  corpo.append(marcaInterno);
+
+  cx.append(corpo);
+
+  const pe = el("footer","modal-pe");
+  const salvar = el("button","btn", TEXTOS.editorSalvar);
+  salvar.type = "submit";
+  const codigo = el("button","btn ghost", TEXTOS.editorCodigo);
+  codigo.type = "button";
+  const cancelar = el("button","btn ghost", TEXTOS.editorCancelar);
+  cancelar.type = "button";
+  pe.append(salvar, codigo, cancelar);
+  cx.append(pe);
+
+  const fechar = () => { fundo.remove(); document.body.classList.remove("gaveta-aberta"); };
+  xis.onclick = fechar;
+  cancelar.onclick = fechar;
+  fundo.onclick = (e) => { if (e.target === fundo) fechar(); };
+
+  const montaRegistro = () => {
+    const aba = campoAba.valor().trim();
+    const sub = campoSub.valor().trim();
+    const titulo = campoTitulo.valor().trim();
+    const corpoTxt = campoTexto2.valor().trim();
+    if (!aba || !sub || !titulo || !corpoTxt) { alert(TEXTOS.editorFalta); return null; }
+    return {
+      aba, sub, titulo,
+      tags: campoTags.valor().split(",").map(t => t.trim()).filter(Boolean),
+      resposta: corpoTxt.split(/\n{2,}|\n/).map(l => l.trim()).filter(Boolean),
+      imagem: imagemDados,
+      imagemNome: imagemNome,
+      interno: chk.checked
+    };
+  };
+
+  cx.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const r = montaRegistro();
+    if (!r) return;
+    const lista = leRascunhos();
+    lista.push(r);
+    gravaRascunhos(lista);
+    fechar();
+    irParaSecao("respostas", null);
+    render();
+  });
+
+  codigo.onclick = () => {
+    const r = montaRegistro();
+    if (!r) return;
+    mostrarCodigo([r]);
+  };
+
+  fundo.append(cx);
+  document.body.append(fundo);
+  document.body.classList.add("gaveta-aberta");
+  setTimeout(() => campoAba.foco(), 30);
+}
+
+/* ---------- pecinhas de formulário ---------- */
+function campoTexto(rot, dica) {
+  const bloco = el("div","campo");
+  bloco.append(el("label","", rot));
+  const i = document.createElement("input");
+  i.type = "text";
+  bloco.append(i);
+  if (dica) bloco.append(el("span","campo-dica", dica));
+  return { bloco, valor: () => i.value, foco: () => i.focus() };
+}
+
+function campoArea(rot, dica) {
+  const bloco = el("div","campo");
+  bloco.append(el("label","", rot));
+  const t = document.createElement("textarea");
+  t.rows = 7;
+  bloco.append(t);
+  if (dica) bloco.append(el("span","campo-dica", dica));
+  return { bloco, valor: () => t.value };
+}
+
+/* lista com opção de digitar um valor novo */
+function campoLista(rot, opcoes, inicial, rotNovo) {
+  const bloco = el("div","campo");
+  bloco.append(el("label","", rot));
+  const linha = el("div","campo-linha");
+  const sel = document.createElement("select");
+  const txt = document.createElement("input");
+  txt.type = "text";
+  txt.placeholder = rotNovo;
+  linha.append(sel, txt);
+  bloco.append(linha);
+
+  let aoMudarFn = () => {};
+
+  const preenche = (lista) => {
+    sel.textContent = "";
+    lista.forEach(o => { const op = document.createElement("option"); op.value = o; op.textContent = o; sel.append(op); });
+    const nova = document.createElement("option");
+    nova.value = "__nova__";
+    nova.textContent = rotNovo;
+    sel.append(nova);
+    if (inicial && lista.includes(inicial)) sel.value = inicial;
+    else if (!lista.length) sel.value = "__nova__";
+    ajusta();
+  };
+
+  const ajusta = () => { txt.hidden = sel.value !== "__nova__"; };
+  sel.addEventListener("change", () => { ajusta(); aoMudarFn(); });
+  txt.addEventListener("input", () => aoMudarFn());
+
+  preenche(opcoes);
+
+  return {
+    bloco,
+    valor: () => (sel.value === "__nova__" ? txt.value : sel.value),
+    trocaOpcoes: preenche,
+    aoMudar: (fn) => { aoMudarFn = fn; },
+    foco: () => (sel.value === "__nova__" ? txt : sel).focus()
+  };
+}
+
+/* ---------- gerar o código para colar no conteudo.js ---------- */
+function gerarCodigo(lista) {
+  const asp = t => '"' + String(t).replace(/\\/g, "\\\\").replace(/"/g, '\\"') + '"';
+  const porAba = {};
+  lista.forEach(r => {
+    porAba[r.aba] = porAba[r.aba] || {};
+    porAba[r.aba][r.sub] = porAba[r.aba][r.sub] || [];
+    porAba[r.aba][r.sub].push(r);
+  });
+
+  const partes = [];
+  Object.keys(porAba).forEach(aba => {
+    const jaExiste = RESPOSTAS.some(a => norm(a.aba) === norm(aba));
+    const subs = Object.keys(porAba[aba]).map(sub => {
+      const itens = porAba[aba][sub].map(r => {
+        const linhas = [
+          "          {",
+          "            titulo: " + asp(r.titulo) + ",",
+          "            tags: [" + r.tags.map(asp).join(", ") + "],"
+        ];
+        if (r.interno) linhas.push("            interno: true,");
+        if (r.imagemNome) linhas.push("            imagem: " + asp("img/" + r.imagemNome) + ",");
+        linhas.push("            resposta: [");
+        linhas.push(r.resposta.map(p => "              " + asp(p)).join(",\n"));
+        linhas.push("            ]");
+        linhas.push("          }");
+        return linhas.join("\n");
+      }).join(",\n");
+      return "      {\n        id: " + asp(idDe(aba) + "-" + idDe(sub)) + ",\n        sub: " + asp(sub) +
+             ",\n        itens: [\n" + itens + "\n        ]\n      }";
+    }).join(",\n");
+
+    if (jaExiste) {
+      partes.push("/* Dentro da aba " + aba + ", em subs, cole: */\n" + subs);
+    } else {
+      partes.push("/* Aba nova: cole antes do ] que fecha o RESPOSTAS */\n  {\n    id: " +
+                  asp(idDe(aba)) + ",\n    aba: " + asp(aba) + ",\n    subs: [\n" + subs + "\n    ]\n  },");
+    }
+  });
+
+  const avisos = lista.filter(r => r.imagemNome)
+    .map(r => "/* Suba a imagem em img/" + r.imagemNome + " no GitHub antes de publicar. */");
+
+  return avisos.concat(partes).join("\n\n");
+}
+
+function mostrarCodigo(lista) {
+  const fundo = el("div","modal");
+  const cx = el("div","modal-cx");
+  const topo = el("header","modal-topo");
+  topo.append(el("h2","modal-titulo", TEXTOS.editorCodigoTitulo));
+  const xis = el("button","modal-x","×");
+  xis.type = "button";
+  topo.append(xis);
+  cx.append(topo);
+
+  const corpo = el("div","modal-corpo");
+  corpo.append(el("p","modal-nota", TEXTOS.editorCodigoNota));
+  const pre = document.createElement("textarea");
+  pre.className = "modal-codigo";
+  pre.rows = 16;
+  pre.readOnly = true;
+  pre.value = gerarCodigo(lista);
+  corpo.append(pre);
+  cx.append(corpo);
+
+  const pe = el("footer","modal-pe");
+  const copiar = el("button","btn", TEXTOS.editorCopiarCodigo);
+  copiar.type = "button";
+  copiar.onclick = () => {
+    pre.select();
+    const ok = () => { copiar.textContent = TEXTOS.respCopiado; setTimeout(() => copiar.textContent = TEXTOS.editorCopiarCodigo, 1800); };
+    if (navigator.clipboard) navigator.clipboard.writeText(pre.value).then(ok, ok);
+    else { try { document.execCommand("copy"); ok(); } catch (e) {} }
+  };
+  const abrirGit = el("a","btn ghost", TEXTOS.editorAbrirGitHub);
+  abrirGit.href = "https://github.com/murilobolzan/playbook-atendimento/edit/main/conteudo.js";
+  abrirGit.target = "_blank";
+  abrirGit.rel = "noopener";
+  const fechar2 = el("button","btn ghost", TEXTOS.docFechar);
+  fechar2.type = "button";
+  pe.append(copiar, abrirGit, fechar2);
+  cx.append(pe);
+
+  const fechar = () => { fundo.remove(); document.body.classList.remove("gaveta-aberta"); };
+  xis.onclick = fechar;
+  fechar2.onclick = fechar;
+  fundo.onclick = (e) => { if (e.target === fundo) fechar(); };
+
+  fundo.append(cx);
+  document.body.append(fundo);
+  document.body.classList.add("gaveta-aberta");
+}
+
+function apagarRascunho(indice) {
+  if (!confirm(TEXTOS.editorApagarConfirma)) return;
+  const lista = leRascunhos();
+  lista.splice(indice, 1);
+  gravaRascunhos(lista);
+  render();
+}
+
 /* ---------- respostas rápidas ---------- */
 function achaSub(id) {
-  for (const a of RESPOSTAS) {
+  for (const a of arvore()) {
     const x = a.subs.find(s => s.id === id);
     if (x) return { aba: a, sub: x };
   }
@@ -1719,6 +2128,14 @@ function cardResposta(item, aba, sub, destacar) {
   const cam = el("span","rcard-caminho", aba + " › " + sub);
   topo.append(cam);
   if (item.interno) topo.append(el("span","rcard-interno", TEXTOS.respInterno));
+  if (item.rascunho) {
+    topo.append(el("span","rcard-rascunho", TEXTOS.editorSeloRascunho));
+    const apagar = el("button","rcard-apagar","×");
+    apagar.type = "button";
+    apagar.title = TEXTOS.editorApagar;
+    apagar.onclick = () => apagarRascunho(item.indice);
+    topo.append(apagar);
+  }
   card.append(topo);
 
   card.append(el("h3","rcard-titulo", realce(item.titulo, destacar)));
@@ -1741,10 +2158,16 @@ function cardResposta(item, aba, sub, destacar) {
   }
 
   const pe = el("footer","rcard-pe");
-  const copiar = el("button","btn ghost sm", TEXTOS.respCopiar);
+  const copiar = el("button","btn sm", item.imagem ? TEXTOS.respCopiarTudo : TEXTOS.respCopiar);
   copiar.type = "button";
-  copiar.onclick = () => copiarResposta(item, copiar);
+  copiar.onclick = () => copiarResposta(item, copiar, !!item.imagem);
   pe.append(copiar);
+  if (item.imagem) {
+    const soTexto = el("button","btn ghost sm", TEXTOS.respCopiarSoTexto);
+    soTexto.type = "button";
+    soTexto.onclick = () => copiarResposta(item, soTexto, false);
+    pe.append(soTexto);
+  }
   if (item.tags && item.tags.length) {
     const tw = el("div","tags");
     item.tags.forEach(t => tw.append(el("span","tag", t)));
@@ -1754,17 +2177,45 @@ function cardResposta(item, aba, sub, destacar) {
   return card;
 }
 
-/* copia o texto limpo, sem as marcações de negrito */
-function copiarResposta(item, botao) {
-  const txt = item.resposta.map(p => p.replace(/<[^>]+>/g, "").replace(/&gt;/g, ">").replace(/&lt;/g, "<").replace(/&amp;/g, "&")).join("\n\n");
-  const feito = () => {
-    botao.textContent = TEXTOS.respCopiado;
-    setTimeout(() => { botao.textContent = TEXTOS.respCopiar; }, 1800);
+/* Copia a resposta. Quando ha print, coloca texto e imagem juntos na area
+   de transferencia, em formatos separados: quem colar escolhe o que aceita.
+   O WhatsApp costuma pegar a imagem e ignorar o texto, por isso existe
+   tambem o botao de so texto. */
+function copiarResposta(item, botao, comImagem) {
+  const rotulo = botao.textContent;
+  const txt = textoLimpo(item);
+  const avisa = (msg) => {
+    botao.textContent = msg;
+    setTimeout(() => { botao.textContent = rotulo; }, 2200);
   };
+
+  if (comImagem && item.imagem && navigator.clipboard && window.ClipboardItem) {
+    fetch(item.imagem)
+      .then(r => { if (!r.ok) throw new Error("imagem nao carregou"); return r.blob(); })
+      .then(blob => navigator.clipboard.write([new ClipboardItem({
+        "text/plain": new Blob([txt], { type: "text/plain" }),
+        "image/png": blob
+      })]))
+      .then(() => avisa(TEXTOS.respCopiadoTudo))
+      .catch(() => copiarSoTexto(txt, avisa));
+    return;
+  }
+
+  copiarSoTexto(txt, avisa);
+}
+
+function textoLimpo(item) {
+  return item.resposta
+    .map(p => p.replace(/<[^>]+>/g, "").replace(/&gt;/g, ">").replace(/&lt;/g, "<").replace(/&amp;/g, "&"))
+    .join("\n\n");
+}
+
+function copiarSoTexto(txt, avisa) {
+  const ok = () => avisa(TEXTOS.respCopiado);
   if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(txt).then(feito, () => copiaAntiga(txt, feito));
+    navigator.clipboard.writeText(txt).then(ok, () => copiaAntiga(txt, ok));
   } else {
-    copiaAntiga(txt, feito);
+    copiaAntiga(txt, ok);
   }
 }
 
@@ -1783,6 +2234,20 @@ function copiaAntiga(txt, feito) {
 function renderRespostas() {
   const host = document.getElementById("resp");
   host.textContent = "";
+
+  const barra = el("div","resp-acoes");
+  const novo = el("button","btn sm", TEXTOS.editorNovo);
+  novo.type = "button";
+  novo.onclick = () => { const a = state.sub ? achaSub(state.sub) : null; abrirEditor(a && a.aba.aba, a && a.sub.sub); };
+  barra.append(novo);
+  const quantos = leRascunhos().length;
+  if (quantos) {
+    const exp = el("button","btn ghost sm", fmt(TEXTOS.editorExportar, { n: quantos }));
+    exp.type = "button";
+    exp.onclick = () => mostrarCodigo(leRascunhos());
+    barra.append(exp);
+  }
+  host.append(barra);
 
   const achado = state.sub ? achaSub(state.sub) : null;
   if (!achado) {
@@ -1816,7 +2281,7 @@ const INDICE = [];
    não uma busca do playbook inteiro. */
 function montarIndice() {
   INDICE.length = 0;
-  RESPOSTAS.forEach(a => a.subs.forEach(s => s.itens.forEach(it => {
+  arvore().forEach(a => a.subs.forEach(s => s.itens.forEach(it => {
     INDICE.push({
       rotulo: it.titulo,
       onde: a.aba + " › " + s.sub,
@@ -1899,13 +2364,12 @@ const norm = s => String(s).normalize("NFD").replace(DIACRITICOS, "").toLowerCas
 
 /* ---------- boot ---------- */
 function render() {
+  montarIndice();   /* refaz sempre: rascunho novo tem que entrar na busca */
   renderMoldura(); renderSidebar(); renderBusca();
   renderFlow(); renderOut(); renderFup(); renderAvaliacao(); renderRespostas();
   renderAbaVisivel();
   medirTopo();
 }
-
-montarIndice();
 
 window.addEventListener("resize", medirTopo);
 window.addEventListener("load", medirTopo);
