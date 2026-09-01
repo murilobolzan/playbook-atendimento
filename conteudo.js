@@ -1050,6 +1050,27 @@ const RESPOSTAS = [
       { id: "res-proximas", sub: "Próximas Reservas", itens: [] },
       { id: "res-pendentes", sub: "Reservas Pendentes", itens: [] },
       {
+         {
+        id: "reservas-bloqueio",
+        sub: "Bloqueio",
+        itens: [
+          {
+            titulo: "Como faço para bloquear uma área?",
+            tags: ["Bloqueio", "Reserva"],
+            imagem: "img/captura-de-tela-2026-09-01-162222.png",
+            resposta: [
+              "Para criar um bloqueio na plataforma, basta seguir este passo a passo:",
+              "1. Acesse a aba “Reservas” > “Bloqueios”.",
+              "2. Clique para adicionar um novo bloqueio e informe um título e, se desejar, uma descrição.",
+              "3. Configure o período do bloqueio, selecionando as datas e definindo se deseja bloquear o dia inteiro, apenas um período específico ou um intervalo de horário.",
+              "4. Selecione as áreas que serão afetadas pelo bloqueio.",
+              "5. Revise todas as informações configuradas.",
+              "6. Após a confirmação, salve o bloqueio para que ele fique ativo na plataforma.",
+              "Assim, durante o período e nas áreas selecionadas, a plataforma não permitirá novas reservas."
+            ]
+          }
+        ]
+      }
         id: "res-areas",
         sub: "Áreas e Mesas",
         itens: [
@@ -1297,3 +1318,5 @@ const RESPOSTAS = [
     ]
   }
 ];
+/* Suba a imagem em img/captura-de-tela-2026-09-01-162222.png no GitHub antes de publicar. */
+
