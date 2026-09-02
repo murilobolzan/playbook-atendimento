@@ -156,6 +156,24 @@ const RESPOSTAS = [
             ]
           }
         ]
+      },
+      {
+        id: "whatsapp-erros-whatsapp-meta",
+        sub: "Erros WhatsApp / Meta",
+        itens: [
+          {
+            titulo: "Erro de 24h após a última mensagem do cliente",
+            tags: ["Erro", "Meta", "WhatsApp", "24 horas"],
+            resposta: [
+              "Quando um cliente envia uma mensagem para vocês pelo WhatsApp, é aberta uma janela de atendimento de 24 horas.",
+              "Durante esse período, vocês podem responder normalmente ao cliente, sem a necessidade de utilizar um template.",
+              "Porém, após 24 horas da última mensagem enviada pelo cliente, a Meta encerra essa janela de atendimento. A partir desse momento, não é possível enviar uma nova mensagem livremente para retomar a conversa.",
+              "Para entrar em contato novamente, é necessário utilizar um template de mensagem previamente aprovado pela Meta. Esse envio é considerado um disparo e pode ter cobrança, dependendo da categoria da mensagem utilizada.",
+              "Essa é uma regra da própria Meta, criada para evitar que empresas enviem mensagens não solicitadas para os usuários.",
+              "Então, mesmo que vocês já tenham conversado anteriormente com o cliente, caso tenham passado mais de 24 horas desde a última mensagem dele, será necessário utilizar um template aprovado para iniciar uma nova interação."
+            ]
+          }
+        ]
       }
     ]
   },
