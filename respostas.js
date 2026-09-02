@@ -429,6 +429,23 @@ const RESPOSTAS = [
             ]
           }
         ]
+      },
+      {
+        id: "minha-loja-pagamentos",
+        sub: "Pagamentos",
+        itens: [
+          {
+            titulo: "Formas de Pagamento e Rodízio & Buffet",
+            tags: ["Formas de Pagamento", "Pagamento", "Rodízio", "Buffet", "Bandeiras", "Pix", "Cartão", "VR", "Vale Refeição"],
+            imagem: "img/captura-de-tela-2026-09-02-143128.png",
+            resposta: [
+              "Na aba MInha Loja > Loja > Pagamentos, você encontra configurações relacionadas aos métodos de pagamento e aos preços de buffet ou rodízio do estabelecimento.",
+              "• Métodos de Pagamento: permite selecionar todas as formas de pagamento aceitas pelo estabelecimento, além das bandeiras de cartão disponíveis.",
+              "• Regras de Preço de Buffet/Rodízio: permite configurar os valores do buffet ou rodízio de acordo com o dia da semana e o horário, além de definir regras específicas para feriados.",
+              "Essas informações também são utilizadas pela IA durante os atendimentos. Ou seja, quando um cliente perguntar quais formas de pagamento o estabelecimento aceita ou qual é o valor do buffet ou rodízio em determinado dia e horário, a IA irá consultar essas configurações para fornecer a resposta."
+            ]
+          }
+        ]
       }
     ]
   },
