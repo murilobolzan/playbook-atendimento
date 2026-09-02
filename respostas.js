@@ -306,5 +306,27 @@ const RESPOSTAS = [
       { id: "loja-pagamento", sub: "Formas de Pagamento", itens: [] },
       { id: "loja-repasse", sub: "Repasse", itens: [] }
     ]
+  },
+  {
+    id: "membros",
+    aba: "Membros",
+    subs: [
+      {
+        id: "membros-membros",
+        sub: "Membros",
+        itens: [
+          {
+            titulo: "Convidar Membros",
+            tags: ["Membros", "Acesso", "Convidar", "Editar", "Permissões"],
+            imagem: "img/captura-de-tela-2026-09-02-093724.png",
+            resposta: [
+              "Para convidar um novo membro para a plataforma, basta acessar a aba “Membros” e clicar no botão “Convidar”, localizado no canto superior direito.",
+              "Nessa etapa, você poderá escolher a função e as permissões que a pessoa terá na plataforma.",
+              "Caso selecione a função de administrador, a pessoa terá acesso a toda a plataforma. Já na função de membro, você poderá definir quais permissões e áreas da plataforma ela poderá acessar."
+            ]
+          }
+        ]
+      }
+    ]
   }
 ];
