@@ -277,6 +277,20 @@ const RESPOSTAS = [
               "Também é possível definir a <strong>validade</strong> da informação, indicando se ela será válida por tempo indeterminado, para uma data específica ou durante um determinado período.",
               "Caso uma informação já esteja cadastrada, basta pesquisá-la pela barra de pesquisa e clicar no ícone de lápis localizado abaixo do card para editá-la."
             ]
+          },
+          {
+            titulo: "Informação para dia específico",
+            tags: ["Informação", "Adicionar", "Específico", "IA", "Mensagem"],
+            imagem: "img/captura-de-tela-2026-09-02-113546.png",
+            resposta: [
+              "Dentro da aba “Configuração de IA > Informações”, ao adicionar uma nova informação, você consegue definir uma validade para ela.",
+              "Ou seja, é possível programar para que determinada informação fique ativa apenas em um dia específico ou durante um período definido.",
+              "Por exemplo, vocês podem configurar uma informação como:",
+              "“Durante toda esta semana, teremos o evento X.”",
+              "Ou:",
+              "“No dia X, teremos a apresentação do artista Y.”",
+              "Assim, a IA consegue considerar essas informações apenas durante o período em que elas estiverem programadas para ficar ativas."
+            ]
           }
         ]
       }
