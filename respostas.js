@@ -131,6 +131,31 @@ const RESPOSTAS = [
             ]
           }
         ]
+      },
+      {
+        id: "whatsapp-conversas",
+        sub: "Conversas",
+        itens: [
+          {
+            titulo: "Atendimento Humano",
+            tags: ["Conversa", "Atendimento Humano", "Humano", "IA", "Resposta"],
+            imagem: "img/captura-de-tela-2026-09-02-133203.png",
+            resposta: [
+              "Após o cliente ser encaminhado para o Atendimento Humano, a IA interrompe a conversa e a equipe de vocês assume o atendimento.",
+              "Isso pode acontecer quando:",
+              "• A IA não possui informações suficientes para responder.",
+              "Solução: adicionar a informação em Configuração de IA > Informações.",
+              "• O cliente solicita atendimento humano.",
+              "Nesse caso, a IA realiza automaticamente o encaminhamento para evitar atritos durante o atendimento.",
+              "• Alguém da equipe responde diretamente pela rede social.",
+              "A IA identifica que um humano assumiu a conversa e interrompe as respostas para evitar duplicidade.",
+              "• A equipe assume a conversa diretamente pela plataforma.",
+              "Nesse caso, a IA também interrompe o atendimento para que a equipe possa prosseguir.",
+              "O atendimento pode ser realizado tanto pela própria rede social quanto diretamente pela plataforma.",
+              "Obs.: dentro da plataforma, os clientes encaminhados para Atendimento Humano ficam identificados e direcionados para a fila de atendimento, facilitando a visualização e o acompanhamento dessas conversas."
+            ]
+          }
+        ]
       }
     ]
   },
