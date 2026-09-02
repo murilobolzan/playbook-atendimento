@@ -499,5 +499,29 @@ const RESPOSTAS = [
         ]
       }
     ]
+  },
+  {
+    id: "testes-da-ia",
+    aba: "Testes da IA",
+    subs: [
+      {
+        id: "testes-da-ia-testes-da-ia",
+        sub: "Testes da IA",
+        itens: [
+          {
+            titulo: "Como faço para testar a IA?",
+            tags: ["Teste da IA", "IA", "Informações", "Add Infos", "Testes", "Mensagem"],
+            imagem: "img/captura-de-tela-2026-09-02-145559.png",
+            resposta: [
+              "Na aba de Testes da IA, vocês conseguem simular conversas como se fossem clientes do restaurante e verificar, na prática, como a IA está respondendo.",
+              "Nessa mesma tela, na parte da direita, também é possível consultar, editar, criar ou excluir as Informações Adicionais cadastradas em “Configuração de IA > Informações”, facilitando os ajustes durante os testes.",
+              "Além disso, existe a opção de Data Simulada. Com ela, vocês podem testar informações que possuem validade temporal sem precisar esperar a data real chegar.",
+              "Por exemplo, vocês podem simular uma data específica para verificar se a IA está considerando corretamente informações cadastradas para determinado dia, evento ou período.",
+              "Se o campo de data for deixado em branco, a IA utilizará a data real."
+            ]
+          }
+        ]
+      }
+    ]
   }
 ];
