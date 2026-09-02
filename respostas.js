@@ -334,6 +334,22 @@ const RESPOSTAS = [
             ]
           }
         ]
+      },
+      {
+        id: "config-ia-follow-up",
+        sub: "Follow-Up",
+        itens: [
+          {
+            titulo: "Follow-Up",
+            tags: ["Follow-Up", "FUP", "Mensagem"],
+            imagem: "img/captura-de-tela-2026-09-02-135930.png",
+            resposta: [
+              "O Follow Up é uma funcionalidade que permite à IA retomar automaticamente uma conversa quando o cliente não responde, evitando que um atendimento fique parado.",
+              "Ele pode ser configurado para enviar novas mensagens após determinados intervalos de tempo, definidos a partir da última mensagem do cliente. Também é possível configurar o Follow Up por categoria, desativando o envio para assuntos específicos ou definindo orientações diferentes para cada situação.",
+              "Em resumo, o Follow Up serve para a IA tentar reativar uma conversa que ficou sem resposta, mantendo o contato com o cliente sem que a equipe precise fazer isso manualmente."
+            ]
+          }
+        ]
       }
     ]
   },
