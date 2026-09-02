@@ -350,6 +350,26 @@ const RESPOSTAS = [
             ]
           }
         ]
+      },
+      {
+        id: "config-ia-quebra-gelos",
+        sub: "Quebra-Gelos",
+        itens: [
+          {
+            titulo: "Quebra-Gelos",
+            tags: ["Quebra-Gelos", "Mensagens Rápidas"],
+            imagem: "img/captura-de-tela-2026-09-02-141141.png",
+            resposta: [
+              "Os Quebra-Gelos são mensagens ou opções prontas que aparecem para o cliente assim que ele abre o chat. Eles funcionam como atalhos, permitindo que o cliente inicie a conversa com apenas um toque, sem precisar digitar uma mensagem.",
+              "Por exemplo, vocês podem configurar opções como:",
+              "• Quero fazer uma reserva",
+              "• Quero fazer um Pedido / Delivery",
+              "• Quero saber sobre o cardápio",
+              "Ao clicar em uma dessas opções, o cliente inicia a conversa sobre aquele assunto, facilitando o direcionamento do atendimento desde o primeiro contato.",
+              "A funcionalidade pode ser ativada ou desativada conforme a preferência de vocês. Para utilizá-la, é necessário ter o WhatsApp Meta ou o Instagram conectado à plataforma."
+            ]
+          }
+        ]
       }
     ]
   },
