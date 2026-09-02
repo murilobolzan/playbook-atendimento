@@ -293,6 +293,22 @@ const RESPOSTAS = [
             ]
           }
         ]
+      },
+      {
+        id: "config-ia-links-externos",
+        sub: "Links Externos",
+        itens: [
+          {
+            titulo: "Links Externos",
+            tags: ["Links", "Cardápio", "Link Externo", "Links Externos"],
+            imagem: "img/captura-de-tela-2026-09-02-124210.png",
+            resposta: [
+              "Na aba Configuração de Links Externos, você pode adicionar links de outras plataformas ou serviços que não utiliza diretamente pela nossa plataforma.",
+              "Por exemplo, caso vocês utilizem um cardápio externo, um link do Google Drive ou algum outro serviço, podem cadastrar esse link nessa aba. A partir disso, conseguimos orientar a IA para enviar o link indicado aos clientes sempre que necessário.",
+              "Dessa forma, mesmo que determinada funcionalidade não seja utilizada dentro da nossa plataforma, a IA ainda consegue compartilhar o link externo correspondente durante os atendimentos."
+            ]
+          }
+        ]
       }
     ]
   },
