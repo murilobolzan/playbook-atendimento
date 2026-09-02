@@ -322,7 +322,8 @@ const RESPOSTAS = [
             resposta: [
               "Para convidar um novo membro para a plataforma, basta acessar a aba “Membros” e clicar no botão “Convidar”, localizado no canto superior direito.",
               "Nessa etapa, você poderá escolher a função e as permissões que a pessoa terá na plataforma.",
-              "Caso selecione a função de administrador, a pessoa terá acesso a toda a plataforma. Já na função de membro, você poderá definir quais permissões e áreas da plataforma ela poderá acessar."
+              "Caso selecione a função de administrador, a pessoa terá acesso a toda a plataforma. Já na função de membro, você poderá definir quais permissões e áreas da plataforma ela poderá acessar.",
+              "Por meio dela, você também consegue realizar a gestão dos membros da equipe, podendo editar os acessos e permissões de cada pessoa ou até mesmo excluir membros que não precisam mais ter acesso à plataforma."
             ]
           }
         ]
