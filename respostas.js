@@ -310,18 +310,6 @@ const RESPOSTAS = [
         sub: "Informações",
         itens: [
           {
-            titulo: "Como cadastrar, categorizar e editar uma informação da IA",
-            tags: ["informacoes", "adicionar", "categoria", "validade", "editar", "lapis", "barra de pesquisa"],
-            imagem: "img/ia-informacoes.png",
-            resposta: [
-              "Na aba <strong>Configuração de IA &gt; Informações</strong>, você pode clicar no botão <strong>Adicionar</strong> para cadastrar uma nova informação, preenchendo o título e o conteúdo referente a ela.",
-              "O conteúdo pode ser preenchido de forma simples e objetiva, com as informações necessárias para que a IA consiga entender o assunto e repassá-lo corretamente aos clientes.",
-              "A opção de <strong>Categorias</strong> serve apenas para facilitar a organização e a localização das informações dentro da plataforma. Caso vocês tenham muitas informações cadastradas, podem separá-las por categorias para encontrá-las com mais facilidade.",
-              "Também é possível definir a <strong>validade</strong> da informação, indicando se ela será válida por tempo indeterminado, para uma data específica ou durante um determinado período.",
-              "Caso uma informação já esteja cadastrada, basta pesquisá-la pela barra de pesquisa e clicar no ícone de lápis localizado abaixo do card para editá-la."
-            ]
-          },
-          {
             titulo: "Informação para dia específico",
             tags: ["Informação", "Adicionar", "Específico", "IA", "Mensagem"],
             imagem: "img/captura-de-tela-2026-09-02-113546.png",
@@ -333,6 +321,18 @@ const RESPOSTAS = [
               "Ou:",
               "“No dia X, teremos a apresentação do artista Y.”",
               "Assim, a IA consegue considerar essas informações apenas durante o período em que elas estiverem programadas para ficar ativas."
+            ]
+          },
+          {
+            titulo: "Como cadastrar, categorizar e editar uma informação da IA / Informação Adicional",
+            tags: ["informacoes", "adicionar", "categoria", "validade", "editar", "lapis", "barra de pesquisa"],
+            imagem: "img/ia-informacoes.png",
+            resposta: [
+              "Na aba <strong>Configuração de IA &gt; Informações</strong>, você pode clicar no botão <strong>Adicionar</strong> para cadastrar uma nova informação, preenchendo o título e o conteúdo referente a ela.",
+              "O conteúdo pode ser preenchido de forma simples e objetiva, com as informações necessárias para que a IA consiga entender o assunto e repassá-lo corretamente aos clientes.",
+              "A opção de <strong>Categorias</strong> serve apenas para facilitar a organização e a localização das informações dentro da plataforma. Caso vocês tenham muitas informações cadastradas, podem separá-las por categorias para encontrá-las com mais facilidade.",
+              "Também é possível definir a <strong>validade</strong> da informação, indicando se ela será válida por tempo indeterminado, para uma data específica ou durante um determinado período.",
+              "Caso uma informação já esteja cadastrada, basta pesquisá-la pela barra de pesquisa e clicar no ícone de lápis localizado abaixo do card para editá-la."
             ]
           }
         ]
@@ -494,30 +494,6 @@ const RESPOSTAS = [
               "Nessa etapa, você poderá escolher a função e as permissões que a pessoa terá na plataforma.",
               "Caso selecione a função de administrador, a pessoa terá acesso a toda a plataforma. Já na função de membro, você poderá definir quais permissões e áreas da plataforma ela poderá acessar.",
               "Por meio dela, você também consegue realizar a gestão dos membros da equipe, podendo editar os acessos e permissões de cada pessoa ou até mesmo excluir membros que não precisam mais ter acesso à plataforma."
-            ]
-          }
-        ]
-      }
-    ]
-  },
-  {
-    id: "testes-da-ia",
-    aba: "Testes da IA",
-    subs: [
-      {
-        id: "testes-da-ia-testes-da-ia",
-        sub: "Testes da IA",
-        itens: [
-          {
-            titulo: "Como faço para testar a IA?",
-            tags: ["Teste da IA", "IA", "Informações", "Add Infos", "Testes", "Mensagem"],
-            imagem: "img/captura-de-tela-2026-09-02-145559.png",
-            resposta: [
-              "Na aba de Testes da IA, vocês conseguem simular conversas como se fossem clientes do restaurante e verificar, na prática, como a IA está respondendo.",
-              "Nessa mesma tela, na parte da direita, também é possível consultar, editar, criar ou excluir as Informações Adicionais cadastradas em “Configuração de IA > Informações”, facilitando os ajustes durante os testes.",
-              "Além disso, existe a opção de Data Simulada. Com ela, vocês podem testar informações que possuem validade temporal sem precisar esperar a data real chegar.",
-              "Por exemplo, vocês podem simular uma data específica para verificar se a IA está considerando corretamente informações cadastradas para determinado dia, evento ou período.",
-              "Se o campo de data for deixado em branco, a IA utilizará a data real."
             ]
           }
         ]
