@@ -340,13 +340,23 @@ const RESPOSTAS = [
         sub: "Follow-Up",
         itens: [
           {
-            titulo: "O que é o Follow-Up?",
+            titulo: "Follow-Up",
             tags: ["Follow-Up", "FUP", "Mensagem"],
             imagem: "img/captura-de-tela-2026-09-02-135930.png",
             resposta: [
               "O Follow Up é uma funcionalidade que permite à IA retomar automaticamente uma conversa quando o cliente não responde, evitando que um atendimento fique parado.",
               "Ele pode ser configurado para enviar novas mensagens após determinados intervalos de tempo, definidos a partir da última mensagem do cliente. Também é possível configurar o Follow Up por categoria, desativando o envio para assuntos específicos ou definindo orientações diferentes para cada situação.",
               "Em resumo, o Follow Up serve para a IA tentar reativar uma conversa que ficou sem resposta, mantendo o contato com o cliente sem que a equipe precise fazer isso manualmente."
+            ]
+          },
+          {
+            titulo: "Tempo de Follow Up e Instruções",
+            tags: ["Follow-up", "tempo de fup", "instruções"],
+            imagem: "img/captura-de-tela-2026-09-02-143358.png",
+            resposta: [
+              "Para alterar o tempo do Follow Up, você pode acessar a aba Configuração de IA > Follow Up e, na seção Quando enviar, excluir ou alterar os intervalos de tempo conforme desejado.",
+              "Logo abaixo, na seção Por categoria, você também pode adicionar instruções opcionais para cada tipo de Follow Up, personalizando o comportamento da IA de acordo com cada categoria.",
+              "Caso tenha alguma dúvida durante a configuração, pode me chamar por aqui que te auxilio."
             ]
           }
         ]
@@ -426,6 +436,23 @@ const RESPOSTAS = [
               "• Ticket Médio: valor médio dos pedidos, utilizado principalmente na geração de relatórios e análises.",
               "• Slug do Menu: define o endereço personalizado utilizado nos links do estabelecimento.",
               "• Idade Mínima: define se existem restrições de idade para realizar reservas, permitindo configurar, por exemplo, se crianças podem ou não realizar reservas."
+            ]
+          }
+        ]
+      },
+      {
+        id: "minha-loja-pagamentos",
+        sub: "Pagamentos",
+        itens: [
+          {
+            titulo: "Formas de Pagamento e Rodízio & Buffet",
+            tags: ["Formas de Pagamento", "Pagamento", "Rodízio", "Buffet", "Bandeiras", "Pix", "Cartão", "VR", "Vale Refeição"],
+            imagem: "img/captura-de-tela-2026-09-02-143128.png",
+            resposta: [
+              "Na aba MInha Loja > Loja > Pagamentos, você encontra configurações relacionadas aos métodos de pagamento e aos preços de buffet ou rodízio do estabelecimento.",
+              "• Métodos de Pagamento: permite selecionar todas as formas de pagamento aceitas pelo estabelecimento, além das bandeiras de cartão disponíveis.",
+              "• Regras de Preço de Buffet/Rodízio: permite configurar os valores do buffet ou rodízio de acordo com o dia da semana e o horário, além de definir regras específicas para feriados.",
+              "Essas informações também são utilizadas pela IA durante os atendimentos. Ou seja, quando um cliente perguntar quais formas de pagamento o estabelecimento aceita ou qual é o valor do buffet ou rodízio em determinado dia e horário, a IA irá consultar essas configurações para fornecer a resposta."
             ]
           }
         ]
