@@ -394,7 +394,23 @@ const RESPOSTAS = [
           }
         ]
       },
-      { id: "loja-pagamento", sub: "Formas de Pagamento", itens: [] },
+      {
+        id: "loja-pagamento",
+        sub: "Formas de Pagamento",
+        itens: [
+          {
+            titulo: "Pagamento de Reservas",
+            tags: ["Pagamento", "Reservas", "Formas de Pagamento", "Caução"],
+            imagem: "img/captura-de-tela-2026-09-02-142021.png",
+            resposta: [
+              "Na parte de Reservas, o pagamento online permite que o cliente realize o pagamento diretamente durante o processo de reserva.",
+              "A opção disponível é o Pagamento com cartão, que permite ao cliente utilizar o cartão de crédito para efetuar o pagamento da reserva pelo próprio fluxo da plataforma.",
+              "Essa opção não se aplica a reservas configuradas como caução. Ou seja, quando a reserva utiliza uma caução, o pagamento por cartão não fica disponível nessa configuração.",
+              "Em resumo, é uma forma de receber o pagamento da reserva antecipadamente, diretamente pelo fluxo de reserva, sem que o cliente precise realizar o pagamento de outra maneira."
+            ]
+          }
+        ]
+      },
       { id: "loja-repasse", sub: "Repasse", itens: [] }
     ]
   },
