@@ -37,7 +37,7 @@ const RESPOSTAS = [
           {
             titulo: "Como faço para bloquear uma área?",
             tags: ["Bloqueio", "Reserva"],
-            imagem: "img/captura-de-tela-2026-09-01-162222.png",
+            imagem: "img/captura-de-tela-2026-09-03-092236.png",
             resposta: [
               "Para criar um bloqueio na plataforma, basta seguir este passo a passo:",
               "1. Acesse a aba “Reservas” > “Bloqueios”.",
