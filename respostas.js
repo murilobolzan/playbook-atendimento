@@ -37,7 +37,7 @@ const RESPOSTAS = [
           {
             titulo: "Como faço para bloquear uma área?",
             tags: ["Bloqueio", "Reserva"],
-            imagem: "img/captura-de-tela-2026-09-03-092236.png",
+            imagem: "img/captura-de-tela-2026-09-01-162222.png",
             resposta: [
               "Para criar um bloqueio na plataforma, basta seguir este passo a passo:",
               "1. Acesse a aba “Reservas” > “Bloqueios”.",
@@ -46,7 +46,8 @@ const RESPOSTAS = [
               "4. Selecione as áreas que serão afetadas pelo bloqueio.",
               "5. Revise todas as informações configuradas.",
               "6. Após a confirmação, salve o bloqueio para que ele fique ativo na plataforma.",
-              "Assim, durante o período e nas áreas selecionadas, a plataforma não permitirá novas reservas."
+              "Assim, durante o período e nas áreas selecionadas, a plataforma não permitirá novas reservas.",
+              "Após isso, basta entrar no link de reservas que você pode obter dentro da aba Links, e tentar efetuar uma reserva para o dia ou o período que você bloqueou. Caso você não consiga, o bloqueio foi efetuado corretamente."
             ]
           }
         ]
