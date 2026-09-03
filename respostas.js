@@ -155,21 +155,6 @@ const RESPOSTAS = [
               "O atendimento pode ser realizado tanto pela própria rede social quanto diretamente pela plataforma.",
               "Obs.: dentro da plataforma, os clientes encaminhados para Atendimento Humano ficam identificados e direcionados para a fila de atendimento, facilitando a visualização e o acompanhamento dessas conversas."
             ]
-          },
-          {
-            titulo: "Atalho",
-            tags: ["Atalhos", "Conversas", "Mensagme", "Automática"],
-            imagem: "img/captura-de-tela-2026-09-03-110441.png",
-            resposta: [
-              "Para criar um atalho dentro da nossa plataforma, basta acessar a aba “WhatsApp” > “Conversas”. No canto superior direito, clique no ícone de raio.",
-              "Nessa opção, você poderá criar o atalho da sua preferência e utilizá-lo durante os atendimentos, facilitando o envio de mensagens que vocês utilizam com frequência.",
-              "Ao clicar em “Criar atalho”, você poderá configurar:",
-              "* Comando do atalho;",
-              "* Categoria;",
-              "* Descrição do atalho;",
-              "* Resposta que será enviada ao cliente.",
-              "Depois de preencher essas informações, basta salvar o atalho para começar a utilizá-lo durante os atendimentos."
-            ]
           }
         ]
       },
@@ -187,6 +172,22 @@ const RESPOSTAS = [
               "Para entrar em contato novamente, é necessário utilizar um template de mensagem previamente aprovado pela Meta. Esse envio é considerado um disparo e pode ter cobrança, dependendo da categoria da mensagem utilizada.",
               "Essa é uma regra da própria Meta, criada para evitar que empresas enviem mensagens não solicitadas para os usuários.",
               "Então, mesmo que vocês já tenham conversado anteriormente com o cliente, caso tenham passado mais de 24 horas desde a última mensagem dele, será necessário utilizar um template aprovado para iniciar uma nova interação."
+            ]
+          }
+        ]
+      },
+      {
+        id: "whatsapp-etiquetas",
+        sub: "Etiquetas",
+        itens: [
+          {
+            titulo: "Etiqueta",
+            tags: ["Etiqueta", "Cliente", "WhatsApp", "Conversa"],
+            imagem: "img/captura-de-tela-2026-09-03-111121.png",
+            resposta: [
+              "Para adicionar uma etiqueta a uma conversa, basta clicar no nome do cliente, na parte superior central da conversa. Ao lado, você encontrará a aba “Etiquetas”.",
+              "Ao clicar nessa opção, você poderá selecionar uma etiqueta que já foi criada ou criar uma nova.",
+              "Depois, caso queira visualizar apenas as conversas que possuem determinada etiqueta, na parte esquerda da tela, um pouco acima das conversas, você poderá aplicar os filtros! É possível selecionar todas as etiquetas ou apenas a etiqueta específica que deseja utilizar para visualizar os clientes!"
             ]
           }
         ]
