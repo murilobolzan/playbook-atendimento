@@ -155,6 +155,21 @@ const RESPOSTAS = [
               "O atendimento pode ser realizado tanto pela própria rede social quanto diretamente pela plataforma.",
               "Obs.: dentro da plataforma, os clientes encaminhados para Atendimento Humano ficam identificados e direcionados para a fila de atendimento, facilitando a visualização e o acompanhamento dessas conversas."
             ]
+          },
+          {
+            titulo: "Atalho",
+            tags: ["Atalhos", "Conversas", "Mensagme", "Automática"],
+            imagem: "img/captura-de-tela-2026-09-03-110441.png",
+            resposta: [
+              "Para criar um atalho dentro da nossa plataforma, basta acessar a aba “WhatsApp” > “Conversas”. No canto superior direito, clique no ícone de raio.",
+              "Nessa opção, você poderá criar o atalho da sua preferência e utilizá-lo durante os atendimentos, facilitando o envio de mensagens que vocês utilizam com frequência.",
+              "Ao clicar em “Criar atalho”, você poderá configurar:",
+              "* Comando do atalho;",
+              "* Categoria;",
+              "* Descrição do atalho;",
+              "* Resposta que será enviada ao cliente.",
+              "Depois de preencher essas informações, basta salvar o atalho para começar a utilizá-lo durante os atendimentos."
+            ]
           }
         ]
       },
