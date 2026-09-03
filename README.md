@@ -23,40 +23,104 @@ altere → **Commit changes**. Cerca de 40 segundos depois o site já mostra a v
 
 ## As três seções
 
-A barra da esquerda tem uma **lupa** no topo e, logo abaixo, o **seletor de tópico**.
-São três tópicos separados: você está em um de cada vez, e a barra mostra só o
-conteúdo daquele. Guia e respostas rápidas nunca dividem a mesma tela.
+No topo da barra da esquerda fica o **seletor de tópico**. São três tópicos separados:
+você está em um de cada vez, e a barra mostra só o conteúdo daquele. Guia e respostas
+rápidas nunca dividem a mesma tela.
 
 | Tópico | O que é |
 |---|---|
 | **Guia de atendimento** | As cinco etapas, uma por tela, na ordem |
 | **Critérios de avaliação** | A régua de 4 critérios, de consulta |
-| **Respostas rápidas** | As respostas padrão, por aba e sub-aba da plataforma |
+| **Respostas rápidas** | A biblioteca de respostas padrão: lista à esquerda, leitura à direita |
 
-### A busca fica no topo das respostas
+### Respostas rápidas: lista à esquerda, leitura à direita
 
-Ela não mora mais na barra estreita: é uma faixa larga no alto do tópico **Respostas
-rápidas**, com a pergunta "O que o cliente perguntou?" e exemplos no campo. Procura em
+O tópico tem duas colunas. À esquerda a **lista**, uma linha por resposta, com o
+título e o caminho `Aba › Sub-aba`. À direita o **painel de leitura**, com a resposta
+escolhida inteira.
 
-**título, corpo, tags, nome da aba e da sub-aba**, e só nas respostas. Funciona com ou sem acento — "satisfacao" acha
-"Satisfação". O termo encontrado vem destacado, e cada resposta tem botão de **copiar**.
+Antes cada resposta era um card grande que abria e fechava, e copiar custava três
+cliques: escolher a aba, escolher a sub-aba, abrir o card. Agora **copiar é um clique
+na própria linha**, sem abrir nada.
 
-Atalho: tecla `/` ou `Ctrl+K` já leva para as respostas e põe o cursor na busca.
+| Na linha | Faz |
+|---|---|
+| **⧉** | Copia a resposta na hora, sem abrir. Vira um ✓ verde por 2 segundos |
+| **☆ / ★** | Fixa a resposta no topo da lista e na barra da esquerda |
+| clicar no título | Abre no painel de leitura |
 
-Se nada servir, o rodapé sempre oferece **perguntar para a IA da documentação**.
+Entrar no tópico nunca dá tela vazia: o padrão é a **biblioteca completa**, com os
+fixados no topo. Sub-abas sem resposta ficam escondidas atrás de *mostrar sub-abas
+vazias*, porque no meio do turno elas só ocupam espaço.
 
-### Cada resposta abre e fecha
+A barra da esquerda ganhou dois atalhos que aparecem sozinhos:
 
-Clicar no título encolhe a resposta até sobrar só ele — útil quando a sub-aba tem
-várias e você quer bater o olho na lista. Clicar de novo abre.
+- **★ Fixados** — o que você marcou. São as poucas respostas que resolvem a maior
+  parte do turno.
+- **↻ Usadas há pouco** — as últimas 5 que você **copiou**. Copiar é o que marca a
+  resposta como usada de verdade; abrir é só olhar.
 
-O **print não aparece sozinho**: fica atrás do botão "Ver print da tela". Quando
-aberto, entra com no máximo 300px de altura, e um clique nele abre em tela cheia.
+Os dois ficam guardados neste navegador, por pessoa.
+
+### Atalhos de teclado
+
+A mão já está no teclado por causa da busca, então ela não precisa sair de lá.
+
+| Tecla | Faz |
+|---|---|
+| `/` ou `Ctrl+K` | Vai para as respostas e põe o cursor na busca |
+| `↑` `↓` | Anda na lista |
+| `Ctrl+Enter` | Copia a resposta escolhida |
+| `Esc` | Limpa a busca |
+
+### A busca filtra a lista, sem trocar de tela
+
+A lupa é uma faixa de uma linha no alto do tópico. Digitar **filtra a lista ao vivo**:
+a barra da esquerda e o painel de leitura ficam parados. Antes a busca trocava a tela
+inteira, e você perdia o lugar onde estava.
+
+Ela procura em **título, corpo, palavras-chave, nome da aba e da sub-aba**, e só nas
+respostas. Funciona com ou sem acento — "satisfacao" acha "Satisfação". O termo
+encontrado vem destacado na lista e no texto.
+
+Buscar ignora a sub-aba escolhida, de propósito: quem digita está atrás de algo que
+não achou onde estava, e prender a busca a uma sub-aba esconderia a resposta.
+
+Se nada servir, a lista vazia oferece **perguntar para a IA da documentação**.
+
+### As palavras-chave filtram, e a cor diz o que elas são
+
+Cada resposta tem uma lista de palavras-chave. Elas aparecem em dois lugares: como
+**chips** no topo da lista, e no pé do painel de leitura. Nos dois, **clicar filtra**.
+Antes elas eram só enfeite no pé do card.
+
+Os chips vêm ordenados por quantas respostas cada palavra tem, então as que filtram
+mais aparecem primeiro. Os 12 primeiros ficam à vista; o resto abre em *+N mais*.
+
+| Cor | Significa | De onde vem |
+|---|---|---|
+| 🟣 Roxo | Módulo da plataforma | os `nome:` de `MODULOS`, em [8] |
+| 🔵 Azul | Natureza do ticket | os `nome:` de `CATEGORIAS`, em [6] |
+| 🟡 Âmbar | Cuidado | a palavra `Interno` |
+| ⚪ Cinza | Palavra-chave livre | qualquer outra |
+
+As duas primeiras saem das listas do `conteudo.js`, não de uma tabela repetida. Se
+você renomear um módulo lá, a cor acompanha aqui.
+
+### O print continua atrás de um botão
+
+A imagem não aparece sozinha: fica atrás de **Ver print da tela**, no painel de
+leitura. Aberta, entra com no máximo 300px de altura, e um clique nela abre em tela
+cheia.
+
+Quando a resposta tem print, **Copiar texto + imagem** põe os dois juntos na área de
+transferência — o WhatsApp costuma pegar a imagem e ignorar o texto, por isso existe
+também **Só o texto**.
 
 ### Criar e editar resposta pela própria tela
 
 **Você não precisa mais mexer em código.** No tópico Respostas rápidas, a barra da
-esquerda tem **＋ Nova resposta**, e cada resposta tem **✎ Editar** e **×** no topo.
+esquerda tem **＋ Nova resposta**, e o painel de leitura tem **✎ Editar** e **×**.
 
 Para isso funcionar, configure a publicação uma vez:
 
@@ -184,20 +248,20 @@ Se preferir ir direto, cada seção tem um marcador. Ctrl+F com ele no `conteudo
 | Mudar um nível da régua de avaliação | `[11]`, dentro de `niveis` do critério |
 | Mudar o peso de um critério | `[11]`, o campo `peso` |
 | Mudar o nome que aparece no canto da tela | `[10]`, `marca` |
-| **Adicionar uma aba de respostas** | `[12]`, copie um bloco `{ id, aba, subs }` |
-| **Adicionar uma sub-aba** | `[12]`, dentro de `subs`, um bloco `{ id, sub, itens }` |
-| **Adicionar uma resposta pronta** | `[12]`, dentro de `itens`, um `{ titulo, tags, resposta }` |
-| Fazer a busca achar por outra palavra | `[12]`, acrescente em `tags` |
-| Trocar o print de uma resposta | `[12]`, o campo `imagem`, e o arquivo em `img/` |
+| **Adicionar aba, sub-aba ou resposta** | pela tela: **＋ Nova resposta** na barra |
+| **Editar uma resposta** | pela tela: **✎ Editar** no painel de leitura |
+| Fazer a busca achar por outra palavra | pela tela, campo **Palavras-chave** |
+| Trocar o print de uma resposta | pela tela, campo **Imagem** — ele sobe para `img/` |
 
 ### Imagens nas respostas
 
 Os prints ficam na pasta [`img/`](img) e são ligados à resposta pelo campo
-`imagem: "img/nome.png"` em `[12]`. Na tela aparecem abaixo do texto, e um clique
-abre em tamanho cheio.
+`imagem: "img/nome.png"` em [`respostas.js`](respostas.js). No painel de leitura ficam
+atrás de **Ver print da tela**, e um clique na imagem abre em tamanho cheio.
 
-Para trocar um print: suba o arquivo novo em `img/` pelo GitHub e aponte o campo
-`imagem` para ele. Para adicionar onde não tem, é só acrescentar o campo.
+Com a publicação configurada, o jeito normal é pela tela: escolher o arquivo no campo
+**Imagem** já sobe ele para `img/` e aponta o campo. À mão também dá — suba o arquivo
+em `img/` pelo GitHub e aponte `imagem` para ele.
 
 ### Adicionar uma categoria nova
 

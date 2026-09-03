@@ -36,7 +36,7 @@ const RESPOSTAS = [
         itens: [
           {
             titulo: "Como faço para bloquear uma área?",
-            tags: ["Bloqueio", "Reserva"],
+            tags: ["Dúvida", "Reserva", "bloqueio", "bloquear area", "bloquear mesa", "bloquear dia", "fechar agenda", "feriado", "evento privado", "dia inteiro", "intervalo de horario", "nao aceitar reserva", "periodo do bloqueio", "salvar bloqueio"],
             imagem: "img/captura-de-tela-2026-09-01-162222.png",
             resposta: [
               "Para criar um bloqueio na plataforma, basta seguir este passo a passo:",
@@ -58,7 +58,7 @@ const RESPOSTAS = [
         itens: [
           {
             titulo: "Tempo de antecedência / Dias de antecedência / Horário limite para fazer uma reserva",
-            tags: ["antecedencia", "horario limite", "configuracoes avancadas", "mesmo dia", "23:59"],
+            tags: ["Ajuste", "Reserva", "Configurações gerais", "antecedencia", "dias de antecedencia", "tempo de antecedencia", "horario limite", "configuracoes avancadas", "mesmo dia", "23:59", "areas e mesas", "reserva de ultima hora", "limite geral", "editar horarios da area"],
             imagem: "img/res-areas-antecedencia.png",
             resposta: [
               "Em <strong>Reservas &gt; Áreas e Mesas &gt; Configurações Avançadas</strong>, o horário limite geral para reservas no mesmo dia estava configurado como XX:XX.",
@@ -67,7 +67,7 @@ const RESPOSTAS = [
           },
           {
             titulo: "Reservas pagas: como configurar, taxa e repasse",
-            tags: ["reserva paga", "caucao", "consumacao", "taxa", "10%", "pix", "cartao", "repasse", "D+1", "D+30", "chave pix"],
+            tags: ["Financeiro", "Reserva", "reserva paga", "cobrar reserva", "caucao", "consumacao", "taxa", "10%", "pix", "cartao", "repasse", "D+1", "D+30", "chave pix", "intermediadora", "taxa para o cliente", "valor da reserva"],
             resposta: [
               "Podemos configurar essa questão diretamente em <strong>Reservas &gt; Áreas e Mesas</strong>. Para isso, só preciso que você me informe exatamente como gostaria que essa dinâmica funcionasse, para conseguirmos realizar a configuração corretamente.",
               "Também conseguimos configurar o pagamento como <strong>caução</strong> ou, se preferirem, fazer com que o valor pago seja revertido em <strong>consumação</strong> no estabelecimento. Essa pode ser uma alternativa interessante para tornar a reserva mais atrativa para o cliente.",
@@ -78,7 +78,7 @@ const RESPOSTAS = [
           },
           {
             titulo: "Dias de Antecedencia",
-            tags: ["reservas", "antecedencia", "dias", "tempo"],
+            tags: ["Ajuste", "Reserva", "dias de antecedencia", "antecedencia", "configuracoes avancadas", "areas e mesas", "quantos dias", "liberar dias automaticamente", "periodo de reserva", "agenda aberta", "reservas", "dias", "tempo"],
             imagem: "img/whatsapp-image-2026-09-01-at-17-12-45.png",
             resposta: [
               "Em “Reservas” > “Áreas e Mesas” > “Configurações Avançadas”, você consegue verificar por quantos dias de antecedência os clientes podem realizar uma reserva.",
@@ -93,7 +93,7 @@ const RESPOSTAS = [
         itens: [
           {
             titulo: "Como consultar o histórico de reservas",
-            tags: ["historico", "filtro", "buscar reserva", "status", "cancelada", "salao", "periodo"],
+            tags: ["Dúvida", "Reserva", "Relatórios", "historico", "historico de reservas", "consultar reserva", "buscar reserva", "filtro", "nome telefone email", "periodo", "status da reserva", "confirmada", "cancelada pelo cliente", "cancelada pelo estabelecimento", "salao", "reserva passada", "status", "cancelada"],
             imagem: "img/res-historico.png",
             resposta: [
               "Na aba <strong>Reservas &gt; Histórico</strong>, você consegue consultar o histórico das reservas utilizando diferentes filtros. É possível buscar pelo nome, telefone ou e-mail do cliente, caso ele tenha informado esses dados, além de selecionar o período que deseja consultar.",
@@ -115,7 +115,7 @@ const RESPOSTAS = [
         itens: [
           {
             titulo: "Reclamação do erro que aparece na Meta",
-            tags: ["meta", "erro", "portfolio empresarial", "status", "limitacao", "aviso"],
+            tags: ["Reclamação", "Conexão", "meta", "erro na meta", "portfolio empresarial", "status do numero", "limitacao", "aviso", "qualidade do numero", "painel", "atualizacao", "transparencia", "erro", "status"],
             imagem: "img/wpp-meta.png",
             resposta: [
               "Recentemente, lançamos uma atualização no painel justamente para dar mais transparência sobre a conexão com a Meta. Agora, algumas informações que antes apareciam somente dentro do Portfólio Empresarial de vocês também ficam visíveis diretamente no nosso sistema.",
@@ -124,7 +124,7 @@ const RESPOSTAS = [
           },
           {
             titulo: "A instância do WhatsApp ainda não foi provisionada",
-            tags: ["instancia", "provisionada", "zapi", "status zapi", "interno", "conectar"],
+            tags: ["Bug", "Conexão", "Interno", "instancia", "instancia nao provisionada", "provisionar", "zapi", "status zapi", "ativar instancia", "conectar whatsapp", "nao conecta", "provisionada", "conectar"],
             interno: true,
             resposta: [
               "O membro CS terá que ir na aba WhatsApp, conectar o WhatsApp e ativar a instância ao lado do <strong>Status ZApi</strong>.",
@@ -139,7 +139,7 @@ const RESPOSTAS = [
         itens: [
           {
             titulo: "Atendimento Humano",
-            tags: ["Conversa", "Atendimento Humano", "Humano", "IA", "Resposta"],
+            tags: ["Dúvida", "Atendimento", "IA", "atendimento humano", "ia parou de responder", "ia interrompe", "assumir conversa", "fila de atendimento", "encaminhamento", "duplicidade", "responder pela rede social", "equipe assume", "ia sem informacao suficiente", "cliente pediu humano", "Conversa", "Humano", "Resposta"],
             imagem: "img/captura-de-tela-2026-09-02-133203.png",
             resposta: [
               "Após o cliente ser encaminhado para o Atendimento Humano, a IA interrompe a conversa e a equipe de vocês assume o atendimento.",
@@ -164,7 +164,7 @@ const RESPOSTAS = [
         itens: [
           {
             titulo: "Erro de 24h após a última mensagem do cliente",
-            tags: ["Erro", "Meta", "WhatsApp", "24 horas"],
+            tags: ["Bug", "Conexão", "Disparos", "janela de atendimento", "24 horas", "template", "template aprovado", "meta", "nao consigo responder", "retomar conversa", "disparo", "cobranca por categoria", "mensagem nao solicitada", "janela encerrada", "regra da meta", "Erro", "WhatsApp"],
             resposta: [
               "Quando um cliente envia uma mensagem para vocês pelo WhatsApp, é aberta uma janela de atendimento de 24 horas.",
               "Durante esse período, vocês podem responder normalmente ao cliente, sem a necessidade de utilizar um template.",
@@ -182,7 +182,7 @@ const RESPOSTAS = [
         itens: [
           {
             titulo: "Etiqueta",
-            tags: ["Etiqueta", "Cliente", "WhatsApp", "Conversa"],
+            tags: ["Dúvida", "Atendimento", "CRM", "etiqueta", "etiquetas", "marcar conversa", "criar etiqueta", "filtro de conversa", "nome do cliente", "organizar conversas", "ver so uma etiqueta", "aplicar filtro", "Cliente", "WhatsApp", "Conversa"],
             imagem: "img/captura-de-tela-2026-09-03-111121.png",
             resposta: [
               "Para adicionar uma etiqueta a uma conversa, basta clicar no nome do cliente, na parte superior central da conversa. Ao lado, você encontrará a aba “Etiquetas”.",
@@ -204,7 +204,7 @@ const RESPOSTAS = [
         itens: [
           {
             titulo: "Quais links a loja tem e para que serve cada um",
-            tags: ["link rastreavel", "bio instagram", "anuncio meta", "origem", "campanha", "utm"],
+            tags: ["Dúvida", "CRM", "link rastreavel", "links da loja", "link de reserva", "bio do instagram", "anuncio meta", "origem do cliente", "campanha", "utm", "de onde vem o cliente", "canal", "link simples", "rastrear", "bio instagram", "origem"],
             imagem: "img/links-loja.png",
             resposta: [
               "Na aba <strong>Links &gt; Links da Loja</strong>, você consegue obter links rastreáveis para cada tipo de operação da loja, como, por exemplo, as reservas.",
@@ -220,7 +220,7 @@ const RESPOSTAS = [
         itens: [
           {
             titulo: "Como adicionar e organizar links num só lugar",
-            tags: ["linktree", "adicionar link", "bio", "divulgacao", "pagina de links"],
+            tags: ["Dúvida", "linktree", "adicionar link", "organizar links", "pagina de links", "bio do instagram", "divulgacao", "agrupar links", "varios links em um lugar", "bio"],
             imagem: "img/links-rastreaveis.png",
             resposta: [
               "Na aba <strong>Links &gt; Links Rastreáveis</strong>, você consegue adicionar e organizar diferentes links em um único local, funcionando de forma semelhante ao Linktree.",
@@ -241,7 +241,7 @@ const RESPOSTAS = [
         itens: [
           {
             titulo: "Como funcionam as pesquisas de NPS e quando são disparadas",
-            tags: ["nps", "pesquisa", "analytics", "notificacoes", "disparo", "3 horas", "fila", "sentado"],
+            tags: ["Dúvida", "Satisfação", "nps", "pesquisa nps", "pesquisa de satisfacao", "analytics", "notificacoes", "disparo", "quando dispara", "3 horas", "fila", "sentado", "criar pesquisa", "editar pergunta", "configurar whatsapp", "reserva finalizada", "pesquisa"],
             imagem: "img/sat-nps.png",
             resposta: [
               "Dentro da aba <strong>Satisfação &gt; Pesquisas NPS</strong>, você consegue visualizar todas as pesquisas que estão sendo enviadas aos clientes em cada tipo de situação.",
@@ -259,7 +259,7 @@ const RESPOSTAS = [
         itens: [
           {
             titulo: "Não consigo visualizar esses feedbacks negativos / Como visualizo os feedbacks das conversas?",
-            tags: ["feedback", "elogio", "reclamacao", "conversas", "negativo"],
+            tags: ["Dúvida", "Satisfação", "feedback", "feedback negativo", "elogio", "reclamacao", "nas conversas", "ia identificou", "onde vejo", "nao consigo visualizar", "conversas", "negativo"],
             imagem: "img/sat-conversas.png",
             resposta: [
               "Dentro da aba <strong>Satisfação</strong>, na sub-aba <strong>Nas Conversas</strong>, você consegue visualizar as mensagens de elogios ou reclamações que a IA identificou durante os atendimentos aos clientes. Assim, fica mais fácil acompanhar os principais feedbacks recebidos diretamente nas conversas."
@@ -280,7 +280,7 @@ const RESPOSTAS = [
         itens: [
           {
             titulo: "Como verificar se WhatsApp e Instagram estão conectados",
-            tags: ["canais conectados", "ativar ia", "inativar", "whatsapp", "instagram", "salvar"],
+            tags: ["Ajuste", "IA", "Conexão", "canais conectados", "ativar ia", "inativar ia", "desligar ia", "whatsapp", "instagram", "identidade", "salvar", "ia nao responde", "verificar conexao", "inativar"],
             imagem: "img/ia-canais.png",
             resposta: [
               "Em <strong>Configuração de IA &gt; Identidade &gt; Canais Conectados</strong>, você consegue verificar se o seu WhatsApp e Instagram estão conectados à plataforma.",
@@ -295,7 +295,7 @@ const RESPOSTAS = [
         itens: [
           {
             titulo: "Nome e Gênero, Tamanho das Respostas, Tom de Voz, Recursos",
-            tags: ["nome", "genero", "tom de voz", "tamanho da resposta", "emoji", "bullet points", "recursos"],
+            tags: ["Dúvida", "IA", "nome da ia", "genero", "tom de voz", "tamanho da resposta", "emoji", "bullet points", "recursos", "identidade", "assistente", "perguntas e respostas", "reagir mensagem", "como a ia fala", "nome"],
             imagem: "img/ia-caracteristicas.png",
             resposta: [
               "Dentro da aba <strong>Configuração de IA &gt; Identidade</strong>, conseguimos configurar diferentes características da assistente, como o nome e gênero da assistente, o tamanho das respostas que ela irá enviar e o tom de voz utilizado durante os atendimentos.",
@@ -311,7 +311,7 @@ const RESPOSTAS = [
         itens: [
           {
             titulo: "Regras de Comportamento e Gírias e Expressões",
-            tags: ["regras", "comportamento", "girias", "expressoes", "vendedora", "formal", "emoji", "regional"],
+            tags: ["Ajuste", "IA", "regras de comportamento", "girias e expressoes", "girias", "expressoes regionais", "mais vendedora", "mais direta", "menos repetitiva", "mais animada", "mais formal", "emoji autorizado", "identidade", "regras", "comportamento", "expressoes", "vendedora", "formal", "emoji", "regional"],
             imagem: "img/ia-regras.png",
             resposta: [
               "Dentro da aba <strong>Configuração de IA &gt; Identidade</strong>, nos dois últimos tópicos, você encontra as opções <strong>Regras de Comportamento</strong> e <strong>Gírias e Expressões</strong>.",
@@ -328,7 +328,7 @@ const RESPOSTAS = [
         itens: [
           {
             titulo: "Informação para dia específico",
-            tags: ["Informação", "Adicionar", "Específico", "IA", "Mensagem"],
+            tags: ["Ajuste", "IA", "informacao", "validade", "dia especifico", "periodo definido", "evento", "programar informacao", "informacao temporaria", "adicionar informacao", "apenas esta semana", "data marcada", "Adicionar", "Específico", "Mensagem"],
             imagem: "img/captura-de-tela-2026-09-02-113546.png",
             resposta: [
               "Dentro da aba “Configuração de IA > Informações”, ao adicionar uma nova informação, você consegue definir uma validade para ela.",
@@ -342,7 +342,7 @@ const RESPOSTAS = [
           },
           {
             titulo: "Como cadastrar, categorizar e editar uma informação da IA",
-            tags: ["informacoes", "adicionar", "categoria", "validade", "editar", "lapis", "barra de pesquisa"],
+            tags: ["Ajuste", "IA", "informacoes", "adicionar informacao", "cadastrar informacao", "categoria", "validade", "editar informacao", "lapis", "barra de pesquisa", "tempo indeterminado", "data especifica", "base de conhecimento", "ensinar a ia", "adicionar", "editar"],
             imagem: "img/ia-informacoes.png",
             resposta: [
               "Na aba <strong>Configuração de IA &gt; Informações</strong>, você pode clicar no botão Adicionar ou Editar para cadastrar/alterar uma informação, preenchendo o título e o conteúdo referente a ela.",
@@ -360,7 +360,7 @@ const RESPOSTAS = [
         itens: [
           {
             titulo: "Links Externos",
-            tags: ["Links", "Cardápio", "Link Externo", "Links Externos"],
+            tags: ["Ajuste", "IA", "Cardápio", "links externos", "link externo", "cardapio externo", "google drive", "outra plataforma", "servico externo", "ia envia link", "cadastrar link", "Links"],
             imagem: "img/captura-de-tela-2026-09-02-124210.png",
             resposta: [
               "Na aba Configuração de Links Externos, você pode adicionar links de outras plataformas ou serviços que não utiliza diretamente pela nossa plataforma.",
@@ -376,7 +376,7 @@ const RESPOSTAS = [
         itens: [
           {
             titulo: "Follow-Up",
-            tags: ["Follow-Up", "FUP", "Mensagem"],
+            tags: ["Dúvida", "IA", "follow up", "fup", "cliente nao responde", "retomar conversa", "atendimento parado", "reativar conversa", "por categoria", "automatico", "intervalo de tempo", "sem resposta", "Follow-Up", "Mensagem"],
             imagem: "img/captura-de-tela-2026-09-02-135930.png",
             resposta: [
               "O Follow Up é uma funcionalidade que permite à IA retomar automaticamente uma conversa quando o cliente não responde, evitando que um atendimento fique parado.",
@@ -386,7 +386,7 @@ const RESPOSTAS = [
           },
           {
             titulo: "Tempo de Follow Up e Instruções",
-            tags: ["Follow-up", "tempo de fup", "instruções"],
+            tags: ["Ajuste", "IA", "follow up", "fup", "tempo de follow up", "quando enviar", "intervalo", "por categoria", "instrucoes opcionais", "alterar tempo", "excluir intervalo", "Follow-up", "tempo de fup", "instruções"],
             imagem: "img/captura-de-tela-2026-09-02-143358.png",
             resposta: [
               "Para alterar o tempo do Follow Up, você pode acessar a aba Configuração de IA > Follow Up e, na seção Quando enviar, excluir ou alterar os intervalos de tempo conforme desejado.",
@@ -402,7 +402,7 @@ const RESPOSTAS = [
         itens: [
           {
             titulo: "Quebra-Gelos",
-            tags: ["Quebra-Gelos", "Mensagens Rápidas"],
+            tags: ["Dúvida", "IA", "quebra-gelos", "quebra gelo", "mensagens prontas", "atalho no chat", "opcoes ao abrir o chat", "primeiro contato", "ativar desativar", "whatsapp meta", "instagram", "direcionar atendimento", "Mensagens Rápidas"],
             imagem: "img/captura-de-tela-2026-09-02-141141.png",
             resposta: [
               "Os Quebra-Gelos são mensagens ou opções prontas que aparecem para o cliente assim que ele abre o chat. Eles funcionam como atalhos, permitindo que o cliente inicie a conversa com apenas um toque, sem precisar digitar uma mensagem.",
@@ -429,7 +429,7 @@ const RESPOSTAS = [
         itens: [
           {
             titulo: "Como adicionar uma imagem para a IA enviar?",
-            tags: ["imagem", "galeria", "foto", "enviar imagem", "cardapio foto"],
+            tags: ["Dúvida", "IA", "galeria de imagens", "imagem", "foto", "ia envia imagem", "adicionar imagem", "titulo e descricao", "minha loja", "galeria", "enviar imagem", "cardapio foto"],
             imagem: "img/loja-imagens.png",
             resposta: [
               "Dentro da aba <strong>Minha Loja &gt; Loja</strong>, o último tópico é a <strong>Galeria de Imagens</strong>. Nessa área, você consegue cadastrar imagens para que a IA possa enviá-las aos clientes quando necessário.",
@@ -445,7 +445,7 @@ const RESPOSTAS = [
         itens: [
           {
             titulo: "Pagamento de Reservas",
-            tags: ["Pagamento", "Reservas", "Formas de Pagamento", "Caução"],
+            tags: ["Financeiro", "Reserva", "pagamento de reserva", "pagamento online", "cartao de credito", "caucao", "pagar na reserva", "pagamento antecipado", "formas de pagamento", "fluxo de reserva", "Pagamento", "Reservas"],
             imagem: "img/captura-de-tela-2026-09-02-142021.png",
             resposta: [
               "Na parte de Reservas, o pagamento online permite que o cliente realize o pagamento diretamente durante o processo de reserva.",
@@ -463,7 +463,7 @@ const RESPOSTAS = [
         itens: [
           {
             titulo: "Informações Gerais",
-            tags: ["Descrição", "Nome", "Slug", "Ticket Médio", "CNPJ", "Nome do estabelecimento"],
+            tags: ["Ajuste", "Configurações gerais", "informacoes gerais", "descricao da loja", "ticket medio", "slug do menu", "idade minima", "nome do estabelecimento", "dados cadastrais", "endereco personalizado", "restricao de idade", "crianca pode reservar", "Descrição", "Nome", "Slug", "CNPJ"],
             imagem: "img/captura-de-tela-2026-09-02-142635.png",
             resposta: [
               "Essa seção reúne os principais dados cadastrais e comerciais do estabelecimento, que são utilizados tanto pela plataforma quanto pela IA durante os atendimentos. Tendo como principais configurações:",
@@ -481,7 +481,7 @@ const RESPOSTAS = [
         itens: [
           {
             titulo: "Formas de Pagamento e Rodízio & Buffet",
-            tags: ["Formas de Pagamento", "Pagamento", "Rodízio", "Buffet", "Bandeiras", "Pix", "Cartão", "VR", "Vale Refeição"],
+            tags: ["Ajuste", "Configurações gerais", "Cardápio", "formas de pagamento", "metodos de pagamento", "bandeiras de cartao", "pix", "rodizio", "buffet", "preco de buffet", "regra de preco", "dia da semana", "feriado", "vale refeicao", "ia consulta o preco", "Pagamento", "Bandeiras", "Cartão", "VR"],
             imagem: "img/captura-de-tela-2026-09-02-143128.png",
             resposta: [
               "Na aba MInha Loja > Loja > Pagamentos, você encontra configurações relacionadas aos métodos de pagamento e aos preços de buffet ou rodízio do estabelecimento.",
@@ -504,7 +504,7 @@ const RESPOSTAS = [
         itens: [
           {
             titulo: "Convidar Membros",
-            tags: ["Membros", "Acesso", "Convidar", "Editar", "Permissões"],
+            tags: ["Ajuste", "Configurações gerais", "membros", "convidar membro", "novo acesso", "permissoes", "funcao", "administrador", "editar acesso", "excluir membro", "gestao da equipe", "quem pode acessar", "Acesso", "Convidar", "Editar"],
             imagem: "img/captura-de-tela-2026-09-02-093724.png",
             resposta: [
               "Para convidar um novo membro para a plataforma, basta acessar a aba “Membros” e clicar no botão “Convidar”, localizado no canto superior direito.",
@@ -527,7 +527,7 @@ const RESPOSTAS = [
         itens: [
           {
             titulo: "Como faço para testar a IA?",
-            tags: ["Teste da IA", "IA", "Informações", "Add Infos", "Testes", "Mensagem"],
+            tags: ["Dúvida", "IA", "testes da ia", "testar a ia", "simular conversa", "data simulada", "informacoes adicionais", "validade temporal", "como a ia responde", "ajustar durante o teste", "data real", "Teste da IA", "Informações", "Add Infos", "Testes", "Mensagem"],
             imagem: "img/captura-de-tela-2026-09-02-145559.png",
             resposta: [
               "Na aba de Testes da IA, vocês conseguem simular conversas como se fossem clientes do restaurante e verificar, na prática, como a IA está respondendo.",

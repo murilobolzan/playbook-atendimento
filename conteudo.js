@@ -753,32 +753,40 @@ const TEXTOS = {
   navEtapas: "As cinco etapas, em ordem",
   navAbasPlataforma: "Abas da plataforma",
 
-  /* --- busca global, a lupa do topo da barra lateral ---
-     Procura em título, corpo, tag, nome da aba e da sub-aba, e também nas
-     etapas do guia, nos casos conhecidos e nos critérios de avaliação. */
+  /* --- busca das respostas rápidas ---
+     A lupa fica no topo do conteúdo e filtra a lista ao vivo: a barra da
+     esquerda e o painel de leitura não se mexem enquanto você digita. */
   buscaRotulo: "O que o cliente perguntou?",
   buscaGlobalPlaceholder: "Digite uma palavra: cupom, NPS, taxa, antecedência...",
   sideRotulo: "Navegação",
-  buscaGlobalDica: "Procura por palavra-chave no título, no texto e nas tags. Atalho: / ou Ctrl+K.",
+  buscaGlobalDica: "Procura no título, no texto e nas palavras-chave. Atalho: / ou Ctrl+K.",
   buscaLimpar: "Limpar busca",
-  buscaEyebrow: "Respostas rápidas · busca",
-  buscaTitulo: "{n} resultado(s) para “{termo}”",
-  buscaGrupoRespostas: "Respostas prontas ({n})",
-  buscaGrupoOutros: "Também encontrei ({n})",
-  buscaCasoEm: "Caso conhecido em",
-  buscaNada: "Nenhuma resposta com essas palavras. Tente outra palavra-chave, ou pergunte para a IA da documentação abaixo.",
-  buscaSemSorte: "Não achou o que precisava aqui?",
-  buscaTipos: {
-    resposta: "Resposta",
-    guia: "Etapa do guia",
-    caso: "Caso conhecido",
-    criterio: "Critério"
-  },
 
-  /* --- respostas rápidas --- */
-  respEscolha: "Escolha uma aba na barra da esquerda para ver as respostas prontas daquele assunto.",
-  respVazia: "Nenhuma resposta cadastrada nesta sub-aba ainda. Para adicionar, veja [12] no conteudo.js.",
-  respQuantas: "{n} resposta(s) cadastrada(s)",
+  /* --- respostas rápidas: a lista à esquerda ---
+     A lista é a tela principal deste tópico. Cada linha copia sem abrir e
+     pode ser fixada. Quem fica no topo é o que o time usa todo dia. */
+  respTodas: "Todas as respostas",
+  respFixados: "★ Fixados",
+  respRecentes: "↻ Usadas há pouco",
+  respFixar: "Fixar no topo da lista",
+  respDesfixar: "Tirar dos fixados",
+  respCopiarRapido: "Copiar sem abrir",
+  respMostrarVazias: "⋯ mostrar sub-abas vazias",
+  respOcultarVazias: "⋯ ocultar sub-abas vazias",
+  respTagsLimpar: "limpar filtros",
+  respTagFiltrar: "Filtrar a lista por “{t}”",
+  respTagsMais: "+{n} mais",
+  respTagsMenos: "mostrar menos",
+  respConta: "{n} de {m} resposta(s)",
+  respEscopoBusca: "buscando em todas as abas",
+  respEscopoTudo: "biblioteca completa",
+  respEscopoTag: "filtrado por palavra-chave",
+  respNada: "Nenhuma resposta com esses filtros. Tente outra palavra, limpe os filtros, ou pergunte para a IA da documentação.",
+  respAtalhos: "↑ ↓ navega · Enter abre · Ctrl+Enter copia",
+
+  /* --- respostas rápidas: o painel de leitura à direita --- */
+  respEscolha: "Escolha uma resposta na lista ao lado para ler aqui.",
+  respVazia: "Nenhuma resposta cadastrada nesta sub-aba ainda. Use ＋ Nova resposta na barra da esquerda.",
   respCopiar: "Copiar resposta",
   respCopiarTudo: "Copiar texto + imagem",
   respCopiarSoTexto: "Só o texto",

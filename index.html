@@ -36,6 +36,7 @@
     --crit: #B02A21;  --crit-bg: #FBE9E7;
     --warn: #855400;  --warn-bg: #FAF0DA;
     --calm: #1A6349;  --calm-bg: #E2F1EB;
+    --info: #1D4FA8;  --info-bg: #E6EEFA;
 
     /* escala de espaçamento: tudo na tela usa um destes valores */
     --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px;
@@ -67,6 +68,7 @@
       --crit:#FF9E95; --crit-bg:#3A1714;
       --warn:#E9BA62; --warn-bg:#322509;
       --calm:#82D0AF; --calm-bg:#10281E;
+      --info:#8FBBF0; --info-bg:#0F1E33;
       --sombra: 0 1px 2px rgba(0,0,0,.5), 0 8px 24px -16px rgba(0,0,0,.8);
       --sombra-forte: 0 2px 4px rgba(0,0,0,.5), 0 18px 44px -22px rgba(0,0,0,.9);
     }
@@ -81,6 +83,7 @@
     --crit:#FF9E95; --crit-bg:#3A1714;
     --warn:#E9BA62; --warn-bg:#322509;
     --calm:#82D0AF; --calm-bg:#10281E;
+    --info:#8FBBF0; --info-bg:#0F1E33;
     --sombra: 0 1px 2px rgba(0,0,0,.5), 0 8px 24px -16px rgba(0,0,0,.8);
     --sombra-forte: 0 2px 4px rgba(0,0,0,.5), 0 18px 44px -22px rgba(0,0,0,.9);
   }
@@ -94,6 +97,7 @@
     --crit:#B02A21; --crit-bg:#FBE9E7;
     --warn:#855400; --warn-bg:#FAF0DA;
     --calm:#1A6349; --calm-bg:#E2F1EB;
+    --info:#1D4FA8; --info-bg:#E6EEFA;
     --sombra: 0 1px 2px rgba(27,20,33,.04), 0 8px 24px -16px rgba(27,20,33,.22);
     --sombra-forte: 0 2px 4px rgba(27,20,33,.06), 0 18px 44px -22px rgba(27,20,33,.32);
   }
@@ -218,22 +222,23 @@
 
   /* ============ BUSCA COM LUPA ============ */
   .side-busca {
-    display: flex; flex-direction: column; gap: var(--s2);
-    padding: var(--s4) var(--s5);
+    display: flex; align-items: center; gap: var(--s3); flex-wrap: wrap;
+    padding: var(--s3) var(--s4);
     background: var(--accent-suave); border: 1px solid var(--accent-linha);
     border-left: 3px solid var(--accent); border-radius: var(--r);
   }
   .busca-rot {
-    font-size: var(--t-md); font-weight: 650; color: var(--ink); letter-spacing: -.01em;
+    flex: 0 0 auto; white-space: nowrap;
+    font-size: var(--t-sm); font-weight: 650; color: var(--ink); letter-spacing: -.01em;
   }
-  .lupa { position: relative; display: flex; align-items: center; }
+  .lupa { position: relative; display: flex; align-items: center; flex: 1 1 260px; min-width: 0; }
   .lupa-icone {
-    position: absolute; left: 12px; width: 19px; height: 19px; pointer-events: none;
+    position: absolute; left: 11px; width: 17px; height: 17px; pointer-events: none;
     fill: none; stroke: var(--accent); stroke-width: 2.2; stroke-linecap: round;
   }
   .lupa input {
-    width: 100%; font: inherit; font-size: var(--t-md); font-weight: 500;
-    padding: 12px var(--s7) 12px 40px;
+    width: 100%; font: inherit; font-size: var(--t-base); font-weight: 500;
+    padding: 9px var(--s7) 9px 36px;
     background: var(--surface); color: var(--ink);
     border: 2px solid var(--accent-linha); border-radius: var(--r);
   }
@@ -246,7 +251,6 @@
     padding: 2px 8px; border-radius: var(--r-sm);
   }
   .lupa-limpa:hover { color: var(--accent); background: var(--accent-suave); }
-  .side-dica { font-size: var(--t-xs); color: var(--ink-2); line-height: 1.45; }
   .rcard-pe .btn { flex: 0 0 auto; }
 
   /* ============ NAVEGACAO DA BARRA LATERAL ============ */
@@ -499,20 +503,138 @@
   .p-dono { color: var(--accent); background: var(--accent-suave); border-color: var(--accent-linha); }
   .p-line { color: var(--ink-3); background: var(--surface-2); border-color: var(--line); }
 
-  /* ============ RESPOSTAS RAPIDAS ============ */
-  .rcard {
-    border: 1px solid var(--line); border-left: 3px solid var(--accent-linha);
-    border-radius: var(--r); background: var(--surface); overflow: hidden;
+  /* ============ RESPOSTAS RAPIDAS ============
+     Duas colunas: a lista a esquerda e a leitura a direita. A lista e densa
+     e escaneavel, e copiar acontece nela mesma, sem abrir nada. Isso troca
+     tres cliques por uma tecla, que era o atrito real no meio do turno. */
+  #resp {
+    display: grid; grid-template-columns: minmax(250px, 330px) minmax(0,1fr);
+    gap: var(--s5); align-items: start;
   }
-  .rcard.interno { border-left-color: var(--warn); }
-  .rcard-h {
-    display: flex; align-items: center; gap: var(--s3); flex-wrap: wrap;
-    padding: var(--s2) var(--s4); background: var(--surface-2);
+  @media (max-width: 1080px) { #resp { grid-template-columns: 1fr; } }
+
+  /* ---- coluna da lista ---- */
+  .rlista {
+    display: flex; flex-direction: column; min-width: 0; overflow: hidden;
+    border: 1px solid var(--line); border-radius: var(--r); background: var(--surface);
+    position: sticky; top: calc(var(--stick) + var(--s3));
+    max-height: calc(100vh - var(--stick) - var(--s6));
+  }
+  @media (max-width: 1080px) { .rlista { position: static; max-height: 54vh; } }
+
+  .rlista-topo {
+    padding: var(--s3); border-bottom: 1px solid var(--line); background: var(--surface-2);
+    display: flex; flex-direction: column; gap: var(--s2);
+  }
+  .rlista-escopo {
+    display: flex; align-items: baseline; justify-content: space-between; gap: var(--s2);
+    font-size: var(--t-xs); color: var(--ink-3);
+  }
+  .rlista-conta {
+    font-family: var(--font-mono); font-size: var(--t-micro); font-weight: 700;
+    color: var(--ink-2); white-space: nowrap;
+  }
+
+  /* chips: as palavras-chave viram filtro, nao enfeite */
+  .rchips { display: flex; flex-wrap: wrap; gap: var(--s1); }
+  .rchip {
+    font-family: var(--font-mono); font-size: var(--t-xs); line-height: 1.5;
+    color: var(--ink-2); background: var(--surface); cursor: pointer;
+    border: 1px solid var(--line); border-radius: 99px; padding: 2px 8px;
+  }
+  .rchip:hover { border-color: var(--accent); color: var(--accent); }
+  .rchip.tag-mod { color: var(--accent); background: var(--accent-suave); border-color: var(--accent-linha); }
+  .rchip.tag-nat { color: var(--info); background: var(--info-bg); border-color: color-mix(in srgb, var(--info) 32%, transparent); }
+  .rchip.tag-alerta { color: var(--warn); background: var(--warn-bg); border-color: color-mix(in srgb, var(--warn) 35%, transparent); }
+  .rchip.on {
+    background: var(--accent); border-color: var(--accent);
+    color: var(--accent-sobre); font-weight: 650;
+  }
+  .rchip.extra { border-style: dashed; color: var(--ink-3); background: transparent; }
+
+  /* ---- as linhas: duas linhas de texto, acoes sempre visiveis ---- */
+  .rlinhas { flex: 1 1 auto; overflow-y: auto; display: flex; flex-direction: column; }
+  .rgrupo {
+    padding: var(--s2) var(--s3) var(--s1); background: var(--surface-2);
     border-bottom: 1px solid var(--line);
+    font-family: var(--font-mono); font-size: var(--t-micro); font-weight: 700;
+    letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3);
+    position: sticky; top: 0; z-index: 1;
   }
-  .rcard-caminho {
+  .rlinha {
+    display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: center;
+    gap: var(--s2); width: 100%; text-align: left; font: inherit;
+    padding: var(--s2) var(--s2) var(--s2) var(--s3);
+    background: transparent; border: 0; border-bottom: 1px solid var(--line);
+    border-left: 3px solid transparent; cursor: pointer;
+  }
+  .rlinha:last-child { border-bottom: 0; }
+  .rlinha:hover { background: var(--surface-2); }
+  .rlinha.on { background: var(--accent-suave); border-left-color: var(--accent); }
+  .rlinha.interno { border-left-color: var(--warn); }
+  .rlinha.on.interno { background: var(--warn-bg); }
+  .rlinha-txt {
+    min-width: 0; display: flex; flex-direction: column; gap: 1px;
+    padding: 0; margin: 0; text-align: left; font: inherit; cursor: pointer;
+    background: transparent; border: 0; color: inherit;
+  }
+  .rlinha-tit {
+    font-size: var(--t-base); font-weight: 600; color: var(--ink); line-height: 1.35;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .rlinha.on .rlinha-tit { color: var(--accent-forte); }
+  .rlinha-onde {
+    font-family: var(--font-mono); font-size: var(--t-micro); color: var(--ink-3);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .rlinha-acoes { display: flex; align-items: center; gap: 1px; flex: 0 0 auto; }
+
+  .ricone {
+    width: 26px; height: 26px; display: grid; place-items: center; flex: 0 0 auto;
+    font-size: 13px; line-height: 1; color: var(--ink-3); cursor: pointer; font-family: inherit;
+    background: transparent; border: 1px solid transparent; border-radius: var(--r-sm);
+  }
+  .ricone:hover { color: var(--accent); background: var(--surface); border-color: var(--accent-linha); }
+  .ricone.fixo { color: var(--brand); }
+  .ricone.feito { color: var(--calm); background: var(--calm-bg); border-color: color-mix(in srgb, var(--calm) 30%, transparent); }
+
+  .rlista-pe {
+    padding: var(--s2) var(--s3); border-top: 1px solid var(--line); background: var(--surface-2);
+    display: flex; align-items: center; justify-content: space-between; gap: var(--s2); flex-wrap: wrap;
+    font-family: var(--font-mono); font-size: var(--t-micro); color: var(--ink-3);
+  }
+  .rlista-nada { padding: var(--s5) var(--s4); font-size: var(--t-base); color: var(--ink-3); line-height: 1.55; }
+
+  /* ---- coluna da leitura: uma resposta por vez, inteira ---- */
+  .rleitura {
+    min-width: 0; overflow: hidden; background: var(--surface);
+    border: 1px solid var(--line); border-left: 3px solid var(--accent-linha); border-radius: var(--r);
+  }
+  .rleitura.interno { border-left-color: var(--warn); }
+  .rleitura-topo {
+    padding: var(--s4) var(--s5); border-bottom: 1px solid var(--line); background: var(--surface-2);
+    display: flex; flex-direction: column; gap: var(--s2);
+  }
+  .rleitura-caminho {
+    display: flex; align-items: center; gap: var(--s2); flex-wrap: wrap;
     font-family: var(--font-mono); font-size: var(--t-micro); font-weight: 600;
     letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3);
+  }
+  .rleitura-tit {
+    margin: 0; font-size: var(--t-lg); font-weight: 650;
+    letter-spacing: -.015em; text-wrap: balance; color: var(--ink);
+  }
+  .rleitura-acoes { display: flex; align-items: center; gap: var(--s2); flex-wrap: wrap; padding-top: var(--s1); }
+  .rleitura-corpo { padding: var(--s5); display: flex; flex-direction: column; gap: var(--s3); }
+  .rleitura-corpo p { margin: 0; font-size: var(--t-md); color: var(--ink-2); line-height: 1.65; }
+  .rleitura-corpo strong { color: var(--ink); font-weight: 600; }
+  .rleitura-pe {
+    padding: var(--s3) var(--s5); border-top: 1px solid var(--line); background: var(--surface-2);
+    display: flex; flex-direction: column; gap: var(--s2);
+  }
+  .rleitura-vazia {
+    padding: var(--s8) var(--s5); text-align: center;
+    font-size: var(--t-base); color: var(--ink-3); line-height: 1.6;
   }
   .rcard-interno {
     margin-left: auto; font-family: var(--font-mono); font-size: var(--t-micro);
@@ -521,27 +643,6 @@
     border: 1px solid color-mix(in srgb, var(--warn) 35%, transparent);
     border-radius: 99px; padding: 2px var(--s2);
   }
-  .rcard-titulo {
-    display: flex; align-items: flex-start; gap: var(--s2); width: 100%;
-    margin: 0; padding: var(--s3) var(--s4);
-    font: inherit; font-size: var(--t-md); font-weight: 650; letter-spacing: -.01em;
-    text-align: left; cursor: pointer; color: var(--ink);
-    background: transparent; border: 0;
-  }
-  .rcard-titulo:hover { color: var(--accent); }
-  .rcard-seta { flex: 0 0 auto; font-size: 11px; color: var(--ink-3); margin-top: 4px; }
-  .rcard-titulo:hover .rcard-seta { color: var(--accent); }
-  .rcard-tit-txt { min-width: 0; text-wrap: balance; }
-  .rcard.encolhido { border-left-color: var(--line-forte); }
-  .rcard.encolhido .rcard-titulo { padding-bottom: var(--s3); }
-  .rcard-corpo { padding: 0 var(--s4) var(--s3); display: flex; flex-direction: column; gap: var(--s3); }
-  .rcard-corpo p { margin: 0; font-size: var(--t-base); color: var(--ink-2); line-height: 1.6; }
-  .rcard-corpo strong { color: var(--ink); font-weight: 600; }
-  .rcard-pe {
-    display: flex; align-items: center; gap: var(--s3); flex-wrap: wrap;
-    padding: var(--s3) var(--s4); border-top: 1px solid var(--line); background: var(--surface-2);
-  }
-
   mark { background: color-mix(in srgb, var(--accent) 24%, transparent); color: inherit; border-radius: 2px; padding: 0 2px; }
 
   .rcard-print { padding: 0 var(--s4) var(--s3); display: flex; flex-direction: column; gap: var(--s2); align-items: flex-start; }
@@ -592,7 +693,6 @@
     border: 1px solid var(--line-forte); border-radius: var(--r-sm); padding: 2px var(--s2);
   }
   .rcard-editar:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-suave); }
-  .rcard-editar + .rcard-apagar { margin-left: 0; }
   .modal-passos { margin: 0; padding-left: var(--s5); display: flex; flex-direction: column; gap: 6px; font-size: var(--t-base); color: var(--ink-2); line-height: 1.5; }
   .modal-aviso {
     margin: 0; font-size: var(--t-sm); line-height: 1.5; color: var(--warn);
@@ -611,12 +711,6 @@
     border: 1px solid color-mix(in srgb, var(--warn) 35%, transparent);
     border-radius: 99px; padding: 2px var(--s2);
   }
-  .rcard-apagar {
-    margin-left: auto; font: inherit; font-size: 17px; line-height: 1; cursor: pointer;
-    background: transparent; border: 1px solid transparent; border-radius: var(--r-sm);
-    color: var(--ink-3); padding: 1px 8px;
-  }
-  .rcard-apagar:hover { color: var(--crit); background: var(--crit-bg); border-color: color-mix(in srgb, var(--crit) 30%, transparent); }
 
   .modal {
     position: fixed; inset: 0; z-index: 90; display: flex; align-items: flex-start;
@@ -831,11 +925,18 @@
   .case a { font-size: var(--t-sm); color: var(--accent); text-decoration: none; font-weight: 600; }
   .case a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
+  /* As tags nao sao enfeite: a cor diz o que a palavra e.
+     roxo = modulo da plataforma, azul = natureza do ticket, ambar = cuidado. */
   .tags { display: flex; flex-wrap: wrap; gap: var(--s1); }
   .tag {
     font-family: var(--font-mono); font-size: var(--t-xs); color: var(--ink-2);
     background: var(--ground); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 2px 6px;
   }
+  .tag.tag-mod { color: var(--accent); background: var(--accent-suave); border-color: var(--accent-linha); }
+  .tag.tag-nat { color: var(--info); background: var(--info-bg); border-color: color-mix(in srgb, var(--info) 32%, transparent); }
+  .tag.tag-alerta { color: var(--warn); background: var(--warn-bg); border-color: color-mix(in srgb, var(--warn) 35%, transparent); }
+  button.tag { cursor: pointer; font: inherit; font-family: var(--font-mono); font-size: var(--t-xs); }
+  button.tag:hover { border-color: var(--accent); color: var(--accent); }
   .microhint { font-size: var(--t-xs); color: var(--ink-3); line-height: 1.45; }
 
   /* ============ FOLLOW-UP ============ */
@@ -983,10 +1084,8 @@
         <input type="search" id="q" autocomplete="off">
         <button class="lupa-limpa" id="btn-limpa" type="button">×</button>
       </div>
-      <span class="side-dica" id="t-busca-dica"></span>
     </div>
 
-    <section id="busca"></section>
     <section class="flow" id="flow"></section>
     <section id="out" aria-live="polite"></section>
     <section id="fup"></section>
@@ -1151,8 +1250,15 @@ const state = {
   sub:null,
   busca:"",
   abertos:{},
-  cardsFechados:{},   /* resposta encolhida, so o titulo */
-  printsAbertos:{},   /* print visivel dentro da resposta */
+
+  /* respostas rapidas: a lista a esquerda e a leitura a direita */
+  escolhida:null,        /* a resposta aberta no painel de leitura */
+  tagsAtivas:[],         /* chips de palavra-chave ligados */
+  chipsTodos:false,      /* mostrar a lista inteira de palavras-chave */
+  vaziasVisiveis:false,  /* sub-abas sem resposta ficam escondidas */
+  fixados:[],            /* o boot preenche pelo localStorage */
+  recentes:[],
+  printsAbertos:{},      /* print visivel dentro da resposta */
   fup:"pendente",
   fup2_em:null,
   fup2_limite:null
@@ -1256,7 +1362,7 @@ function renderMoldura() {
   document.getElementById("t-marca").textContent = TEXTOS.marca;
   document.getElementById("t-titulo").textContent = TEXTOS.titulo;
   document.getElementById("t-sub").textContent = TEXTOS.subtitulo;
-  document.getElementById("t-busca-dica").textContent = TEXTOS.buscaGlobalDica;
+  document.getElementById("q").title = TEXTOS.buscaGlobalDica;
   document.getElementById("t-busca-rot").textContent = TEXTOS.buscaRotulo;
   document.getElementById("t-side-rot").textContent = TEXTOS.sideRotulo;
   document.getElementById("q").placeholder = TEXTOS.buscaGlobalPlaceholder;
@@ -1264,14 +1370,14 @@ function renderMoldura() {
   document.getElementById("btn-limpa").setAttribute("aria-label", TEXTOS.buscaLimpar);
   document.getElementById("btn-limpa").hidden = !state.busca;
 
-  /* a lupa pertence ao tópico de respostas rápidas */
+  /* a lupa pertence ao tópico de respostas rápidas: filtra a lista ao vivo */
   document.getElementById("caixa-busca").hidden = state.secao !== "respostas";
   document.getElementById("reset").textContent = TEXTOS.rodapeBotao;
   document.getElementById("t-rodape").innerHTML = TEXTOS.rodapeAviso;
 
   /* a navegação por etapa só faz sentido dentro do guia */
   const passos = document.getElementById("passos");
-  const noGuia = state.secao === "guia" && !state.busca;
+  const noGuia = state.secao === "guia";
   passos.hidden = !noGuia;
   if (noGuia) {
     const voltar = document.getElementById("btn-voltar");
@@ -1286,16 +1392,16 @@ function renderMoldura() {
 }
 
 /* ---------- o que aparece na área de conteúdo ---------- */
+/* A busca filtra a lista dentro do tópico de respostas: ela nao troca mais
+   a tela inteira, entao a barra e o painel de leitura ficam parados. */
 function renderAbaVisivel() {
-  const buscando = !!state.busca;
-  const guia = !buscando && state.secao === "guia";
+  const guia = state.secao === "guia";
   const mapa = {
-    busca: buscando,
     flow: guia && state.aba <= 3,
     out:  guia && state.aba === 4,
     fup:  guia && state.aba === 5,
-    aval: !buscando && state.secao === "criterios",
-    resp: !buscando && state.secao === "respostas"
+    aval: state.secao === "criterios",
+    resp: state.secao === "respostas"
   };
   for (const id in mapa) document.getElementById(id).hidden = !mapa[id];
 }
@@ -1305,7 +1411,7 @@ function irParaSecao(secao, extra) {
   state.busca = "";
   document.getElementById("q").value = "";
   if (secao === "guia" && extra) state.aba = extra;
-  if (secao === "respostas" && extra) state.sub = extra;
+  if (secao === "respostas") { state.sub = extra || null; state.tagsAtivas = []; }
   fecharMenu();
   render();
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -1358,7 +1464,7 @@ function renderSidebar() {
   const troca = el("div","topicos");
   troca.setAttribute("role","tablist");
   topicos.forEach(t => {
-    const ativo = state.secao === t.id && !state.busca;
+    const ativo = state.secao === t.id;
     const b = el("button","topico" + (ativo ? " on" : ""));
     b.type = "button";
     b.setAttribute("role","tab");
@@ -1366,7 +1472,6 @@ function renderSidebar() {
     b.append(el("span","topico-rot", t.rot));
     b.onclick = () => {
       if (t.id === "guia") irParaAba(state.aba);
-      else if (t.id === "respostas") irParaSecao("respostas", state.sub || primeiraSubComResposta());
       else irParaSecao(t.id);
     };
     troca.append(b);
@@ -1381,7 +1486,7 @@ function renderSidebar() {
     ETAPAS.forEach((titulo, i) => {
       const n = i + 1;
       const concluida = n <= 3 && state.feito[PORTOES[n-1].id];
-      const atual = !state.busca && n === state.aba;
+      const atual = n === state.aba;
       const trancada = n >= 4 && !portoesOk();
       const b = el("button","nav-item" + (atual ? " on" : "") + (concluida && !atual ? " ok" : ""));
       b.type = "button";
@@ -1427,7 +1532,35 @@ function renderSidebar() {
     }
     dentro.append(acoes);
 
+    /* Fixados e usadas ha pouco vem antes da arvore: sao as poucas
+       respostas que respondem a maior parte do turno. */
+    const planos = itensPlanos();
+    const atalhos = (titulo, chaves) => {
+      const achados = chaves.map(c => planos.find(x => x.chave === c)).filter(Boolean);
+      if (!achados.length) return;
+      dentro.append(el("span","nav-titulo", titulo));
+      achados.forEach(x => {
+        const b = el("button","nav-item" + (x.chave === state.escolhida ? " on" : ""));
+        b.type = "button";
+        b.title = x.aba + " › " + x.sub;
+        b.append(el("span","nav-txt", x.item.titulo));
+        b.onclick = () => { limparEscopo(); escolher(x.chave); };
+        dentro.append(b);
+      });
+    };
+    atalhos(TEXTOS.respFixados, state.fixados);
+    atalhos(TEXTOS.respRecentes, state.recentes);
+
     dentro.append(el("span","nav-titulo", TEXTOS.navAbasPlataforma));
+
+    /* a biblioteca inteira e o padrao: entrar aqui nunca da tela vazia */
+    const semEscopo = !state.sub && !state.tagsAtivas.length && !state.busca;
+    const todas = el("button","nav-item" + (semEscopo ? " on" : ""));
+    todas.type = "button";
+    todas.append(el("span","nav-txt", TEXTOS.respTodas), el("span","nav-conta", String(planos.length)));
+    todas.onclick = () => { limparEscopo(); render(); };
+    dentro.append(todas);
+
     arvore().forEach(a => {
       const temSelecionada = a.subs.some(x => x.id === state.sub);
       const aberto = state.abertos[a.id] !== undefined ? state.abertos[a.id] : temSelecionada;
@@ -1439,34 +1572,48 @@ function renderSidebar() {
       pai.append(el("span","nav-seta","▶"), el("span","nav-txt", a.aba), el("span","nav-conta", String(total)));
       pai.onclick = () => { state.abertos[a.id] = !aberto; render(); };
       dentro.append(pai);
+      if (!aberto) return;
 
-      if (aberto) {
-        const filhos = el("div","nav-filhos");
-        a.subs.forEach(x => {
-          const atual = !state.busca && state.sub === x.id;
-          const vazia = x.itens.length === 0;
-          const b = el("button","nav-item" + (atual ? " on" : "") + (vazia ? " nav-vazia" : ""));
-          b.type = "button";
-          b.append(el("span","nav-txt", x.sub));
-          if (!vazia) b.append(el("span","nav-conta", String(x.itens.length)));
-          b.onclick = () => irParaSecao("respostas", x.id);
-          filhos.append(b);
-        });
-        dentro.append(filhos);
+      /* sub-aba sem resposta nao ajuda no turno: fica atras de um pedido */
+      const subs = state.vaziasVisiveis ? a.subs : a.subs.filter(x => x.itens.length);
+      const filhos = el("div","nav-filhos");
+      subs.forEach(x => {
+        const vazia = x.itens.length === 0;
+        const b = el("button","nav-item" + (state.sub === x.id ? " on" : "") + (vazia ? " nav-vazia" : ""));
+        b.type = "button";
+        b.append(el("span","nav-txt", x.sub));
+        if (!vazia) b.append(el("span","nav-conta", String(x.itens.length)));
+        b.onclick = () => irParaSecao("respostas", x.id);
+        filhos.append(b);
+      });
+      if (a.subs.length > subs.length) {
+        const mais = el("button","nav-item nav-vazia");
+        mais.type = "button";
+        mais.append(el("span","nav-txt", TEXTOS.respMostrarVazias));
+        mais.onclick = () => { state.vaziasVisiveis = true; render(); };
+        filhos.append(mais);
       }
+      dentro.append(filhos);
     });
+
+    if (state.vaziasVisiveis) {
+      const menos = el("button","nav-item nav-vazia");
+      menos.type = "button";
+      menos.append(el("span","nav-txt", TEXTOS.respOcultarVazias));
+      menos.onclick = () => { state.vaziasVisiveis = false; render(); };
+      dentro.append(menos);
+    }
   }
 
   host.append(dentro);
 }
 
-/* ao entrar em respostas sem nada escolhido, abre a primeira que tem conteúdo */
-function primeiraSubComResposta() {
-  for (const a of arvore()) {
-    const x = a.subs.find(s => s.itens.length > 0);
-    if (x) return x.id;
-  }
-  return null;
+/* volta a biblioteca inteira: nenhum filtro, nenhuma sub-aba */
+function limparEscopo() {
+  state.sub = null;
+  state.tagsAtivas = [];
+  state.busca = "";
+  document.getElementById("q").value = "";
 }
 
 /* ---------- etapas 1 a 3 ---------- */
@@ -2541,103 +2688,351 @@ function achaSub(id) {
   return null;
 }
 
-/* um card de resposta, com botão de copiar */
-function cardResposta(item, aba, sub, destacar) {
-  const card = el("article","rcard" + (item.interno ? " interno" : ""));
+/* ═══════════════════════════════════════════════════════════════════════════
+   RESPOSTAS RAPIDAS — lista a esquerda, leitura a direita
+   ═══════════════════════════════════════════════════════════════════════════
 
-  const topo = el("header","rcard-h");
-  const cam = el("span","rcard-caminho", aba + " › " + sub);
-  topo.append(cam);
-  if (item.interno) topo.append(el("span","rcard-interno", TEXTOS.respInterno));
-  if (item.rascunho) {
-    topo.append(el("span","rcard-rascunho", TEXTOS.editorSeloRascunho));
-    const apagar = el("button","rcard-apagar","×");
-    apagar.type = "button";
-    apagar.title = TEXTOS.editorApagar;
-    apagar.onclick = () => apagarRascunho(item.indice);
-    topo.append(apagar);
-  } else if (temToken() && item.ondeAba) {
-    const lapis = el("button","rcard-editar", "✎ " + TEXTOS.editorEditar);
-    lapis.type = "button";
-    lapis.onclick = () => abrirEditor(aba, sub, { abaId: item.ondeAba, subId: item.ondeSub, indice: item.ondeIndice, item: item });
-    topo.append(lapis);
-    const lixo = el("button","rcard-apagar","×");
-    lixo.type = "button";
-    lixo.title = TEXTOS.editorRemover;
-    lixo.onclick = () => removerResposta(item);
-    topo.append(lixo);
+   Antes cada resposta era um card grande que abria e fechava, e copiar
+   custava tres cliques: escolher a aba, escolher a sub-aba, abrir o card.
+   Agora a lista mostra tudo em uma linha por resposta, o botao de copiar
+   fica na propria linha, e o painel da direita le uma resposta por vez.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+const CH_FIX = "respFixados";
+const CH_REC = "respRecentes";
+const LIMITE_CHIPS = 12;
+
+function leGuardado(chave) {
+  try { const v = JSON.parse(localStorage.getItem(chave) || "[]"); return Array.isArray(v) ? v : []; }
+  catch (e) { return []; }
+}
+
+function gravaGuardado(chave, v) {
+  try { localStorage.setItem(chave, JSON.stringify(v)); } catch (e) { /* modo privado: vale so nesta aba */ }
+}
+
+/* A cor da tag diz o que a palavra e, e nao e enfeite: azul para a natureza
+   do ticket, roxo para o modulo da plataforma, ambar para cuidado. As duas
+   primeiras saem das listas do conteudo.js, entao nao ha nada a repetir aqui. */
+function classeTag(rot) {
+  const n = norm(rot);
+  if (n === "interno") return "tag-alerta";
+  if (typeof CATEGORIAS !== "undefined" && CATEGORIAS.some(c => norm(c.nome) === n)) return "tag-nat";
+  if (typeof MODULOS !== "undefined" && MODULOS.some(m => norm(m.nome) === n)) return "tag-mod";
+  return "";
+}
+
+/* toda a biblioteca achatada, com chave estavel e o texto pronto para busca */
+function itensPlanos() {
+  const out = [];
+  arvore().forEach(a => a.subs.forEach(s => s.itens.forEach(it => {
+    out.push({
+      item: it, aba: a.aba, sub: s.sub, subId: s.id,
+      chave: idDe(a.id + "-" + s.id + "-" + it.titulo),
+      hay: norm([it.titulo, a.aba, s.sub, (it.tags || []).join(" "), it.resposta.join(" ")].join(" "))
+    });
+  })));
+  return out;
+}
+
+/* O que a lista mostra agora, e com que rotulo de escopo. Buscar ou filtrar
+   ignora a sub-aba escolhida: quem digita esta atras de algo que nao achou
+   onde estava, e prender a busca a uma sub-aba esconderia a resposta. */
+function listaVisivel() {
+  const todos = itensPlanos();
+  const termo = state.busca ? norm(state.busca) : "";
+  const palavras = termo ? termo.split(/\s+/).filter(Boolean) : [];
+  let itens = todos, escopo = TEXTOS.respEscopoTudo;
+
+  if (palavras.length) {
+    itens = itens.filter(x => palavras.every(p => x.hay.includes(p)));
+    escopo = TEXTOS.respEscopoBusca;
   }
-  card.append(topo);
+  if (state.tagsAtivas.length) {
+    itens = itens.filter(x => state.tagsAtivas.every(tg => (x.item.tags || []).some(y => norm(y) === norm(tg))));
+    escopo = TEXTOS.respEscopoTag;
+  }
+  if (!palavras.length && !state.tagsAtivas.length && state.sub) {
+    const achado = achaSub(state.sub);
+    itens = itens.filter(x => x.subId === state.sub);
+    escopo = achado ? achado.aba.aba + " › " + achado.sub.sub : TEXTOS.respEscopoTudo;
+  }
 
-  /* o titulo abre e fecha a resposta */
-  const chave = idDe(aba + "-" + sub + "-" + item.titulo);
-  const fechado = !!state.cardsFechados[chave];
-  if (fechado) card.classList.add("encolhido");
+  /* os fixados sobem, sempre: e o que o time usa todo dia */
+  const fix = new Set(state.fixados);
+  itens = itens.slice().sort((a, b) => (fix.has(b.chave) ? 1 : 0) - (fix.has(a.chave) ? 1 : 0));
+  return { itens, escopo, termo, total: todos.length };
+}
 
-  const cabeca = el("button","rcard-titulo");
-  cabeca.type = "button";
-  cabeca.setAttribute("aria-expanded", String(!fechado));
-  cabeca.append(el("span","rcard-seta", fechado ? "▸" : "▾"));
-  cabeca.append(el("span","rcard-tit-txt", realce(item.titulo, destacar)));
-  cabeca.onclick = () => {
-    if (fechado) delete state.cardsFechados[chave]; else state.cardsFechados[chave] = true;
-    render();
+function ehFixado(chave) { return state.fixados.indexOf(chave) !== -1; }
+
+function fixar(chave) {
+  const i = state.fixados.indexOf(chave);
+  if (i === -1) state.fixados.unshift(chave); else state.fixados.splice(i, 1);
+  gravaGuardado(CH_FIX, state.fixados);
+  render();
+}
+
+/* Recentes e o que foi copiado, nao o que foi aberto: abrir e so olhar,
+   copiar e que marca a resposta como usada de verdade no atendimento. */
+function registraRecente(chave) {
+  state.recentes = [chave].concat(state.recentes.filter(c => c !== chave)).slice(0, 5);
+  gravaGuardado(CH_REC, state.recentes);
+  /* so a barra: um render() inteiro trocaria o botao que esta mostrando o
+     visto verde por um novo, e o aviso de copiado desapareceria */
+  renderSidebar();
+}
+
+function escolher(chave) {
+  state.escolhida = chave;
+  render();
+  const alvo = document.querySelector('.rlinha[data-chave="' + chave + '"]');
+  if (alvo) alvo.scrollIntoView({ block: "nearest" });
+}
+
+function alternaTag(rot) {
+  const i = state.tagsAtivas.indexOf(rot);
+  if (i === -1) state.tagsAtivas.push(rot); else state.tagsAtivas.splice(i, 1);
+  render();
+}
+
+/* ---------- os chips de palavra-chave ----------
+   A biblioteca tem centenas de palavras-chave, e virar botao todas elas seria
+   um paredao. Os chips ficam so nas classificadas — natureza do ticket, modulo
+   da plataforma e cuidado — que sao os cortes que valem no meio do turno.
+
+   As outras nao se perdem: a busca acha todas, e clicar numa palavra no pe da
+   resposta filtra por ela do mesmo jeito, e ai ela aparece aqui como chip
+   ligado, para dar como desligar. */
+function faixaChips() {
+  const conta = new Map();
+  itensPlanos().forEach(x => (x.item.tags || []).forEach(tg => {
+    const k = String(tg);
+    conta.set(k, (conta.get(k) || 0) + 1);
+  }));
+  const todas = Array.from(conta.entries())
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "pt"))
+    .map(e => e[0]);
+  const ativas = state.tagsAtivas.filter(tg => conta.has(tg));
+  const resto = todas.filter(tg => ativas.indexOf(tg) === -1 && classeTag(tg));
+
+  const cx = el("div","rchips");
+  const poe = (rot, ligada) => {
+    const cls = ("rchip " + classeTag(rot) + (ligada ? " on" : "")).replace(/\s+/g, " ").trim();
+    const b = el("button", cls, rot);
+    b.type = "button";
+    b.title = fmt(TEXTOS.respTagFiltrar, { t: rot });
+    b.setAttribute("aria-pressed", String(!!ligada));
+    b.onclick = () => alternaTag(rot);
+    cx.append(b);
   };
-  card.append(cabeca);
 
-  if (!fechado) {
-    const corpo = el("div","rcard-corpo");
-    item.resposta.forEach(p => corpo.append(el("p","", realce(p, destacar))));
-    card.append(corpo);
+  ativas.forEach(tg => poe(tg, true));
+  const mostra = state.chipsTodos ? resto : resto.slice(0, LIMITE_CHIPS);
+  mostra.forEach(tg => poe(tg, false));
 
-    /* o print fica guardado atras de um botao: nao ocupa a tela sem pedir */
-    if (item.imagem) {
-      const cxImg = el("div","rcard-print");
-      const aberto = !!state.printsAbertos[chave];
+  const sobra = resto.length - mostra.length;
+  if (sobra > 0 || state.chipsTodos) {
+    const b = el("button","rchip extra", state.chipsTodos ? TEXTOS.respTagsMenos : fmt(TEXTOS.respTagsMais, { n: sobra }));
+    b.type = "button";
+    b.onclick = () => { state.chipsTodos = !state.chipsTodos; render(); };
+    cx.append(b);
+  }
+  if (ativas.length) {
+    const b = el("button","rchip extra", TEXTOS.respTagsLimpar);
+    b.type = "button";
+    b.onclick = () => { state.tagsAtivas = []; render(); };
+    cx.append(b);
+  }
+  return cx;
+}
 
-      const btn = el("button","btn ghost sm", aberto ? TEXTOS.respImgOcultar : TEXTOS.respImgMostrar);
-      btn.type = "button";
-      btn.setAttribute("aria-expanded", String(aberto));
-      btn.onclick = () => {
-        if (aberto) delete state.printsAbertos[chave]; else state.printsAbertos[chave] = true;
-        render();
-      };
-      cxImg.append(btn);
+/* ---------- a coluna da lista ---------- */
+function colunaLista(dados) {
+  const cx = src(el("aside","rlista"), "[12] RESPOSTAS");
 
-      if (aberto) {
-        const fig = el("figure","rcard-img");
-        const img = document.createElement("img");
-        img.src = item.imagem;
-        img.alt = TEXTOS.respImgAlt + ": " + item.titulo;
-        img.loading = "lazy";
-        img.onclick = () => ampliar(item.imagem, img.alt);
-        fig.append(img, el("figcaption","", TEXTOS.respImgLegenda));
-        cxImg.append(fig);
+  const topo = el("div","rlista-topo");
+  const faixa = el("div","rlista-escopo");
+  faixa.append(el("span","", dados.escopo));
+  faixa.append(el("span","rlista-conta", fmt(TEXTOS.respConta, { n: dados.itens.length, m: dados.total })));
+  topo.append(faixa, faixaChips());
+  cx.append(topo);
+
+  const lista = el("div","rlinhas");
+  if (!dados.itens.length) {
+    lista.append(el("div","rlista-nada", TEXTOS.respNada));
+    const b = el("button","btn sm", TEXTOS.buscaBotao);
+    b.type = "button";
+    b.onclick = () => abrirDoc(D + "?ask=" + encodeURIComponent(state.busca || ""), state.busca || TEXTOS.docTitulo, true);
+    const cxb = el("div","rlista-nada");
+    cxb.append(b);
+    lista.append(cxb);
+  } else {
+    /* o cabecalho de grupo so aparece quando ha fixado para separar */
+    const temFix = dados.itens.some(x => ehFixado(x.chave));
+    let ultimo = null;
+    dados.itens.forEach(x => {
+      if (temFix) {
+        const g = ehFixado(x.chave) ? TEXTOS.respFixados : TEXTOS.respTodas;
+        if (g !== ultimo) { lista.append(el("div","rgrupo", g)); ultimo = g; }
       }
-      card.append(cxImg);
-    }
+      lista.append(linhaResposta(x, dados.termo));
+    });
+  }
+  cx.append(lista);
+
+  const pe = el("div","rlista-pe");
+  pe.append(el("span","", TEXTOS.respAtalhos));
+  if (state.busca || state.tagsAtivas.length || state.sub) {
+    const limpa = el("button","rchip extra", TEXTOS.respTagsLimpar);
+    limpa.type = "button";
+    limpa.onclick = () => { limparEscopo(); render(); };
+    pe.append(limpa);
+  }
+  cx.append(pe);
+  return cx;
+}
+
+/* Uma linha: titulo, caminho, e as duas acoes que valem sem abrir nada.
+   Copiar aqui e o ganho principal do redesenho. */
+function linhaResposta(x, termo) {
+  const it = x.item;
+  const linha = el("div","rlinha" + (x.chave === state.escolhida ? " on" : "") + (it.interno ? " interno" : ""));
+  linha.dataset.chave = x.chave;
+
+  const txt = el("button","rlinha-txt");
+  txt.type = "button";
+  txt.append(el("span","rlinha-tit", realce(it.titulo, termo)));
+  txt.append(el("span","rlinha-onde", x.aba + " › " + x.sub));
+  txt.onclick = () => escolher(x.chave);
+  linha.append(txt);
+
+  const acoes = el("div","rlinha-acoes");
+
+  const copia = el("button","ricone","⧉");
+  copia.type = "button";
+  copia.dataset.icone = "1";
+  copia.title = TEXTOS.respCopiarRapido;
+  copia.onclick = () => { registraRecente(x.chave); copiarResposta(it, copia, !!it.imagem); };
+  acoes.append(copia);
+
+  const fixado = ehFixado(x.chave);
+  const pino = el("button","ricone" + (fixado ? " fixo" : ""), fixado ? "★" : "☆");
+  pino.type = "button";
+  pino.title = fixado ? TEXTOS.respDesfixar : TEXTOS.respFixar;
+  pino.onclick = () => fixar(x.chave);
+  acoes.append(pino);
+
+  linha.append(acoes);
+  return linha;
+}
+
+/* ---------- a coluna da leitura: uma resposta por vez, inteira ---------- */
+function colunaLeitura(x, termo) {
+  const cx = el("section","rleitura");
+  if (!x) {
+    cx.append(el("div","rleitura-vazia", state.sub ? TEXTOS.respVazia : TEXTOS.respEscolha));
+    return cx;
   }
 
-  if (fechado) return card;
+  const it = x.item;
+  if (it.interno) cx.classList.add("interno");
 
-  const pe = el("footer","rcard-pe");
-  const copiar = el("button","btn sm", item.imagem ? TEXTOS.respCopiarTudo : TEXTOS.respCopiar);
+  const topo = el("header","rleitura-topo");
+  const cam = el("div","rleitura-caminho");
+  cam.append(el("span","", x.aba + " › " + x.sub));
+  if (it.interno) cam.append(el("span","rcard-interno", TEXTOS.respInterno));
+  topo.append(cam);
+  topo.append(el("h2","rleitura-tit", realce(it.titulo, termo)));
+
+  const acoes = el("div","rleitura-acoes");
+  const copiar = el("button","btn sm", it.imagem ? TEXTOS.respCopiarTudo : TEXTOS.respCopiar);
   copiar.type = "button";
-  copiar.onclick = () => copiarResposta(item, copiar, !!item.imagem);
-  pe.append(copiar);
-  if (item.imagem) {
+  copiar.onclick = () => { registraRecente(x.chave); copiarResposta(it, copiar, !!it.imagem); };
+  acoes.append(copiar);
+
+  if (it.imagem) {
     const soTexto = el("button","btn ghost sm", TEXTOS.respCopiarSoTexto);
     soTexto.type = "button";
-    soTexto.onclick = () => copiarResposta(item, soTexto, false);
-    pe.append(soTexto);
+    soTexto.onclick = () => { registraRecente(x.chave); copiarResposta(it, soTexto, false); };
+    acoes.append(soTexto);
   }
-  if (item.tags && item.tags.length) {
+
+  const fixado = ehFixado(x.chave);
+  const pino = el("button","ricone" + (fixado ? " fixo" : ""), fixado ? "★" : "☆");
+  pino.type = "button";
+  pino.title = fixado ? TEXTOS.respDesfixar : TEXTOS.respFixar;
+  pino.onclick = () => fixar(x.chave);
+  acoes.append(pino);
+
+  /* editar e remover moram aqui, onde ha espaco, e nao no aperto da linha */
+  if (it.rascunho) {
+    acoes.append(el("span","rcard-rascunho", TEXTOS.editorSeloRascunho));
+    const apagar = el("button","ricone","×");
+    apagar.type = "button";
+    apagar.title = TEXTOS.editorApagar;
+    apagar.onclick = () => apagarRascunho(it.indice);
+    acoes.append(apagar);
+  } else if (temToken() && it.ondeAba) {
+    const lapis = el("button","rcard-editar", "✎ " + TEXTOS.editorEditar);
+    lapis.type = "button";
+    lapis.onclick = () => abrirEditor(x.aba, x.sub, { abaId: it.ondeAba, subId: it.ondeSub, indice: it.ondeIndice, item: it });
+    acoes.append(lapis);
+    const lixo = el("button","ricone","×");
+    lixo.type = "button";
+    lixo.title = TEXTOS.editorRemover;
+    lixo.onclick = () => removerResposta(it);
+    acoes.append(lixo);
+  }
+  topo.append(acoes);
+  cx.append(topo);
+
+  const corpo = el("div","rleitura-corpo");
+  it.resposta.forEach(p => corpo.append(el("p","", realce(p, termo))));
+  cx.append(corpo);
+
+  /* o print continua atras de um botao: nao ocupa a tela sem pedir */
+  if (it.imagem) {
+    const cxImg = el("div","rcard-print");
+    const aberto = !!state.printsAbertos[x.chave];
+    const btn = el("button","btn ghost sm", aberto ? TEXTOS.respImgOcultar : TEXTOS.respImgMostrar);
+    btn.type = "button";
+    btn.setAttribute("aria-expanded", String(aberto));
+    btn.onclick = () => {
+      if (aberto) delete state.printsAbertos[x.chave]; else state.printsAbertos[x.chave] = true;
+      render();
+    };
+    cxImg.append(btn);
+    if (aberto) {
+      const fig = el("figure","rcard-img");
+      const img = document.createElement("img");
+      img.src = it.imagem;
+      img.alt = TEXTOS.respImgAlt + ": " + it.titulo;
+      img.loading = "lazy";
+      img.onclick = () => ampliar(it.imagem, img.alt);
+      fig.append(img, el("figcaption","", TEXTOS.respImgLegenda));
+      cxImg.append(fig);
+    }
+    cx.append(cxImg);
+  }
+
+  /* as palavras-chave do pe viram atalho de filtro: um clique mostra as
+     outras respostas que tratam do mesmo assunto */
+  if (it.tags && it.tags.length) {
+    const pe = el("footer","rleitura-pe");
     const tw = el("div","tags");
-    item.tags.forEach(t => tw.append(el("span","tag", t)));
+    it.tags.forEach(tg => {
+      const cls = ("tag " + classeTag(tg)).replace(/\s+/g, " ").trim();
+      const b = el("button", cls, tg);
+      b.type = "button";
+      b.title = fmt(TEXTOS.respTagFiltrar, { t: tg });
+      b.onclick = () => alternaTag(tg);
+      tw.append(b);
+    });
     pe.append(tw);
+    cx.append(pe);
   }
-  card.append(pe);
-  return card;
+  return cx;
 }
 
 /* Copia a resposta. Quando ha print, coloca texto e imagem juntos na area
@@ -2645,11 +3040,19 @@ function cardResposta(item, aba, sub, destacar) {
    O WhatsApp costuma pegar a imagem e ignorar o texto, por isso existe
    tambem o botao de so texto. */
 function copiarResposta(item, botao, comImagem) {
+  /* o botao da linha e so um icone: trocar o texto por "Copiado" ali
+     empurraria a linha inteira, entao ele so vira um visto verde */
+  const icone = botao.dataset.icone === "1";
   const rotulo = botao.textContent;
+  const dica = botao.title;
   const txt = textoLimpo(item);
   const avisa = (msg) => {
-    botao.textContent = msg;
-    setTimeout(() => { botao.textContent = rotulo; }, 2200);
+    if (icone) { botao.textContent = "✓"; botao.classList.add("feito"); botao.title = msg; }
+    else { botao.textContent = msg; }
+    setTimeout(() => {
+      botao.textContent = rotulo;
+      if (icone) { botao.classList.remove("feito"); botao.title = dica; }
+    }, 2200);
   };
 
   if (comImagem && item.imagem && navigator.clipboard && window.ClipboardItem) {
@@ -2698,46 +3101,16 @@ function renderRespostas() {
   const host = document.getElementById("resp");
   host.textContent = "";
 
-  const achado = state.sub ? achaSub(state.sub) : null;
-  if (!achado) {
-    host.append(el("div","empty", TEXTOS.respEscolha));
-    return;
+  const dados = listaVisivel();
+
+  /* a resposta lida tem que estar na lista: senao o painel mostra uma coisa
+     e a lista aponta outra */
+  if (!dados.itens.some(x => x.chave === state.escolhida)) {
+    state.escolhida = dados.itens.length ? dados.itens[0].chave : null;
   }
 
-  const wrap = el("div","result");
-  const head = el("div","rhead");
-  head.append(el("span","eyebrow", achado.aba.aba));
-  head.append(el("h2","rtitle", achado.sub.sub));
-  head.append(el("p","rprazo", fmt(TEXTOS.respQuantas, { n: achado.sub.itens.length })));
-  wrap.append(head);
-
-  const corpo = src(el("div","rsolo"), "[12] RESPOSTAS");
-  if (!achado.sub.itens.length) {
-    corpo.append(el("div","empty", TEXTOS.respVazia));
-  } else {
-    achado.sub.itens.forEach(it => corpo.append(cardResposta(it, achado.aba.aba, achado.sub.sub, "")));
-  }
-  wrap.append(corpo);
-  host.append(wrap);
-}
-
-/* ---------- busca global ----------
-   Procura em título, corpo, tags, nome da aba e da sub-aba, e também nas
-   etapas do guia e nos critérios de avaliação. */
-const INDICE = [];
-
-/* Só as respostas rápidas entram no índice: a lupa é a busca daquele tópico,
-   não uma busca do playbook inteiro. */
-function montarIndice() {
-  INDICE.length = 0;
-  arvore().forEach(a => a.subs.forEach(s => s.itens.forEach(it => {
-    INDICE.push({
-      rotulo: it.titulo,
-      onde: a.aba + " › " + s.sub,
-      hay: norm([it.titulo, a.aba, s.sub, (it.tags || []).join(" "), it.resposta.join(" ")].join(" ")),
-      item: it, aba: a.aba, sub: s.sub
-    });
-  })));
+  host.append(colunaLista(dados));
+  host.append(colunaLeitura(dados.itens.find(x => x.chave === state.escolhida), dados.termo));
 }
 
 /* envolve o que casou com a busca, para o olho achar na hora */
@@ -2766,46 +3139,6 @@ function marcaTexto(texto, palavras) {
   return saida;
 }
 
-function renderBusca() {
-  const host = document.getElementById("busca");
-  host.textContent = "";
-  if (!state.busca) return;
-
-  const termo = norm(state.busca);
-  const palavras = termo.split(/\s+/).filter(Boolean);
-  const achados = INDICE.filter(i => palavras.every(p => i.hay.includes(p)));
-
-  const wrap = el("div","result");
-  const head = el("div","rhead");
-  head.append(el("span","eyebrow", TEXTOS.buscaEyebrow));
-  head.append(el("h2","rtitle", fmt(TEXTOS.buscaTitulo, { n: achados.length, termo: state.busca })));
-  wrap.append(head);
-
-  const corpo = el("div","rsolo");
-
-  if (!achados.length) {
-    corpo.append(el("div","empty", TEXTOS.buscaNada));
-  } else {
-    achados.forEach(a => corpo.append(cardResposta(a.item, a.aba, a.sub, termo)));
-  }
-
-  /* saída sempre disponível: perguntar para a IA da documentação */
-  const saida = el("div","busca-ia");
-  saida.append(el("p","", TEXTOS.buscaSemSorte));
-  const b = el("button","btn sm", TEXTOS.buscaBotao);
-  b.type = "button";
-  b.onclick = () => {
-    const url = D + "?ask=" + encodeURIComponent(state.busca);
-    abrirDoc(url, state.busca, true);
-  };
-  saida.append(b);
-  corpo.append(saida);
-
-  wrap.append(corpo);
-  host.append(wrap);
-}
-
-
 /* ---------- normalizacao usada pela busca ----------
    Tira acento e caixa: quem digita "reserva paga" acha "Reservas Pagas". */
 const DIACRITICOS = new RegExp("[\u0300-\u036f]", "g");
@@ -2813,8 +3146,7 @@ const norm = s => String(s).normalize("NFD").replace(DIACRITICOS, "").toLowerCas
 
 /* ---------- boot ---------- */
 function render() {
-  montarIndice();   /* refaz sempre: rascunho novo tem que entrar na busca */
-  renderMoldura(); renderSidebar(); renderBusca();
+  renderMoldura(); renderSidebar();
   renderFlow(); renderOut(); renderFup(); renderAvaliacao(); renderRespostas();
   renderAbaVisivel();
   medirTopo();
@@ -2824,6 +3156,10 @@ function iniciar() {
   if (iniciar.jaRodou) return;
   iniciar.jaRodou = true;
   if (!conferirConteudo()) return;
+
+  /* o que o time fixou e o que copiou ha pouco vive neste navegador */
+  state.fixados = leGuardado(CH_FIX);
+  state.recentes = leGuardado(CH_REC);
 
 window.addEventListener("resize", medirTopo);
 window.addEventListener("load", medirTopo);
@@ -2852,10 +3188,42 @@ document.addEventListener("keydown", (e) => {
   const digitando = /^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName);
   if ((e.key === "/" && !digitando) || ((e.ctrlKey || e.metaKey) && e.key === "k")) {
     e.preventDefault();
-    if (state.secao !== "respostas") irParaSecao("respostas", state.sub || primeiraSubComResposta());
+    if (state.secao !== "respostas") irParaSecao("respostas");
     document.getElementById("q").focus();
     document.getElementById("q").select();
   }
+});
+
+/* ---- teclado na lista de respostas ----
+   A mao ja esta no teclado por causa da busca: seta escolhe, Ctrl+Enter
+   copia. Isso troca tres cliques por uma tecla no meio do atendimento. */
+document.addEventListener("keydown", (e) => {
+  if (state.secao !== "respostas") return;
+  if (document.querySelector(".modal")) return;
+  if (!document.getElementById("gaveta").hidden) return;
+  if (document.activeElement && document.activeElement.tagName === "TEXTAREA") return;
+
+  const passo = e.key === "ArrowDown" ? 1 : e.key === "ArrowUp" ? -1 : 0;
+  const copiar = e.key === "Enter" && (e.ctrlKey || e.metaKey);
+  if (!passo && !copiar) return;
+
+  const itens = listaVisivel().itens;
+  if (!itens.length) return;
+  e.preventDefault();
+
+  if (passo) {
+    let i = itens.findIndex(x => x.chave === state.escolhida);
+    i = i < 0 ? 0 : Math.min(Math.max(i + passo, 0), itens.length - 1);
+    escolher(itens[i].chave);
+    return;
+  }
+
+  const atual = itens.find(x => x.chave === state.escolhida);
+  if (!atual) return;
+  registraRecente(atual.chave);
+  /* copia pelo botao da linha, para o visto verde aparecer onde o olho esta */
+  const botao = document.querySelector('.rlinha[data-chave="' + atual.chave + '"] .ricone');
+  if (botao) copiarResposta(atual.item, botao, !!atual.item.imagem);
 });
 
 /* ---- largura da barra: arrastar o puxador ---- */
@@ -2949,9 +3317,10 @@ document.getElementById("reset").addEventListener("click", () => {
   state.secao = "guia";
   state.aba = 1;
   state.cat = null; state.mod = null;
-  state.sub = null;
-  state.busca = "";
-  document.getElementById("q").value = "";
+  state.escolhida = null;
+  state.chipsTodos = false;
+  state.vaziasVisiveis = false;
+  limparEscopo();
   resetFup();
   render();
   window.scrollTo({ top:0, behavior:"smooth" });
