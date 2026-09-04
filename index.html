@@ -550,6 +550,17 @@
     color: var(--calm); background: var(--calm-bg);
     border: 1px solid var(--calm-linha); border-radius: var(--r-1); padding: 3px 7px;
   }
+  /* o lápis de editar a etapa: só aparece para quem tem token */
+  .st-editar {
+    margin-left: auto; flex: 0 0 auto;
+    font: inherit; font-size: var(--t-meta); line-height: 1; cursor: pointer;
+    padding: 5px var(--s2); border-radius: var(--r-1);
+    background: transparent; color: var(--ink-3); border: 1px solid transparent;
+    transition: color var(--dur-1), border-color var(--dur-1);
+  }
+  .st-editar:hover { color: var(--accent); border-color: var(--accent-linha); }
+  .st-head .st-sub:not(:empty) ~ .st-editar { margin-left: var(--s2); }
+
   .st-body { padding: var(--s5); display: flex; flex-direction: column; gap: var(--s5); }
   .lead {
     margin: 0; font-size: var(--t-read); line-height: var(--lh-read);
@@ -853,11 +864,6 @@
      Mesmas frases, mesmos pesos. É um leitor, não um formulário: não calcula
      média e não guarda nada. */
   .grupo { display: flex; flex-direction: column; gap: var(--s3); }
-  .grupo-nome {
-    margin: 0; font-family: var(--font-mono); font-size: var(--t-tag); font-weight: 700;
-    letter-spacing: .13em; text-transform: uppercase; color: var(--ink-3);
-    padding-bottom: var(--s2); border-bottom: 1px solid var(--line);
-  }
 
   .crit { overflow: hidden; }
   .crit.on { border-color: var(--accent-linha); box-shadow: var(--e1); }
@@ -1798,15 +1804,22 @@ function renderSidebar() {
   }
 
   if (state.secao === "criterios") {
+    /* a barra lista os 4 criterios com o peso de cada um; clicar abre aquele */
     dentro.append(el("span","nav-titulo", AVALIACAO.titulo));
-    AVALIACAO.grupos.forEach(g => {
-      const b = el("button","nav-item");
+    AVALIACAO.criterios.forEach(c => {
+      const b = el("button","nav-item" + (state.critAberto === c.n ? " on" : ""));
       b.type = "button";
-      b.append(el("span","nav-txt", g.nome), el("span","nav-conta", String(g.criterios.length)));
+      b.title = c.nome;
+      b.append(el("span","nav-n", String(c.n)),
+               el("span","nav-txt", c.nome),
+               el("span","nav-conta", "×" + c.peso));
       b.onclick = () => {
-        irParaSecao("criterios");
-        const alvo = [...document.querySelectorAll("#aval .grupo-nome")].find(x => x.textContent === g.nome);
-        if (alvo) alvo.scrollIntoView({ behavior: "smooth", block: "start" });
+        state.secao = "criterios";
+        state.critAberto = c.n;
+        fecharMenu();
+        render();
+        const alvo = document.querySelector("#aval .crit.on");
+        if (alvo) alvo.scrollIntoView({ behavior: "smooth", block: "nearest" });
       };
       dentro.append(b);
     });
@@ -2037,6 +2050,17 @@ function renderFlow() {
   head.append(el("span","st-n", feito ? "✓" : String(i+1)));
   head.append(el("span","st-title", p.titulo));
   head.append(el("span","st-sub", feito ? TEXTOS.etapaConcluida : ""));
+
+  /* O lapis so existe para quem tem token com permissao de escrita. Quem abre
+     o link sem token nem ve o botao — e forcar o botao nao adianta, porque o
+     GitHub recusa a gravacao. O portao e a permissao do repositorio. */
+  if (temToken()) {
+    const lapis = el("button","st-editar", TEXTOS.guiaEditar);
+    lapis.type = "button";
+    lapis.title = fmt(TEXTOS.guiaEditarTitulo, { n: i + 1 });
+    lapis.onclick = () => abrirEditorEtapa(i);
+    head.append(lapis);
+  }
   card.append(head);
 
   const body = el("div","st-body");
@@ -2391,11 +2415,10 @@ function renderAvaliacao() {
      É um leitor, não um formulário: clicar troca qual das 6 frases aparece.
      Não calcula média e não guarda nada — as frases, os pesos e a explicação
      do cálculo continuam vindo de AVALIACAO, sem uma palavra nova. */
-  AVALIACAO.grupos.forEach(g => {
+  {
     const bloco = el("section","grupo");
-    bloco.append(el("h3","grupo-nome", g.nome));
 
-    g.criterios.forEach(c => {
+    AVALIACAO.criterios.forEach(c => {
       const aberto = state.critAberto === c.n;
       const card = el("article","crit" + (aberto ? " on" : ""));
 
@@ -2463,7 +2486,7 @@ function renderAvaliacao() {
     });
 
     corpo.append(bloco);
-  });
+  }
 
   corpo.append(el("p","microhint", AVALIACAO.comoCalcula));
   wrap.append(corpo);
@@ -2633,6 +2656,190 @@ function arvoreOficial() {
       }))
     }))
   }));
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   EDITAR O PASSO A PASSO DO GUIA
+
+   O guia mora em PORTOES, no conteudo.js — e o conteudo.js e um arquivo bem
+   mais perigoso que o respostas.js: um erro de sintaxe ali derruba a pagina
+   inteira, nao so uma resposta. Ja aconteceu.
+
+   Por isso aqui NAO se regenera o arquivo todo, como o respostas.js faz.
+   Faz-se uma troca cirurgica: acha o bloco `const PORTOES = [ ... ];` no texto
+   que veio do repositorio, troca so ele, e mantem cada outro byte no lugar —
+   comentarios, indices, tudo.
+
+   E antes de enviar, o arquivo montado passa por new Function(). Se nao for
+   JavaScript valido, a publicacao e recusada e nada e alterado.
+
+   Quem pode editar: quem tem token com permissao de escrita no repositorio.
+   O lapis so aparece com token configurado, mas o portao de verdade e o
+   GitHub — sem permissao ele recusa a gravacao, venha de onde vier.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* serializa PORTOES de volta para JavaScript, no formato do arquivo */
+function serializarPortoes(portoes) {
+  const asp = t => JSON.stringify(String(t));
+  const linhas = ["const PORTOES = ["];
+  portoes.forEach((p, i) => {
+    linhas.push("  {");
+    linhas.push("    id: " + asp(p.id) + ",");
+    linhas.push("    titulo: " + asp(p.titulo) + ",");
+    linhas.push("    lead: " + asp(p.lead) + ",");
+    linhas.push("    itens: [");
+    linhas.push(p.itens.map(x => "      " + asp(x)).join(",\n"));
+    linhas.push("    ],");
+    linhas.push("    nunca: [");
+    linhas.push(p.nunca.map(x => "      " + asp(x)).join(",\n"));
+    linhas.push("    ],");
+    linhas.push("    cta: " + asp(p.cta) + ",");
+    linhas.push("    why: " + asp(p.why));
+    linhas.push("  }" + (i < portoes.length - 1 ? "," : ""));
+  });
+  linhas.push("];");
+  return linhas.join("\n");
+}
+
+/* acha o bloco PORTOES no texto do arquivo e troca so ele */
+function trocarBlocoPortoes(texto, blocoNovo) {
+  const ini = texto.indexOf("const PORTOES = [");
+  if (ini === -1) throw new Error("nao achei o bloco PORTOES no conteudo.js");
+  /* anda ate o colchete que fecha, contando os de dentro e pulando strings */
+  let d = 0, i = texto.indexOf("[", ini), fim = -1, aspas = null;
+  for (; i < texto.length; i++) {
+    const c = texto[i];
+    if (aspas) { if (c === "\\") i++; else if (c === aspas) aspas = null; continue; }
+    if (c === '"' || c === "'") { aspas = c; continue; }
+    if (c === "[") d++;
+    else if (c === "]") { d--; if (d === 0) { fim = i; break; } }
+  }
+  if (fim === -1) throw new Error("nao achei o fim do bloco PORTOES");
+  /* engole o ponto e virgula logo depois do colchete */
+  let dep = fim + 1;
+  while (dep < texto.length && /\s/.test(texto[dep])) dep++;
+  if (texto[dep] === ";") dep++;
+  return texto.slice(0, ini) + blocoNovo + texto.slice(dep);
+}
+
+/* baixa o conteudo.js atual do repositorio, como texto */
+function textoConteudoAtual() {
+  return fetch("conteudo.js?t=" + Date.now()).then(r => {
+    if (!r.ok) throw new Error("nao consegui ler o conteudo.js");
+    return r.text();
+  });
+}
+
+function publicarConteudo(textoNovo, mensagem) {
+  /* a rede que impede de derrubar o site: se nao compila, nao sai daqui */
+  try { new Function(textoNovo); }
+  catch (e) { return Promise.reject(new Error(TEXTOS.guiaErroSintaxe)); }
+
+  return apiGitHub("/contents/conteudo.js?ref=" + REPO.ramo)
+    .then(atual => apiGitHub("/contents/conteudo.js", {
+      metodo: "PUT",
+      corpo: {
+        message: mensagem,
+        content: paraBase64(textoNovo),
+        sha: atual.sha,
+        branch: REPO.ramo
+      }
+    }));
+}
+
+/* ---------- o formulario de uma etapa ---------- */
+function abrirEditorEtapa(indice) {
+  const p = PORTOES[indice];
+  const fundo = el("div","modal");
+  const cx = el("form","modal-cx");
+  cx.setAttribute("role","dialog");
+  cx.setAttribute("aria-modal","true");
+
+  const topo = el("header","modal-topo");
+  topo.append(el("h2","modal-titulo", fmt(TEXTOS.guiaEditarTitulo, { n: indice + 1 })));
+  const xis = el("button","modal-x","×");
+  xis.type = "button";
+  topo.append(xis);
+  cx.append(topo);
+
+  const corpo = el("div","modal-corpo");
+  corpo.append(el("p","modal-nota", TEXTOS.guiaEditarNota));
+
+  const cTitulo = campoTexto(TEXTOS.guiaCampoTitulo);
+  const cLead   = campoArea(TEXTOS.guiaCampoLead, TEXTOS.guiaCampoLeadDica);
+  const cItens  = campoArea(TEXTOS.guiaCampoItens, TEXTOS.guiaCampoItensDica);
+  const cNunca  = campoArea(TEXTOS.guiaCampoNunca, TEXTOS.guiaCampoNuncaDica);
+  const cCta    = campoTexto(TEXTOS.guiaCampoCta);
+  const cWhy    = campoArea(TEXTOS.guiaCampoWhy);
+  corpo.append(cTitulo.bloco, cLead.bloco, cItens.bloco, cNunca.bloco, cCta.bloco, cWhy.bloco);
+
+  cTitulo.poe(p.titulo);
+  cLead.poe(p.lead);
+  cItens.poe(p.itens.join("\n"));
+  cNunca.poe(p.nunca.join("\n"));
+  cCta.poe(p.cta);
+  cWhy.poe(p.why);
+
+  const situacao = el("p","modal-estado");
+  corpo.append(situacao);
+  cx.append(corpo);
+
+  const pe = el("footer","modal-pe");
+  const salvar = el("button","btn", TEXTOS.guiaSalvar);
+  salvar.type = "submit";
+  const cancelar = el("button","btn ghost", TEXTOS.editorCancelar);
+  cancelar.type = "button";
+  pe.append(salvar, cancelar);
+  cx.append(pe);
+
+  const fechar = () => { fundo.remove(); document.body.classList.remove("gaveta-aberta"); };
+  xis.onclick = fechar;
+  cancelar.onclick = fechar;
+  fundo.onclick = (e) => { if (e.target === fundo) fechar(); };
+
+  const linhas = t => t.split("\n").map(l => l.trim()).filter(Boolean);
+
+  cx.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const novo = {
+      id: p.id,
+      titulo: cTitulo.valor().trim(),
+      lead: cLead.valor().trim(),
+      itens: linhas(cItens.valor()),
+      nunca: linhas(cNunca.valor()),
+      cta: cCta.valor().trim(),
+      why: cWhy.valor().trim()
+    };
+    if (!novo.titulo || !novo.lead || !novo.cta) { alert(TEXTOS.guiaFalta); return; }
+    if (JSON.stringify(novo) === JSON.stringify({
+      id: p.id, titulo: p.titulo, lead: p.lead, itens: p.itens, nunca: p.nunca, cta: p.cta, why: p.why
+    })) { situacao.className = "modal-estado"; situacao.textContent = TEXTOS.guiaSemMudanca; return; }
+
+    salvar.disabled = true;
+    situacao.className = "modal-estado";
+    situacao.textContent = TEXTOS.guiaPublicando;
+
+    const todos = PORTOES.map((x, i) => i === indice ? novo : x);
+
+    textoConteudoAtual()
+      .then(texto => publicarConteudo(trocarBlocoPortoes(texto, serializarPortoes(todos)),
+                                      "Edita a etapa " + (indice + 1) + " do guia: " + novo.titulo))
+      .then(() => {
+        situacao.className = "modal-estado ok";
+        situacao.textContent = TEXTOS.guiaPublicado;
+        setTimeout(() => { location.reload(); }, 2600);
+      })
+      .catch(err => {
+        salvar.disabled = false;
+        situacao.className = "modal-estado ruim";
+        situacao.textContent = err.message;
+      });
+  });
+
+  fundo.append(cx);
+  document.body.append(fundo);
+  document.body.classList.add("gaveta-aberta");
+  setTimeout(() => cTitulo.foco(), 30);
 }
 
 /* ---------- reordenar abas e sub-abas ----------

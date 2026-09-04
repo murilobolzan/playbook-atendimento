@@ -1007,6 +1007,31 @@ const TEXTOS = {
   etapaNaoFaca: "Não faça",
   etapaFaca: "Faça assim",
 
+  /* --- editar o passo a passo do guia ---
+     O lápis só aparece para quem tem token de publicação configurado. Quem
+     abre o link sem token não vê o botão, e mesmo que o force, o GitHub
+     recusa a gravação — o controle de verdade é a permissão do repositório,
+     não a tela. */
+  guiaEditar: "✎ Editar esta etapa",
+  guiaEditarTitulo: "Editar a etapa {n}",
+  guiaEditarNota: "Isto muda o passo a passo para o time inteiro. O texto vai para o conteudo.js do repositório e o site atualiza em cerca de 40 segundos.",
+  guiaCampoTitulo: "Título da etapa",
+  guiaCampoLead: "Frase de abertura",
+  guiaCampoLeadDica: "Aparece em cinza, abaixo do título. Aceita <strong>negrito</strong>.",
+  guiaCampoItens: "Faça assim",
+  guiaCampoItensDica: "Um item por linha. Aceita <strong>negrito</strong>.",
+  guiaCampoNunca: "Não faça",
+  guiaCampoNuncaDica: "Um item por linha.",
+  guiaCampoCta: "Texto do botão que conclui a etapa",
+  guiaCampoWhy: "Frase pequena ao lado do botão",
+  guiaFalta: "Título, frase de abertura e texto do botão não podem ficar vazios.",
+  guiaSalvar: "Salvar e publicar",
+  guiaPublicando: "Publicando o passo a passo...",
+  guiaPublicado: "Publicado. O site atualiza em cerca de 40 segundos. Recarregando...",
+  guiaSemMudanca: "Nada mudou nesta etapa.",
+  guiaErroSintaxe: "Eu montei o arquivo e ele não ficou válido, então NÃO publiquei. Nada foi alterado. Provável causa: uma tag <strong> aberta e não fechada em algum campo.",
+  guiaSemToken: "Configure a publicação para poder editar o passo a passo.",
+
   /* --- etapas ainda não liberadas ---
      Não existe atalho: o atendente passa por todas as etapas, em ordem. */
   bloqueioEyebrow: "Ainda não liberado",
@@ -1097,79 +1122,64 @@ const AVALIACAO = {
   titulo: "Avaliação de Atendimento — CS Dionísio",
   subtitulo: "Régua de avaliação: 4 critérios, notas de 0 a 5, média ponderada.",
   pesoLabel: "peso",
-  observarLabel: "O que observar",
-  comoCalcula: "Os pesos somam 10. A média ponderada é a soma de cada nota multiplicada pelo seu peso, dividida por 10 — então ela sai na mesma escala de 0 a 5.",
+  observarLabel: "O que avalia",
+  comoCalcula: "Os pesos somam 6. A média ponderada é a soma de cada nota multiplicada pelo seu peso, dividida por 6 — então ela sai na mesma escala de 0 a 5.",
 
-  grupos: [
+  criterios: [
     {
-      nome: "Resolução & Eficácia",
-      criterios: [
-        {
-          n: 1,
-          nome: "Entendeu o problema de fato",
-          peso: 2,
-          observar: "Investigou antes de responder; não presumiu.",
-          niveis: [
-            "Não entendeu e não buscou entender.",
-            "Não entendeu e respondeu por suposição, sem perguntar nada ao cliente.",
-            "Não entendeu o problema do cliente, mas buscou entender.",
-            "Entendeu parcialmente o problema do cliente.",
-            "Entendeu parcialmente o problema do cliente e buscou entender a fundo.",
-            "Entendeu completamente o problema do cliente."
-          ]
-        },
-        {
-          n: 2,
-          nome: "Resolveu de fato",
-          peso: 3,
-          observar: "Resolveu e confirmou o entendimento; não empurrou nem fechou prematuro.",
-          niveis: [
-            "Não conseguiu resolver.",
-            "Respondeu parcialmente as dúvidas do cliente e não garantiu que ele entendeu.",
-            "Respondeu parcialmente as dúvidas do cliente e garantiu que ele entendeu.",
-            "Respondeu o cliente, mas sem garantir que ele entendeu.",
-            "Resolveu o problema do cliente.",
-            "Resolveu o problema do cliente garantindo que ele entendeu."
-          ]
-        }
+      n: 1,
+      nome: "Compreensão do problema",
+      peso: 1,
+      observar: "Se o CS identificou corretamente a necessidade do cliente antes de orientar ou tomar uma ação.",
+      niveis: [
+        "Não compreendeu o problema e não tentou investigá-lo.",
+        "Interpretou incorretamente e respondeu com base em uma suposição.",
+        "Não compreendeu inicialmente, mas fez perguntas para tentar identificar o problema.",
+        "Compreendeu o problema principal, mas deixou pontos relevantes sem investigar.",
+        "Compreendeu o problema e investigou os principais pontos necessários para solucioná-lo.",
+        "Compreendeu completamente o contexto, identificou a causa ou necessidade real e, quando necessário, investigou além da dúvida inicial."
       ]
     },
     {
-      nome: "Qualidade Técnica",
-      criterios: [
-        {
-          n: 3,
-          nome: "Qualidade técnica da resposta",
-          peso: 3,
-          observar: "Sem informação errada ou incompleta; profundidade técnica adequada.",
-          niveis: [
-            "Respondeu de forma equivocada ao cliente.",
-            "Resposta abaixo do esperado na qualidade técnica: incompleta e sem clareza.",
-            "Resposta correta no geral, mas com informação faltando — o cliente teve que perguntar de novo.",
-            "Resposta sem profundidade técnica, porém correta e ajustada ao caso.",
-            "Resposta tecnicamente boa, que resolveu o problema do cliente garantindo que ele entendeu.",
-            "Resposta tecnicamente excelente, que resolveu o problema do cliente garantindo que ele entendeu."
-          ]
-        }
+      n: 2,
+      nome: "Resolução e eficácia",
+      peso: 2,
+      observar: "Se o CS efetivamente resolveu a necessidade do cliente e conduziu o atendimento até uma conclusão adequada.",
+      niveis: [
+        "Não resolveu e não apresentou um caminho para solução.",
+        "Deu uma orientação insuficiente ou apenas parcial, sem direcionar os próximos passos.",
+        "Resolveu apenas parte da necessidade, deixando pendências relevantes.",
+        "Apresentou uma solução adequada, mas não confirmou se o cliente conseguiu aplicar ou se a necessidade foi resolvida.",
+        "Resolveu a necessidade do cliente e orientou corretamente os próximos passos.",
+        "Resolveu a necessidade de forma completa, confirmou o resultado ou entendimento do cliente e, quando necessário, antecipou possíveis dúvidas ou próximos passos."
       ]
     },
     {
-      nome: "Relacionamento & Comunicação",
-      criterios: [
-        {
-          n: 4,
-          nome: "Tom adequado, empático e no padrão Dionísio",
-          peso: 2,
-          observar: "Cordial, humano, escrita cuidada e alinhado à marca.",
-          niveis: [
-            "Desrespeitou o cliente.",
-            "Respondeu de forma seca ou ríspida, sem nenhuma empatia.",
-            "Respondeu de forma desleixada.",
-            "Respondeu com alguns erros de digitação e pontuação e sem saudação inicial.",
-            "Respondeu com alguns erros de digitação e pontuação.",
-            "Respondeu de forma cordial e no padrão Dionísio."
-          ]
-        }
+      n: 3,
+      nome: "Qualidade técnica e precisão",
+      peso: 2,
+      observar: "Se a resposta foi correta, clara, completa e tecnicamente adequada ao caso.",
+      niveis: [
+        "Informação incorreta ou orientação que pode gerar um problema para o cliente.",
+        "Resposta predominantemente incorreta, superficial ou sem fundamento.",
+        "Resposta parcialmente correta, mas com informações importantes faltando ou orientação pouco clara.",
+        "Resposta correta, porém incompleta ou sem o nível de detalhamento necessário, fazendo o cliente precisar perguntar novamente.",
+        "Resposta correta, clara e adequada ao caso, com as informações necessárias para o cliente prosseguir.",
+        "Resposta tecnicamente completa e precisa, utilizando o melhor recurso disponível para facilitar o entendimento, como passo a passo, exemplos, prints, vídeos ou outras orientações pertinentes."
+      ]
+    },
+    {
+      n: 4,
+      nome: "Comunicação e experiência do cliente",
+      peso: 1,
+      observar: "A forma como o atendimento foi conduzido, considerando clareza, cordialidade, segurança e padrão de comunicação Dionísio.",
+      niveis: [
+        "Comunicação desrespeitosa, inadequada ou que prejudica claramente a experiência do cliente.",
+        "Comunicação seca, ríspida ou pouco profissional.",
+        "Comunicação pouco cuidadosa, confusa ou excessivamente informal.",
+        "Comunicação adequada, mas com problemas perceptíveis de clareza, organização, escrita ou condução.",
+        "Comunicação clara, cordial, profissional e adequada ao contexto.",
+        "Comunicação clara, cordial, segura e humanizada, com postura consultiva e proativa, transmitindo domínio do assunto e deixando o cliente seguro sobre a solução."
       ]
     }
   ]
