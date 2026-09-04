@@ -356,6 +356,7 @@
     box-shadow: 0 6px 10px -8px rgba(0,0,0,.28);
   }
   .topico {
+    display: flex; align-items: center; gap: var(--s3);
     font: inherit; text-align: left; cursor: pointer;
     background: transparent; border: 1px solid transparent; border-radius: var(--r-2);
     padding: 7px var(--s3); color: var(--ink-2);
@@ -371,117 +372,207 @@
 
   .topico-dentro { display: flex; flex-direction: column; gap: 2px; }
 
-  /* ═══════════════════ NAVEGAÇÃO DA BARRA ═══════════════════ */
+  /* ═══════════════════ NAVEGAÇÃO DA BARRA ═══════════════════
+     No estilo da própria plataforma Dionísio: rótulo de grupo em maiúsculas
+     pequenas, ícone à esquerda de cada item, chevron à direita no que abre,
+     linha alta e sem borda entre elas.
+
+     As abas do playbook espelham as abas do painel — se a barra parecer a
+     mesma, o atendente liga uma na outra sem pensar. */
+
+  /* o ícone: 18px, traço fino, herda a cor do texto do item */
+  .nav-ico {
+    flex: 0 0 auto; width: 18px; height: 18px;
+    fill: none; stroke: currentColor; stroke-width: 1.6;
+    stroke-linecap: round; stroke-linejoin: round;
+    color: var(--ink-3); transition: color var(--dur-1);
+  }
+  .nav-ico.sm { width: 14px; height: 14px; stroke-width: 1.8; }
+
   .nav-titulo {
     font-family: var(--font-mono); font-size: var(--t-tag); font-weight: 700;
-    letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3);
-    padding: var(--s3) var(--s2) 5px;
+    letter-spacing: .13em; text-transform: uppercase; color: var(--ink-3);
+    padding: var(--s4) var(--s2) var(--s2);
   }
+
   .nav-item {
-    display: flex; align-items: center; gap: var(--s2);
+    display: flex; align-items: center; gap: var(--s3);
     font: inherit; font-size: var(--t-ui); text-align: left; cursor: pointer;
     background: transparent; color: var(--ink-2);
     border: 1px solid transparent; border-radius: var(--r-2);
-    padding: 6px var(--s2); min-height: 30px; width: 100%;
+    padding: 8px var(--s3); min-height: 38px; width: 100%;
     transition: background var(--dur-1), color var(--dur-1);
   }
   .nav-item:hover:not([disabled]) { background: var(--surface-3); color: var(--ink); }
+  .nav-item:hover:not([disabled]) .nav-ico { color: var(--ink-2); }
   .nav-item.on {
     background: var(--sel-bg); color: var(--accent-forte); font-weight: 650;
-    box-shadow: inset 2px 0 0 var(--sel-linha);
   }
+  .nav-item.on .nav-ico { color: var(--accent); }
   .nav-item[disabled] { cursor: not-allowed; opacity: .42; }
+
   .nav-txt {
     flex: 1 1 auto; min-width: 0; line-height: var(--lh-tight);
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
+
+  /* o número das etapas e dos critérios É o ícone deles */
   .nav-n {
-    flex: 0 0 auto; width: 18px; height: 18px; display: grid; place-items: center;
+    flex: 0 0 auto; width: 20px; height: 20px; display: grid; place-items: center;
     font-family: var(--font-mono); font-size: var(--t-tag); font-weight: 700;
     color: var(--ink-3); background: var(--surface-3);
     border: 1px solid var(--line); border-radius: var(--r-1);
   }
   .nav-item.on .nav-n { color: var(--accent-sobre); background: var(--accent); border-color: var(--accent); }
   .nav-item.ok .nav-n { color: var(--calm); background: var(--calm-bg); border-color: var(--calm-linha); }
+
   .nav-conta {
-    flex: 0 0 auto; font-family: var(--font-mono); font-size: var(--t-tag);
+    flex: 0 0 auto; font-family: var(--font-mono); font-size: var(--t-meta);
     font-variant-numeric: tabular-nums; color: var(--ink-3);
   }
   .nav-item.on .nav-conta { color: var(--accent); }
-  .nav-seta {
-    flex: 0 0 auto; font-size: 8px; color: var(--ink-3); line-height: 1;
-    transition: transform var(--dur-1);
-  }
-  .nav-pai[aria-expanded="true"] .nav-seta { transform: rotate(90deg); }
-  .nav-pai { font-weight: 600; color: var(--ink); }
-  .nav-pai.on { font-weight: 700; }
+
+  /* chevron à direita, igual ao da plataforma */
+  .nav-chev { color: var(--ink-3); transition: transform var(--dur-1), color var(--dur-1); }
+  .nav-pai[aria-expanded="true"] .nav-chev { transform: rotate(180deg); }
+  .nav-pai.on .nav-chev { color: var(--accent); }
+  .nav-pai { color: var(--ink); }
+
   .nav-filhos {
     display: flex; flex-direction: column; gap: 1px;
-    margin: 1px 0 var(--s2) var(--s3);
-    padding-left: var(--s2); border-left: 1px solid var(--line);
+    margin: 2px 0 var(--s3) var(--s5);
+    padding-left: var(--s3); border-left: 1px solid var(--line);
   }
-  .nav-vazia { color: var(--ink-3); font-size: var(--t-meta); }
+  .nav-vazia { color: var(--ink-3); font-size: var(--t-meta); min-height: 30px; }
+
+  .side-acoes { display: flex; flex-direction: column; gap: var(--s2); padding-bottom: var(--s2); }
+  .side-acoes-linha { display: flex; gap: var(--s2); align-items: stretch; }
+  .side-acoes-linha .btn { flex: 1 1 auto; min-width: 0; }
+  .side-chave { flex: 0 0 auto !important; padding: 6px 10px; font-size: var(--t-ui); }
+  .side-chave.ok { border-color: var(--calm-linha); background: var(--calm-bg); }
 
   /* ---- cabeçalho das abas, com o botão de reordenar ---- */
-  .nav-cab { display: flex; align-items: baseline; gap: var(--s2); padding-right: var(--s2); }
-  .nav-cab .nav-titulo { flex: 1 1 auto; }
+  .nav-cab { display: flex; align-items: center; gap: var(--s2); flex-wrap: wrap; padding-right: var(--s1); }
+  .nav-cab .nav-titulo { flex: 1 1 auto; min-width: 0; padding-right: 0; overflow-wrap: anywhere; }
   .nav-ordem {
-    flex: 0 0 auto; font: inherit; font-family: var(--font-mono); font-size: var(--t-tag);
-    line-height: 1; cursor: pointer; padding: 3px 6px; border-radius: var(--r-1);
+    flex: 0 0 auto; display: inline-flex; align-items: center; gap: 5px; white-space: nowrap;
+    font: inherit; font-family: var(--font-mono); font-size: var(--t-tag);
+    line-height: 1; cursor: pointer; padding: 4px 7px; border-radius: var(--r-1);
     border: 1px solid var(--line); background: var(--surface); color: var(--ink-3);
     transition: color var(--dur-1), border-color var(--dur-1), background var(--dur-1);
   }
+  .nav-ordem .nav-ico { width: 12px; height: 12px; color: inherit; }
   .nav-ordem:hover { color: var(--accent); border-color: var(--accent); }
   .nav-ordem[aria-pressed="true"] {
     background: var(--accent); border-color: var(--accent); color: var(--accent-sobre); font-weight: 700;
   }
 
-  /* ---- sub-aba virou rótulo: quem se clica agora é a resposta ---- */
+  /* ---- sub-aba é rótulo: quem se clica é a resposta ---- */
   .nav-sub {
     display: flex; align-items: center; gap: var(--s2);
-    padding: var(--s3) var(--s2) 3px;
+    padding: var(--s3) var(--s2) 4px;
     font-family: var(--font-mono); font-size: var(--t-tag); font-weight: 700;
     letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3);
   }
   .nav-sub .nav-txt { flex: 1 1 auto; min-width: 0; }
   .nav-sub .nav-conta { font-size: var(--t-tag); }
 
-  /* ---- a resposta, o terceiro nível da árvore ---- */
+  /* ---- a resposta, terceiro nível ---- */
   .nav-resp {
     display: flex; align-items: center; gap: 2px;
     border-radius: var(--r-2); transition: background var(--dur-1);
   }
   .nav-resp:hover { background: var(--surface-3); }
-  .nav-resp.on { background: var(--sel-bg); box-shadow: inset 2px 0 0 var(--sel-linha); }
+  .nav-resp.on { background: var(--sel-bg); }
   .nav-resp.interno { box-shadow: inset 2px 0 0 var(--warn); }
-  .nav-resp-txt { flex: 1 1 auto; min-width: 0; font-size: var(--t-meta); }
+  .nav-resp-txt { flex: 1 1 auto; min-width: 0; font-size: var(--t-meta); min-height: 32px; padding: 6px var(--s2); }
   .nav-resp-txt:hover { background: transparent; }
   .nav-resp.on .nav-resp-txt { color: var(--accent-forte); font-weight: 650; }
   .nav-resp .ricone { flex: 0 0 auto; opacity: 0; transition: opacity var(--dur-1); }
   .nav-resp:hover .ricone, .nav-resp .ricone:focus-visible, .nav-resp.on .ricone { opacity: 1; }
 
-  /* ---- modo de reordenar ---- */
+  /* ═══════════ MODO DE REORDENAR ═══════════
+     Arrastar pela alça é o gesto principal. Os botões ⌃ ⌄ ficam para o
+     teclado, que precisa alcançar tudo.
+
+     Antes cada linha tinha três alvos de clique com três significados e as
+     setas mediam 13px de altura. Agora: a alça arrasta, o chevron abre as
+     sub-abas, e o resto da linha não faz nada. */
   .nav-ordem-nota {
     margin: 0 0 var(--s2); padding: var(--s2) var(--s3);
     font-size: var(--t-meta); line-height: var(--lh-ui); color: var(--ink-2);
     background: var(--accent-suave); border: 1px solid var(--accent-linha); border-radius: var(--r-2);
   }
-  .nav-ord-linha { display: flex; align-items: center; gap: var(--s1); }
-  .nav-ord-linha .nav-item, .nav-ord-linha .nav-ord-nome { flex: 1 1 auto; min-width: 0; }
-  .nav-ord-nome {
-    display: flex; align-items: center; gap: var(--s2);
-    font-size: var(--t-ui); color: var(--ink-2); padding: 6px var(--s2);
+
+  .nav-ord {
+    display: flex; align-items: center; gap: var(--s1);
+    padding: 4px var(--s1) 4px 0; border-radius: var(--r-2);
+    background: var(--surface); border: 1px solid transparent;
+    position: relative; transition: background var(--dur-1), box-shadow var(--dur-1);
   }
-  .nav-setas { flex: 0 0 auto; display: flex; flex-direction: column; gap: 1px; }
+  .nav-ord:hover { background: var(--surface-3); }
+  .nav-ord.filho { margin-left: var(--s5); }
+  .nav-ord.arrastada { opacity: .4; }
+
+  /* a linha de destino aparece onde a solta vai cair */
+  .nav-ord.alvo-antes::before, .nav-ord.alvo-depois::after {
+    content: ""; position: absolute; left: var(--s3); right: var(--s2); height: 2px;
+    background: var(--accent); border-radius: 2px;
+  }
+  .nav-ord.alvo-antes::before { top: -2px; }
+  .nav-ord.alvo-depois::after { bottom: -2px; }
+
+  .nav-alca {
+    flex: 0 0 auto; width: 18px; height: 22px; cursor: grab;
+    color: var(--line-forte); stroke: none;
+    transition: color var(--dur-1);
+  }
+  .nav-ord:hover .nav-alca { color: var(--ink-3); }
+  .nav-ord:active .nav-alca { cursor: grabbing; }
+
+  .nav-ord-corpo {
+    flex: 1 1 auto; min-width: 0; display: flex; align-items: center; gap: var(--s2);
+    font-size: var(--t-ui); color: var(--ink); padding: 4px 0;
+  }
+  .nav-ord.filho .nav-ord-corpo { font-size: var(--t-meta); color: var(--ink-2); }
+
+  /* setas maiores e lado a lado: antes eram 20x13px empilhadas */
+  .nav-setas { flex: 0 0 auto; display: flex; gap: 2px; }
   .nav-seta-btn {
-    font: inherit; font-size: 11px; line-height: 1; cursor: pointer;
-    width: 20px; height: 13px; padding: 0; border-radius: 2px;
+    font: inherit; font-size: var(--t-ui); line-height: 1; cursor: pointer;
+    width: 24px; height: 24px; padding: 0; border-radius: var(--r-1);
     border: 1px solid var(--line); background: var(--surface); color: var(--ink-3);
     display: grid; place-items: center;
     transition: color var(--dur-1), border-color var(--dur-1);
   }
   .nav-seta-btn:hover:not([disabled]) { color: var(--accent); border-color: var(--accent); }
-  .nav-seta-btn[disabled] { opacity: .3; cursor: not-allowed; }
+  .nav-seta-btn[disabled] { opacity: .28; cursor: not-allowed; }
+
+  .nav-chevron {
+    flex: 0 0 auto; font: inherit; cursor: pointer;
+    width: 24px; height: 24px; padding: 0; border-radius: var(--r-1);
+    border: 1px solid transparent; background: transparent; color: var(--ink-3);
+    display: grid; place-items: center;
+    transition: color var(--dur-1), border-color var(--dur-1), transform var(--dur-1);
+  }
+  .nav-chevron:hover { color: var(--accent); border-color: var(--accent-linha); }
+  .nav-chevron[aria-expanded="true"] { transform: rotate(180deg); color: var(--accent); }
+
+  /* barra de ações grudada no pé: antes o salvar ficava no fim de 40 linhas */
+  .nav-ordem-pe {
+    position: sticky; bottom: 0; z-index: 4;
+    display: flex; flex-direction: column; gap: var(--s2);
+    margin-top: var(--s3); padding: var(--s3) var(--s2);
+    background: var(--surface); border-top: 1px solid var(--line);
+    box-shadow: 0 -8px 12px -10px rgba(0,0,0,.22);
+  }
+  .nav-ordem-conta {
+    font-family: var(--font-mono); font-size: var(--t-tag); font-weight: 700;
+    letter-spacing: .06em; color: var(--accent);
+    overflow-wrap: anywhere; min-width: 0;
+  }
+  .nav-ordem-btns { display: flex; gap: var(--s2); flex-wrap: wrap; }
+  .nav-ordem-btns .btn { flex: 1 1 auto; min-width: 0; white-space: normal; }
   .nav-ordem-estado:empty { display: none; }
   .nav-ordem-estado {
     margin: 0; font-size: var(--t-meta); line-height: var(--lh-ui);
@@ -491,11 +582,7 @@
   .nav-ordem-estado.ok   { color: var(--calm); background: var(--calm-bg); border-color: var(--calm-linha); }
   .nav-ordem-estado.ruim { color: var(--crit); background: var(--crit-bg); border-color: var(--crit-linha); }
 
-  .side-acoes { display: flex; flex-direction: column; gap: var(--s2); padding-bottom: var(--s2); }
-  .side-acoes-linha { display: flex; gap: var(--s2); align-items: stretch; }
-  .side-acoes-linha .btn { flex: 1 1 auto; min-width: 0; }
-  .side-chave { flex: 0 0 auto !important; padding: 6px 10px; font-size: var(--t-ui); }
-  .side-chave.ok { border-color: var(--calm-linha); background: var(--calm-bg); }
+  body.arrastando-ordem { cursor: grabbing; }
 
   /* ═══════════════════════════ BOTÕES ═══════════════════════════
      Tres variantes: cheio (primário), fantasma e ícone.
@@ -1540,6 +1627,8 @@ const state = {
   abaAberta:null,       /* acordeao: uma aba da plataforma aberta por vez */
   ordenando:false,      /* modo de reordenar abas e sub-abas */
   arvoreOrdem:null,     /* copia de trabalho enquanto se reordena */
+  ordemMexida:false,    /* alguem ja moveu algo nesta sessao de ordenacao */
+  arrastando:null,      /* {lista, de} da linha sendo arrastada */
 
   /* respostas rapidas: a lista a esquerda e a leitura a direita */
   escolhida:null,        /* a resposta aberta no painel de leitura */
@@ -1754,6 +1843,87 @@ function observarTopo() {
   if (busca) observadorTopo.observe(busca);
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   ÍCONES DA BARRA
+
+   Desenhados aqui, e não carregados de uma fonte de ícone: o projeto não faz
+   nenhuma requisição externa e tem que abrir com duplo clique em file://.
+
+   Todos em 18x18, traçado de 1.6 e herdando currentColor — o mesmo ícone
+   serve no claro, no escuro e no estado ativo, sem duplicar nada.
+
+   As abas vêm do respostas.js, que o time edita: o ícone é escolhido pelo
+   nome, sem acento e em minúsculas, e aba nova que não casar com nada recebe
+   o ícone padrão. Ninguém precisa cadastrar ícone para criar uma aba.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+const ICONES = {
+  /* os três tópicos */
+  guia:      '<path d="M6.5 3.5H5A1.5 1.5 0 0 0 3.5 5v9.5A1.5 1.5 0 0 0 5 16h8a1.5 1.5 0 0 0 1.5-1.5V5A1.5 1.5 0 0 0 13 3.5h-1.5"/><rect x="6.5" y="2" width="5" height="3" rx="1"/><path d="M6.8 9.6l1.7 1.7 3-3.4"/>',
+  criterios: '<path d="M3.5 15.5V11M7.5 15.5V7.5M11.5 15.5V9.5M15.5 15.5V3.5"/>',
+  respostas: '<path d="M15.5 8.7c0 3-2.9 5.4-6.5 5.4-.8 0-1.6-.1-2.3-.4L3 15l1-2.7C3.1 11.3 2.5 10.1 2.5 8.7 2.5 5.7 5.4 3.3 9 3.3s6.5 2.4 6.5 5.4z"/><path d="M6.6 7.6h4.8M6.6 10.1h2.8"/>',
+
+  /* biblioteca inteira */
+  todas: '<path d="M9 2.5 2.8 5.8 9 9.1l6.2-3.3z"/><path d="M2.8 9.4 9 12.7l6.2-3.3"/><path d="M2.8 12.8 9 16.1l6.2-3.3"/>',
+
+  /* abas da plataforma */
+  calendario: '<rect x="2.8" y="4.2" width="12.4" height="11" rx="1.6"/><path d="M2.8 7.6h12.4M6.2 2.6v3M11.8 2.6v3"/>',
+  chat:       '<path d="M15.5 8.7c0 3-2.9 5.4-6.5 5.4-.8 0-1.6-.1-2.3-.4L3 15l1-2.7C3.1 11.3 2.5 10.1 2.5 8.7 2.5 5.7 5.4 3.3 9 3.3s6.5 2.4 6.5 5.4z"/>',
+  link:       '<path d="M7.4 10.6 10.6 7.4"/><path d="M8.6 5.6 10.1 4.1a2.9 2.9 0 0 1 4.1 4.1l-1.5 1.5"/><path d="M9.4 12.4 7.9 13.9a2.9 2.9 0 0 1-4.1-4.1l1.5-1.5"/>',
+  estrela:    '<path d="M9 2.6l1.98 4.1 4.52.62-3.3 3.16.82 4.5L9 12.86l-4.02 2.12.82-4.5L2.5 7.32l4.52-.62z"/>',
+  faisca:     '<path d="M8 2.6l1.3 3.4 3.4 1.3-3.4 1.3L8 12l-1.3-3.4L3.3 7.3l3.4-1.3z"/><path d="M13.4 11.2l.6 1.5 1.5.6-1.5.6-.6 1.5-.6-1.5-1.5-.6 1.5-.6z"/>',
+  loja:       '<path d="M3.4 7.6v7.9h11.2V7.6"/><path d="M2.4 7.6 4.3 2.9h9.4l1.9 4.7z"/><path d="M7.2 15.5v-4.2h3.6v4.2"/>',
+  pessoas:    '<circle cx="7" cy="6.4" r="2.5"/><path d="M2.6 15.2c0-2.5 2-4.1 4.4-4.1s4.4 1.6 4.4 4.1"/><path d="M12.3 4.9a2.5 2.5 0 0 1 0 4.9M12.8 11.3c1.6.4 2.6 1.7 2.6 3.9"/>',
+  relogio:    '<circle cx="9" cy="9" r="6.4"/><path d="M9 5.3V9.2l2.6 1.8"/>',
+  play:       '<circle cx="9" cy="9" r="6.4"/><path d="M7.3 6.1l4.5 2.9-4.5 2.9z"/>',
+  fila:       '<path d="M2.8 5h12.4M2.8 9h12.4M2.8 13h7.4"/>',
+  cardapio:   '<path d="M3 3.6h4.2A1.8 1.8 0 0 1 9 5.4v9.8a1.4 1.4 0 0 0-1.4-1.4H3z"/><path d="M15 3.6h-4.2A1.8 1.8 0 0 0 9 5.4v9.8a1.4 1.4 0 0 1 1.4-1.4H15z"/>',
+  padrao:     '<rect x="3.6" y="3.6" width="10.8" height="10.8" rx="2.4"/><path d="M6.6 9h4.8"/>'
+};
+
+/* chevron do que abre e fecha, e a alça de arrastar */
+const ICONE_CHEVRON = '<path d="M5.6 7.4 9 10.8l3.4-3.4"/>';
+const ICONE_ALCA = '<g fill="currentColor" stroke="none"><circle cx="6.6" cy="4.8" r="1.05"/><circle cx="11.4" cy="4.8" r="1.05"/><circle cx="6.6" cy="9" r="1.05"/><circle cx="11.4" cy="9" r="1.05"/><circle cx="6.6" cy="13.2" r="1.05"/><circle cx="11.4" cy="13.2" r="1.05"/></g>';
+
+/* Escolhe o ícone pelo nome da aba. A ordem importa: o primeiro que casar
+   ganha, então os termos mais específicos vêm antes. */
+const ICONE_POR_ABA = [
+  [["reserva", "agenda"],            "calendario"],
+  [["whatsapp", "wpp", "conversa"],  "chat"],
+  [["link"],                         "link"],
+  [["satisfacao", "nps", "feedback"],"estrela"],
+  [["teste"],                        "play"],
+  [["ia", "inteligencia"],           "faisca"],
+  [["loja", "estabelecimento"],      "loja"],
+  [["membro", "equipe", "usuario"],  "pessoas"],
+  [["historico", "log"],             "relogio"],
+  [["fila", "espera"],               "fila"],
+  [["cardapio", "menu"],             "cardapio"]
+];
+
+function iconeDaAba(nome) {
+  const n = norm(nome);
+  for (let i = 0; i < ICONE_POR_ABA.length; i++) {
+    const par = ICONE_POR_ABA[i];
+    /* casa por palavra inteira, para "IA" nao pegar "fila" nem "financeiro" */
+    if (par[0].some(k => new RegExp("(^|[^a-z0-9])" + k).test(n))) return par[1];
+  }
+  return "padrao";
+}
+
+/* monta o <svg>; a classe extra serve para variar tamanho ou giro */
+function svgIcone(desenho, classe) {
+  const s = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  s.setAttribute("class", classe || "nav-ico");
+  s.setAttribute("viewBox", "0 0 18 18");
+  s.setAttribute("aria-hidden", "true");
+  s.setAttribute("focusable", "false");
+  s.innerHTML = desenho;
+  return s;
+}
+
+function icone(nome, classe) { return svgIcone(ICONES[nome] || ICONES.padrao, classe); }
+
 /* ---------- barra lateral ---------- */
 function renderSidebar() {
   const host = document.getElementById("side-nav");
@@ -1761,9 +1931,9 @@ function renderSidebar() {
 
   /* o topo da barra troca de tópico; embaixo vem só o conteúdo do escolhido */
   const topicos = [
-    { id: "guia",      rot: TEXTOS.navGuia },
-    { id: "criterios", rot: TEXTOS.navCriterios },
-    { id: "respostas", rot: TEXTOS.navRespostas }
+    { id: "guia",      rot: TEXTOS.navGuia,      ico: "guia" },
+    { id: "criterios", rot: TEXTOS.navCriterios, ico: "criterios" },
+    { id: "respostas", rot: TEXTOS.navRespostas, ico: "respostas" }
   ];
 
   const troca = el("div","topicos");
@@ -1774,7 +1944,7 @@ function renderSidebar() {
     b.type = "button";
     b.setAttribute("role","tab");
     b.setAttribute("aria-selected", String(ativo));
-    b.append(el("span","topico-rot", t.rot));
+    b.append(icone(t.ico, "nav-ico"), el("span","topico-rot", t.rot));
     b.onclick = () => {
       if (t.id === "guia") irParaAba(state.aba);
       else irParaSecao(t.id);
@@ -1875,89 +2045,146 @@ function renderSidebar() {
     /* ---- cabecalho das abas, com o botao de reordenar ---- */
     const cab = el("div","nav-cab");
     cab.append(el("span","nav-titulo", TEXTOS.navAbasPlataforma));
-    const btOrdem = el("button","nav-ordem", state.ordenando ? TEXTOS.ordemSair : TEXTOS.ordemModo);
-    btOrdem.type = "button";
-    btOrdem.setAttribute("aria-pressed", String(!!state.ordenando));
-    btOrdem.onclick = () => {
-      if (state.ordenando) { sairOrdenacao(); return; }
-      if (!temToken()) { alert(TEXTOS.ordemSemToken); abrirAcesso(); return; }
-      entrarOrdenacao();
-    };
-    cab.append(btOrdem);
+    if (temToken()) {
+      const btOrdem = el("button","nav-ordem");
+      btOrdem.type = "button";
+      btOrdem.append(svgIcone(ICONE_ALCA, "nav-ico sm"), el("span","", state.ordenando ? TEXTOS.ordemSair : TEXTOS.ordemModo));
+      btOrdem.setAttribute("aria-pressed", String(!!state.ordenando));
+      btOrdem.onclick = () => { if (state.ordenando) sairOrdenacao(); else entrarOrdenacao(); };
+      cab.append(btOrdem);
+    }
     dentro.append(cab);
 
     /* ═══════════ modo de reordenar ═══════════
-       Mexe na ordem das abas e das sub-abas e grava no repositorio pelo mesmo
-       caminho que publica uma resposta. Nenhum texto muda: so a ordem. */
+       Arrastar pela alca e o gesto principal, porque e o que a pessoa espera
+       de "mudar a ordem". Os botoes ⌃ ⌄ ficam para o teclado, que precisa
+       alcancar tudo.
+
+       Antes cada linha tinha tres alvos de clique com tres significados
+       diferentes e as setas tinham 13px de altura. Agora: a alca arrasta, o
+       chevron abre as sub-abas, e o resto da linha nao faz nada. */
     if (state.ordenando) {
       dentro.append(el("p","nav-ordem-nota", TEXTOS.ordemNota));
 
-      const mover = (lista, i, d) => {
-        const j = i + d;
-        if (j < 0 || j >= lista.length) return;
-        const t = lista[i]; lista[i] = lista[j]; lista[j] = t;
+      const mover = (lista, de, para) => {
+        if (para < 0 || para >= lista.length || de === para) return;
+        const it = lista.splice(de, 1)[0];
+        lista.splice(para, 0, it);
+        state.ordemMexida = true;
         render();
       };
-      const setas = (lista, i) => {
-        const cx = el("div","nav-setas");
-        const cima = el("button","nav-seta-btn","⌃");
-        cima.type = "button"; cima.title = TEXTOS.ordemSubir; cima.disabled = i === 0;
-        cima.onclick = (e) => { e.stopPropagation(); mover(lista, i, -1); };
-        const baixo = el("button","nav-seta-btn","⌄");
-        baixo.type = "button"; baixo.title = TEXTOS.ordemDescer; baixo.disabled = i === lista.length - 1;
-        baixo.onclick = (e) => { e.stopPropagation(); mover(lista, i, 1); };
-        cx.append(cima, baixo);
-        return cx;
+
+      /* uma linha arrastavel, seja aba ou sub-aba */
+      const linhaOrd = (lista, i, dados, filho) => {
+        const linha = el("div","nav-ord" + (filho ? " filho" : ""));
+        linha.draggable = true;
+        linha.dataset.i = String(i);
+
+        const alca = svgIcone(ICONE_ALCA, "nav-alca");
+        alca.setAttribute("aria-hidden","true");
+        linha.append(alca);
+
+        const corpo = el("div","nav-ord-corpo");
+        if (!filho) corpo.append(icone(iconeDaAba(dados.aba), "nav-ico"));
+        corpo.append(el("span","nav-txt", filho ? dados.sub : dados.aba));
+        const conta = filho ? dados.itens.length : dados.subs.reduce((s,x)=>s+x.itens.length,0);
+        corpo.append(el("span","nav-conta", String(conta)));
+        linha.append(corpo);
+
+        const setas = el("div","nav-setas");
+        const seta = (dir, rot, desab) => {
+          const b = el("button","nav-seta-btn", dir < 0 ? "⌃" : "⌄");
+          b.type = "button"; b.title = rot; b.disabled = desab;
+          b.onclick = (e) => { e.stopPropagation(); mover(lista, i, i + dir); };
+          return b;
+        };
+        setas.append(seta(-1, TEXTOS.ordemSubir, i === 0), seta(1, TEXTOS.ordemDescer, i === lista.length - 1));
+        linha.append(setas);
+
+        if (!filho) {
+          const aberto = state.abaAberta === dados.id;
+          const chev = el("button","nav-chevron");
+          chev.type = "button";
+          chev.title = TEXTOS.ordemAbrirSubs;
+          chev.setAttribute("aria-expanded", String(aberto));
+          chev.append(svgIcone(ICONE_CHEVRON, "nav-ico sm"));
+          chev.onclick = (e) => { e.stopPropagation(); state.abaAberta = aberto ? null : dados.id; render(); };
+          linha.append(chev);
+        }
+
+        /* arrastar: so dentro da propria lista, para nao mover conteudo de
+           uma aba para outra sem querer */
+        linha.addEventListener("dragstart", (e) => {
+          state.arrastando = { lista: lista, de: i };
+          linha.classList.add("arrastada");
+          try { e.dataTransfer.effectAllowed = "move"; e.dataTransfer.setData("text/plain", String(i)); } catch (x) {}
+        });
+        linha.addEventListener("dragend", () => {
+          state.arrastando = null;
+          document.querySelectorAll(".nav-ord").forEach(n => n.classList.remove("arrastada","alvo-antes","alvo-depois"));
+        });
+        linha.addEventListener("dragover", (e) => {
+          const a = state.arrastando;
+          if (!a || a.lista !== lista) return;
+          e.preventDefault();
+          const b = linha.getBoundingClientRect();
+          const depois = (e.clientY - b.top) > b.height / 2;
+          linha.classList.toggle("alvo-antes", !depois);
+          linha.classList.toggle("alvo-depois", depois);
+        });
+        linha.addEventListener("dragleave", () => linha.classList.remove("alvo-antes","alvo-depois"));
+        linha.addEventListener("drop", (e) => {
+          const a = state.arrastando;
+          if (!a || a.lista !== lista) return;
+          e.preventDefault();
+          const b = linha.getBoundingClientRect();
+          const depois = (e.clientY - b.top) > b.height / 2;
+          let destino = i + (depois ? 1 : 0);
+          if (a.de < destino) destino--;
+          mover(lista, a.de, destino);
+        });
+
+        return linha;
       };
 
       state.arvoreOrdem.forEach((a, ia) => {
-        const aberto = state.abaAberta === a.id;
-        const linha = el("div","nav-ord-linha");
-        linha.append(setas(state.arvoreOrdem, ia));
-        const nome = el("button","nav-item nav-pai");
-        nome.type = "button";
-        nome.setAttribute("aria-expanded", String(aberto));
-        nome.append(el("span","nav-seta","▶"), el("span","nav-txt", a.aba),
-                    el("span","nav-conta", String(a.subs.reduce((s,x)=>s+x.itens.length,0))));
-        nome.onclick = () => { state.abaAberta = aberto ? null : a.id; render(); };
-        linha.append(nome);
-        dentro.append(linha);
-        if (!aberto) return;
-
+        dentro.append(linhaOrd(state.arvoreOrdem, ia, a, false));
+        if (state.abaAberta !== a.id) return;
         const filhos = el("div","nav-filhos");
-        a.subs.forEach((x, is) => {
-          const l2 = el("div","nav-ord-linha");
-          l2.append(setas(a.subs, is));
-          const n2 = el("span","nav-item nav-ord-nome");
-          n2.append(el("span","nav-txt", x.sub), el("span","nav-conta", String(x.itens.length)));
-          l2.append(n2);
-          filhos.append(l2);
-        });
+        a.subs.forEach((x, is) => filhos.append(linhaOrd(a.subs, is, x, true)));
         dentro.append(filhos);
       });
 
-      const salvar = el("button","btn sm cheio", TEXTOS.ordemSalvar);
-      salvar.type = "button";
+      /* barra de acoes, grudada no pe: antes o botao de salvar ficava no fim
+         de uma lista de 40 linhas e ninguem achava */
+      const pe = el("div","nav-ordem-pe");
+      const quantas = contarMudancasDeOrdem();
+      pe.append(el("span","nav-ordem-conta", quantas ? fmt(TEXTOS.ordemPendentes, { n: quantas }) : TEXTOS.ordemSemMudanca));
       const aviso = el("p","nav-ordem-estado");
+      const linhaBt = el("div","nav-ordem-btns");
+      const salvar = el("button","btn sm", TEXTOS.ordemSalvar);
+      salvar.type = "button";
+      salvar.disabled = !quantas;
       salvar.onclick = () => salvarOrdem(salvar, aviso);
-      const cxs = el("div","side-acoes");
-      cxs.append(salvar, aviso);
-      dentro.append(cxs);
+      const desfazer = el("button","btn ghost sm", TEXTOS.ordemDesfazer);
+      desfazer.type = "button";
+      desfazer.disabled = !quantas;
+      desfazer.onclick = () => { state.arvoreOrdem = arvoreOficial(); state.ordemMexida = false; render(); };
+      linhaBt.append(salvar, desfazer);
+      pe.append(linhaBt, aviso);
+      dentro.append(pe);
 
       host.append(dentro);
       return;
     }
 
     /* ═══════════ navegacao normal ═══════════
-       Tres niveis: aba › sub-aba › resposta. A resposta agora mora na arvore,
-       porque a coluna de lista saiu — e assim sao dois cliques ate abrir uma
-       resposta, contra os tres de antes. */
+       Tres niveis: aba › sub-aba › resposta. A resposta mora na arvore porque
+       a coluna de lista saiu — sao dois cliques ate abrir uma resposta. */
 
-    /* a biblioteca inteira e o padrao: entrar aqui nunca da tela vazia */
-    const todasAbertas = state.abaAberta === null;
-    const todas = el("button","nav-item" + (todasAbertas ? " on" : ""));
+    const todas = el("button","nav-item" + (state.abaAberta === null ? " on" : ""));
     todas.type = "button";
-    todas.append(el("span","nav-txt", TEXTOS.respTodas), el("span","nav-conta", String(planos.length)));
+    todas.append(icone("todas","nav-ico"), el("span","nav-txt", TEXTOS.respTodas), el("span","nav-conta", String(planos.length)));
     todas.onclick = () => { state.abaAberta = null; limparEscopo(); render(); };
     dentro.append(todas);
 
@@ -1969,7 +2196,10 @@ function renderSidebar() {
       pai.type = "button";
       pai.setAttribute("aria-expanded", String(aberto));
       pai.title = fmt(TEXTOS.respAbaTudo, { aba: a.aba });
-      pai.append(el("span","nav-seta","▶"), el("span","nav-txt", a.aba), el("span","nav-conta", String(total)));
+      pai.append(icone(iconeDaAba(a.aba), "nav-ico"),
+                 el("span","nav-txt", a.aba),
+                 el("span","nav-conta", String(total)),
+                 svgIcone(ICONE_CHEVRON, "nav-ico sm nav-chev"));
       pai.onclick = () => { state.abaAberta = aberto ? null : a.id; render(); };
       dentro.append(pai);
       if (!aberto) return;
@@ -1979,7 +2209,7 @@ function renderSidebar() {
       const filhos = el("div","nav-filhos");
 
       subs.forEach(x => {
-        /* a sub-aba virou rotulo: quem se clica agora e a resposta */
+        /* a sub-aba e rotulo: quem se clica e a resposta */
         const rot = el("div","nav-sub");
         rot.append(el("span","nav-txt", x.sub));
         if (x.itens.length) rot.append(el("span","nav-conta", String(x.itens.length)));
@@ -2022,6 +2252,7 @@ function renderSidebar() {
       dentro.append(menos);
     }
   }
+
 
   host.append(dentro);
 }
@@ -2853,13 +3084,32 @@ function abrirEditorEtapa(indice) {
 function entrarOrdenacao() {
   state.ordenando = true;
   state.arvoreOrdem = arvoreOficial();
+  state.ordemMexida = false;
+  state.arrastando = null;
   state.abaAberta = null;
   render();
+}
+
+/* Quantas posicoes mudaram em relacao ao que esta publicado. Serve para o
+   contador do pe e para desligar o botao de salvar quando nada mudou —
+   antes dava para publicar um commit que nao mudava nada. */
+function contarMudancasDeOrdem() {
+  if (!state.arvoreOrdem) return 0;
+  const antes = arvoreOficial();
+  let n = 0;
+  state.arvoreOrdem.forEach((a, i) => {
+    if (!antes[i] || antes[i].id !== a.id) n++;
+    const orig = antes.find(x => x.id === a.id);
+    if (orig) a.subs.forEach((sb, j) => { if (!orig.subs[j] || orig.subs[j].id !== sb.id) n++; });
+  });
+  return n;
 }
 
 function sairOrdenacao() {
   state.ordenando = false;
   state.arvoreOrdem = null;
+  state.ordemMexida = false;
+  state.arrastando = null;
   render();
 }
 
