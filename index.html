@@ -1186,6 +1186,22 @@
   /* O texto da resposta e o motivo de a tela existir: ele fica em --ink, nao
      em --ink-2, e a medida cai para 66ch. Linha longa demais faz o olho perder
      a volta, e este texto e lido inteiro antes de ser colado. */
+  /* O texto e o print dividem a faixa do meio. Em tela larga o print vai ao
+     lado, nos ~425px que sobravam vazios a direita — e a resposta passa a
+     mostrar de que tela da plataforma ela fala sem pedir nada.
+     O limite de 1180px tem que casar com LARG_PRINT_AO_LADO no JS. */
+  .rleitura-meio { display: flex; flex-direction: column; }
+  @media (min-width: 1180px) {
+    .rleitura-meio.com-print {
+      display: grid; grid-template-columns: minmax(0,1fr) minmax(300px, 400px);
+      align-items: start;
+    }
+    .rleitura-meio.com-print .rcard-print {
+      padding: var(--s5) var(--s5) var(--s5) 0;
+      border-left: 1px solid var(--line); padding-left: var(--s5);
+    }
+  }
+
   .rleitura-corpo {
     padding: var(--s5); display: flex; flex-direction: column; gap: var(--s4);
   }
@@ -1226,13 +1242,17 @@
   }
 
   .rcard-print {
-    padding: 0 var(--s5) var(--s4); display: flex; flex-direction: column;
-    gap: var(--s3); align-items: flex-start; flex: 0 0 auto;
+    padding: 0 var(--s5) var(--s5); display: flex; flex-direction: column;
+    gap: var(--s3); align-items: flex-start; min-width: 0;
   }
   .rcard-img { margin: 0; display: flex; flex-direction: column; gap: 5px; min-width: 0; }
   .rcard-img img {
     max-width: 100%; max-height: 300px; width: auto; cursor: zoom-in;
     border: 1px solid var(--line); border-radius: var(--r-2); background: var(--surface-2);
+  }
+  /* ao lado do texto a imagem pode ser mais alta: a coluna e so dela */
+  @media (min-width: 1180px) {
+    .rleitura-meio.com-print .rcard-img img { max-height: 420px; }
   }
   .rcard-img figcaption { font-size: var(--t-tag); color: var(--ink-3); font-family: var(--font-mono); letter-spacing: .06em; }
 
@@ -1655,6 +1675,12 @@ const cat = id => CATEGORIAS.find(c => c.id === id);
 const mod = id => MODULOS.find(m => m.id === id);
 const portoesOk = () => state.feito.ia && state.feito.problema && state.feito.ticket;
 const hhmm = d => String(d.getHours()).padStart(2,"0") + ":" + String(d.getMinutes()).padStart(2,"0");
+
+/* Tem espaco para o print ficar ao lado do texto? O mesmo limite esta no CSS,
+   em .rleitura-meio.com-print — os dois precisam concordar, senao o print
+   abriria por padrao numa coluna onde ele nao cabe ao lado. */
+const LARG_PRINT_AO_LADO = 1180;
+const telaLarga = () => window.innerWidth >= LARG_PRINT_AO_LADO;
 
 /* ---------- gaveta da documentação ----------
    Abre a documentação por cima do playbook, preservando o estado do
@@ -4082,19 +4108,27 @@ function colunaLeitura(x, termo) {
   topo.append(acoes);
   cx.append(topo);
 
-  cx.append(montarCorpo(it.resposta, termo));
+  /* O texto e o print dividem a faixa do meio: em tela larga o print vai ao
+     LADO do texto, ocupando os ~425px que sobravam vazios a direita.
 
-  /* o print continua atras de um botao: nao ocupa a tela sem pedir */
+     E em tela larga ele ja vem aberto, porque a tela ajuda a identificar de
+     que parte da plataforma a resposta fala — e nao custa nada, ja que ocupa
+     espaco que estava sobrando. Em tela estreita ele volta a ficar atras do
+     botao e embaixo do texto, que e o comportamento "print sob demanda":
+     ali o espaco e disputado e a imagem empurraria o texto para fora. */
+  const meio = el("div","rleitura-meio" + (it.imagem ? " com-print" : ""));
+  meio.append(montarCorpo(it.resposta, termo));
+
   if (it.imagem) {
     const cxImg = el("div","rcard-print");
-    const aberto = !!state.printsAbertos[x.chave];
+    /* tres estados: o usuario abriu, o usuario fechou, ou ninguem tocou —
+       e nesse ultimo caso quem decide e a largura da tela */
+    const escolha = state.printsAbertos[x.chave];
+    const aberto = escolha === undefined ? telaLarga() : !!escolha;
     const btn = el("button","btn ghost sm", aberto ? TEXTOS.respImgOcultar : TEXTOS.respImgMostrar);
     btn.type = "button";
     btn.setAttribute("aria-expanded", String(aberto));
-    btn.onclick = () => {
-      if (aberto) delete state.printsAbertos[x.chave]; else state.printsAbertos[x.chave] = true;
-      render();
-    };
+    btn.onclick = () => { state.printsAbertos[x.chave] = !aberto; render(); };
     cxImg.append(btn);
     if (aberto) {
       const fig = el("figure","rcard-img");
@@ -4114,8 +4148,9 @@ function colunaLeitura(x, termo) {
       fig.append(img, el("figcaption","", TEXTOS.respImgLegenda));
       cxImg.append(fig);
     }
-    cx.append(cxImg);
+    meio.append(cxImg);
   }
+  cx.append(meio);
 
   /* O pe de palavras-chave saiu: eram ate 17 chips embaixo de cada resposta,
      e eles disputavam atencao com o texto que o atendente veio ler e colar.
@@ -4308,6 +4343,14 @@ function iniciar() {
   state.recentes = leGuardado(CH_REC);
 
 window.addEventListener("resize", medirTopo);
+
+/* O print muda de lugar e de estado padrao ao cruzar o limite de largura.
+   Sem isto o rotulo do botao ficaria mentindo depois de redimensionar. */
+let eraLarga = telaLarga();
+window.addEventListener("resize", () => {
+  const agora = telaLarga();
+  if (agora !== eraLarga) { eraLarga = agora; render(); }
+});
 window.addEventListener("load", medirTopo);
 observarTopo();
 
