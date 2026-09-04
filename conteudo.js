@@ -672,6 +672,80 @@ const SEV_POR_CATEGORIA = {
 };
 
 
+/* [9.5] ═══════════════════════════════════════════════════════════════════════
+   SINÔNIMOS DA BUSCA — o vocabulário do cliente x o vocabulário da resposta
+
+   O cliente escreve "Conseguem remover esse usuário?" e a resposta certa fala
+   em "excluir membros". Não há uma palavra em comum, então a busca por palavra
+   não acha — e era exatamente isso que estava falhando.
+
+   Cada linha é um grupo de palavras que valem a mesma coisa nesta operação.
+   Buscar por qualquer uma delas encontra as outras, nos dois sentidos.
+
+   COMO CRESCER ESTA LISTA — é o jeito mais barato de melhorar a busca:
+   quando uma pergunta real do cliente não achar a resposta certa, veja qual
+   palavra ele usou e qual a resposta usa, e coloque as duas no mesmo grupo.
+
+   Escreva tudo em minúsculas e SEM ACENTO. O motor já tira o acento do que
+   for digitado antes de comparar.
+   ═════════════════════════════════════════════════════════════════════════ */
+
+const SINONIMOS = [
+  /* ações */
+  ["remover", "excluir", "apagar", "deletar", "tirar", "retirar", "descadastrar"],
+  ["adicionar", "incluir", "cadastrar", "criar", "inserir", "colocar", "convidar", "novo", "nova"],
+  ["alterar", "mudar", "editar", "trocar", "ajustar", "modificar", "atualizar", "corrigir"],
+  ["ver", "visualizar", "consultar", "acompanhar", "conferir", "checar", "olhar", "encontrar", "achar"],
+  ["configurar", "configuracao", "definir", "parametrizar", "habilitar", "ativar", "ligar"],
+  ["desativar", "desabilitar", "desligar", "pausar", "suspender", "interromper", "parar"],
+  ["bloquear", "travar", "fechar", "indisponibilizar", "impedir"],
+  ["enviar", "mandar", "disparar", "disparo", "envio"],
+  ["conectar", "conexao", "integrar", "integracao", "vincular", "sincronizar", "parear"],
+
+  /* quem */
+  ["usuario", "membro", "pessoa", "colaborador", "funcionario", "equipe", "time", "atendente", "operador", "conta"],
+  ["cliente", "consumidor", "comensal", "hospede", "convidado"],
+  ["permissao", "acesso", "funcao", "cargo", "perfil", "administrador", "admin", "gestor"],
+
+  /* o que */
+  ["reserva", "reservas", "agendamento", "agenda", "booking"],
+  ["mesa", "area", "ambiente", "setor", "salao", "espaco"],
+  ["fila", "espera", "waitlist"],
+  ["cardapio", "menu", "produto", "prato", "item"],
+  ["delivery", "entrega", "tele-entrega"],
+  ["cupom", "desconto", "promocao", "voucher"],
+  ["etiqueta", "tag", "marcador", "rotulo"],
+  ["link", "url", "endereco", "site"],
+  ["loja", "estabelecimento", "restaurante", "unidade", "negocio"],
+  ["imagem", "foto", "print", "captura", "banner", "logo"],
+  ["informacao", "info", "dado", "conteudo", "texto"],
+  ["relatorio", "dados", "metrica", "numero", "estatistica", "resultado"],
+
+  /* IA e canais */
+  ["ia", "inteligencia", "robo", "bot", "assistente", "automacao"],
+  ["whatsapp", "wpp", "zap", "zapzap", "numero", "instancia"],
+  ["instagram", "insta", "direct", "rede", "social"],
+  ["conversa", "atendimento", "chat", "ticket", "dialogo", "mensagem"],
+  ["quebra-gelo", "quebragelo", "saudacao", "boas-vindas", "abertura"],
+
+  /* satisfação */
+  ["avaliacao", "satisfacao", "nps", "feedback", "pesquisa", "nota", "opiniao"],
+
+  /* dinheiro */
+  ["pagamento", "pagar", "cobranca", "taxa", "valor", "preco", "repasse", "financeiro"],
+
+  /* tempo */
+  ["horario", "hora", "tempo", "periodo", "antecedencia", "prazo", "limite", "duracao"],
+
+  /* problemas */
+  ["erro", "problema", "falha", "bug", "defeito", "nao funciona", "quebrado"],
+  ["duvida", "pergunta", "questao", "ajuda", "suporte"],
+
+  /* follow-up */
+  ["followup", "follow-up", "retorno", "acompanhamento", "resposta"]
+];
+
+
 /* [9] ═══════════════════════════════════════════════════════════════════════
    FOLLOW-UP — etapa 6
 
@@ -773,6 +847,31 @@ const TEXTOS = {
   respCopiarRapido: "Copiar sem abrir",
   respMostrarVazias: "⋯ mostrar sub-abas vazias",
   respOcultarVazias: "⋯ ocultar sub-abas vazias",
+  respAbaTudo: "Ver todas as respostas de {aba}",
+
+  /* --- busca por relevância ---
+     Cole a pergunta inteira do cliente: em vez de exigir que todas as palavras
+     apareçam, a busca pontua cada resposta e mostra as mais relevantes em
+     primeiro. Os resultados aparecem numa lista embaixo do campo. */
+  buscaColePergunta: "Cole aqui a pergunta do cliente, ou digite uma palavra",
+  buscaResultados: "{n} resposta(s) relevante(s)",
+  buscaSemRelevante: "Nada relevante para essa pergunta. Tente outras palavras ou pergunte para a IA da documentação.",
+  buscaRelevancia: "relevância",
+  buscaFechar: "Fechar os resultados",
+
+  /* --- reordenar abas e sub-abas ---
+     Muda a ordem em que elas aparecem, para todo o time. Grava no repositório
+     pelo mesmo caminho que publica uma resposta. */
+  ordemModo: "⇅ Reordenar",
+  ordemSair: "Concluir ordenação",
+  ordemSubir: "Mover para cima",
+  ordemDescer: "Mover para baixo",
+  ordemNota: "Arraste com os botões ⌃ ⌄ e depois salve. A nova ordem vale para o time inteiro.",
+  ordemSalvar: "Salvar nova ordem",
+  ordemPublicando: "Salvando a nova ordem...",
+  ordemPublicado: "Ordem salva. O site atualiza em cerca de 40 segundos. Recarregando...",
+  ordemSemToken: "Configure a publicação para poder mudar a ordem para o time.",
+  ordemSemMudanca: "A ordem não mudou.",
   respTagsLimpar: "limpar filtros",
   respTagFiltrar: "Filtrar a lista por “{t}”",
   respTagsMais: "+{n} mais",
@@ -783,6 +882,7 @@ const TEXTOS = {
   respEscopoTag: "filtrado por palavra-chave",
   respNada: "Nenhuma resposta com esses filtros. Tente outra palavra, limpe os filtros, ou pergunte para a IA da documentação.",
   respAtalhos: "↑ ↓ navega · Enter abre · Ctrl+Enter copia",
+
 
   /* --- respostas rápidas: o painel de leitura à direita --- */
   respEscolha: "Escolha uma resposta na lista ao lado para ler aqui.",
@@ -797,6 +897,7 @@ const TEXTOS = {
   respImgLegenda: "Clique na imagem para ver em tela cheia",
   respImgMostrar: "🖼 Ver print da tela",
   respImgOcultar: "Ocultar print",
+  respImgFalta: "O print desta resposta não está no repositório: {nome}. O texto continua pronto para copiar.",
 
   /* --- criar resposta pela própria tela ---
      O site é estático: o que se cria aqui fica só neste navegador. O botão
@@ -904,6 +1005,7 @@ const TEXTOS = {
   /* --- etapas 1 a 3 --- */
   etapaConcluida: "concluído",
   etapaNaoFaca: "Não faça",
+  etapaFaca: "Faça assim",
 
   /* --- etapas ainda não liberadas ---
      Não existe atalho: o atendente passa por todas as etapas, em ordem. */
@@ -955,6 +1057,19 @@ const TEXTOS = {
   fupMandeAssim: "Mande assim",
   fupEnviarAs: "enviar às",
   fupAPartirDas: "a partir das",
+
+  /* --- régua de avaliação: rótulos de tela ---
+     A régua virou acordeão com trilha 0–5 horizontal: um critério aberto por
+     vez, um nível por vez. Só apresentação — os textos dos níveis, os pesos e
+     a explicação do cálculo continuam vindo de AVALIACAO, em [11]. */
+  avalNivel: "Nível",
+  avalNotaRotulo: "Nota",
+  avalExtremoBaixo: "não atendeu",
+  avalExtremoAlto: "referência",
+  avalProximo: "O que falta para o nível {n}",
+  avalTopo: "Este é o nível de referência do critério.",
+  avalAbrir: "Abrir este critério",
+  avalFechar: "Fechar este critério",
 
   /* --- rodapé --- */
   rodapeBotao: "Reiniciar atendimento",
