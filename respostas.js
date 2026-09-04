@@ -540,5 +540,39 @@ const RESPOSTAS = [
         ]
       }
     ]
+  },
+  {
+    id: "historico-de-acoes",
+    aba: "Histórico de Ações",
+    subs: [
+      {
+        id: "historico-de-acoes-historico-de-acoes",
+        sub: "Histórico de Ações",
+        itens: [
+          {
+            titulo: "Histórico de Ações",
+            tags: [],
+            imagem: "img/captura-de-tela-2026-09-04-002434.png",
+            resposta: [
+              "O “Histórico de Ações” permite acompanhar as principais movimentações realizadas dentro da plataforma, mostrando o que foi alterado, quem realizou a ação e quando ela aconteceu. É uma ferramenta útil para entender o que aconteceu em determinada situação e identificar a origem de uma alteração.",
+              "Para acessar, basta ir em “Histórico de Ações”.",
+              "Dentro dessa aba, você consegue visualizar ações como:",
+              "* Alterações no status de reservas;",
+              "* Criação e cancelamento de reservas;",
+              "* Alterações nos dados dos clientes;",
+              "* Alterações em filas e configurações;",
+              "* Criação ou alteração de grupos;",
+              "* Inclusão de membros e permissões;",
+              "* Registros de visitas e outras ações realizadas na plataforma.",
+              "Também é possível utilizar filtros para encontrar uma ação específica com mais facilidade:",
+              "* Período, definindo data e horário inicial e final;",
+              "* Quem realizou a ação;",
+              "* Domínios e ações, permitindo adicionar filtros específicos relacionados aos registros.",
+              "Depois de configurar os filtros desejados, basta clicar em “Aplicar” para visualizar somente os registros correspondentes."
+            ]
+          }
+        ]
+      }
+    ]
   }
 ];
