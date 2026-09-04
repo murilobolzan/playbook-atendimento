@@ -51,87 +51,228 @@ const D = "https://dionisio.gitbook.io/documentacao-dionisio";
 
 
 /* [2] ═══════════════════════════════════════════════════════════════════════
-   NOMES DAS 5 ETAPAS
+   OS DOIS MODOS DE ATENDIMENTO, E AS ETAPAS DE CADA UM
 
-   São os rótulos das abas. Mudar o nome não muda a ordem nem o
-   comportamento, mas a quantidade de itens define quantas abas existem.
-   Hoje o motor sabe montar cinco: três de checklist, o guia e o follow-up.
-   ═════════════════════════════════════════════════════════════════════════ */
+   O guia tem dois fluxos, escolhidos pela sub-aba no alto:
 
-const ETAPAS = [
-  "Ler a conversa do Cliente",
-  "Entender o problema",
-  "Criar o ticket",
-  "Guia de Atendimento",
-  "Follow-up e encerrar"
-];
+     internal  — o ticket chegou pela IA de CS, na Internal
+     whatsapp  — a gente responde direto pelo WhatsApp
 
+   Cada modo tem a SUA lista de etapas, com a sua quantidade e os seus nomes.
+   Mudar um não mexe no outro.
 
-/* [3] ═══════════════════════════════════════════════════════════════════════
-   ETAPAS 1, 2 E 3 — as travadas em sequência
+   ─────────────────────────────────────────────────────────────────────────
+   O QUE É UMA ETAPA
+   ─────────────────────────────────────────────────────────────────────────
 
-   São os três cards que abrem a tela. Cada um só libera o próximo depois
-   do botão. A etapa 3 traz também a escolha da natureza e do módulo, que
-   é o que abre o guia de atendimento. Em cada bloco:
+     id      = identificador curto e único DENTRO do modo. Não mude depois de
+               criado: é ele que guarda o "já concluí esta etapa".
+     titulo  = o nome que aparece no card e na barra da esquerda
+     tipo    = o formato da etapa. São seis:
 
-     titulo  = nome do card
-     lead    = frase de abertura, em cinza
-     itens   = a checklist
-     nunca   = a caixa vermelha "Não faça"
+       "par"     Faça assim / Não faça, em duas colunas.
+                 Usa: lead, itens[], nunca[], cta, why
+       "passos"  Passo a passo numerado, com uma dica no fim.
+                 Usa: lead, itens[], dica, cta, why
+       "ticket"  O seletor de natureza + módulo, que classifica o ticket.
+                 Não tem texto próprio: sai de [6] e [7].
+       "guia"    O material do módulo escolhido: casos conhecidos e docs.
+                 Não tem texto próprio: sai de [7].
+       "doc"     A caixa de perguntar para a IA da documentação.
+                 Não tem texto próprio: sai de [10].
+       "fup"     O follow-up cronometrado.
+                 Não tem texto próprio: sai de [9].
+
+     lead    = frase de abertura, em cinza. Aceita <strong>negrito</strong>
+     itens   = a checklist (no "par") ou os passos numerados (no "passos")
+     nunca   = a caixa vermelha "Não faça". Só no tipo "par"
+     dica    = a linha de dica no fim. Só no tipo "passos"
      cta     = texto do botão que conclui a etapa
      why     = frase pequena ao lado do botão
+
+   Toda etapa é um portão: a seguinte só abre depois do botão. A etapa de
+   tipo "ticket" só libera depois de natureza E módulo escolhidos.
+
+   ─────────────────────────────────────────────────────────────────────────
+   NÃO PRECISA EDITAR ISTO À MÃO
+   ─────────────────────────────────────────────────────────────────────────
+
+   Quem tem token de publicação mexe em tudo isto pela própria tela, no lápis
+   de cada etapa: criar, editar, apagar, reordenar e trocar o tipo. O bloco
+   abaixo é reescrito pela interface, igual ao respostas.js.
    ═════════════════════════════════════════════════════════════════════════ */
 
-const PORTOES = [
+const MODOS = [
   {
-    id: "ia",
-    titulo: "Ler a conversa do Cliente",
-    lead: "A IA atendeu primeiro. Você está entrando no meio de uma conversa — leia antes de escrever qualquer coisa.",
-    itens: [
-      "Identifique <strong>qual loja</strong> e <strong>qual usuário</strong> está falando.",
-      "Leia do <strong>início</strong>, não só a última mensagem. Leia também o resumo criado pela IA.",
-      "Anote <strong>o que a IA já respondeu/alterou</strong>.",
-      "Verifique os dados que o <strong>cliente</strong> forneceu e entenda o que ele quer aplicar na plataforma.",
-    ],
-    nunca: [
-      "Abrir a conversa e ler somente a última mensagem e responder no escuro.",
-      "Prestar atenção para não pedir alguma informação que o cliente já deu para a IA, pois pode ser a principal causa de irritação em atendimento na IA.",
-      "Assumir que o assunto é o rótulo que a IA deu.",
-    ],
-    cta: "Li a conversa inteira",
-    why: "Caso não tenha entendido o que o cliente falou, pergunte de forma respeitosa tentando entender a fundo o contexto."
+    id: "internal",
+    rot: "IA CS na Internal",
+    dica: "O ticket chegou pela IA de CS. Você entra no meio de uma conversa que já começou.",
+    etapas: [
+      {
+        id: "ia",
+        titulo: "Ler a conversa do Cliente",
+        tipo: "par",
+        lead: "A IA atendeu primeiro. Você está entrando no meio de uma conversa — leia antes de escrever qualquer coisa.",
+        itens: [
+          "Identifique <strong>qual loja</strong> e <strong>qual usuário</strong> está falando.",
+          "Leia do <strong>início</strong>, não só a última mensagem. Leia também o resumo criado pela IA.",
+          "Anote <strong>o que a IA já respondeu/alterou</strong>.",
+          "Verifique os dados que o <strong>cliente</strong> forneceu e entenda o que ele quer aplicar na plataforma."
+        ],
+        nunca: [
+          "Abrir a conversa e ler somente a última mensagem e responder no escuro.",
+          "Prestar atenção para não pedir alguma informação que o cliente já deu para a IA, pois pode ser a principal causa de irritação em atendimento na IA.",
+          "Assumir que o assunto é o rótulo que a IA deu."
+        ],
+        dica: "",
+        cta: "Li a conversa inteira",
+        why: "Caso não tenha entendido o que o cliente falou, pergunte de forma respeitosa tentando entender a fundo o contexto."
+      },
+      {
+        id: "problema",
+        titulo: "Entender o problema do cliente",
+        tipo: "par",
+        lead: "O cliente descreve uma solução. Você precisa achar a solução para o problema",
+        itens: [
+          "Separe <strong>a solução que ele apresentou</strong> do <strong>problema</strong>",
+          "Caso não tenha 100% de certeza da solução, confirme o ajuste em <strong>uma frase</strong> e espere o cliente confirmar antes de agir",
+          "A entrega é sempre dupla: <strong>resolver</strong> e <strong>mostrar ao cliente como se faz</strong> — o caminho na plataforma faz parte da resposta."
+        ],
+        nunca: [
+          "Começar a resolver antes de entender 100% a dor do cliente"
+        ],
+        dica: "",
+        cta: "Entendi e confirmei com o cliente",
+        why: "Entendimento equivocado do problema do cliente = solução errada = cliente insatisfeito"
+      },
+      {
+        id: "ticket",
+        titulo: "Criar o ticket",
+        tipo: "ticket",
+        lead: "O ticket vem antes da solução, não depois. Ticket criado no fim vira medição perdida.",
+        itens: [
+          "<strong>Título</strong>: Descrição breve do que é o ticket",
+          "Marque <strong>categoria e módulo iniciais</strong>: marque o motivo e a subcategoria correspondente ao ticket criado"
+        ],
+        nunca: [
+          "Resolver primeiro e criar o ticket depois",
+          "Deixar o título como &ldquo;dúvida do cliente&rdquo; ou &ldquo;erro&rdquo;: deixe o título mais explicativo possível."
+        ],
+        dica: "",
+        cta: "Ticket criado",
+        why: "Só após a criação do ticket você pode solucionar o problema."
+      },
+      {
+        id: "guia",
+        titulo: "Guia de Atendimento",
+        tipo: "guia",
+        lead: "",
+        itens: [],
+        nunca: [],
+        dica: "",
+        cta: "",
+        why: ""
+      },
+      {
+        id: "fup",
+        titulo: "Follow-up e encerrar",
+        tipo: "fup",
+        lead: "",
+        itens: [],
+        nunca: [],
+        dica: "",
+        cta: "",
+        why: ""
+      }
+    ]
   },
   {
-    id: "problema",
-    titulo: "Entender o problema do cliente",
-    lead: "O cliente descreve uma solução. Você precisa achar a solução para o problema",
-    itens: [
-      "Separe <strong>a solução que ele apresentou</strong> do <strong>problema</strong>",
-      "Caso não tenha 100% de certeza da solução, confirme o ajuste em <strong>uma frase</strong> e espere o cliente confirmar antes de agir",
-      "A entrega é sempre dupla: <strong>resolver</strong> e <strong>mostrar ao cliente como se faz</strong> — o caminho na plataforma faz parte da resposta.",
-    ],
-    nunca: [
-      "Começar a resolver antes de entender 100% a dor do cliente",
-    ],
-    cta: "Entendi e confirmei com o cliente",
-    why: "Entendimento equivocado do problema do cliente = solução errada = cliente insatisfeito"
-  },
-  {
-    id: "ticket",
-    titulo: "Criar o ticket",
-    lead: "O ticket vem antes da solução, não depois. Ticket criado no fim vira medição perdida.",
-    itens: [
-      "<strong>Título</strong>: Descrição breve do que é o ticket",
-      "Marque <strong>categoria e módulo iniciais</strong>: marque o motivo e a subcategoria correspondente ao ticket criado",
-    ],
-    nunca: [
-      "Resolver primeiro e criar o ticket depois",
-      "Deixar o título como &ldquo;dúvida do cliente&rdquo; ou &ldquo;erro&rdquo;: deixe o título mais explicativo possível."
-    ],
-    cta: "Ticket criado",
-    why: "Só após a criação do ticket você pode solucionar o problema."
+    id: "whatsapp",
+    rot: "WhatsApp",
+    dica: "A gente responde direto pelo WhatsApp, sem passar pela Internal.",
+
+    /* ─────────────────────────────────────────────────────────────────────
+       RASCUNHO — este fluxo não existia em lugar nenhum, então foi montado
+       como ponto de partida, não como processo aprovado. Edite cada etapa
+       pelo lápis: dá para trocar o texto, mudar o tipo, apagar e criar.
+       ───────────────────────────────────────────────────────────────────── */
+    etapas: [
+      {
+        id: "ler",
+        titulo: "Ler a conversa no WhatsApp",
+        tipo: "par",
+        lead: "<strong>Rascunho a revisar.</strong> Aqui você é o primeiro a falar com o cliente — não há resumo de IA para se apoiar.",
+        itens: [
+          "Identifique <strong>qual loja</strong> e <strong>quem</strong> está falando.",
+          "Leia a conversa do <strong>início</strong>, inclusive o que ficou de atendimentos anteriores.",
+          "Veja se já existe conversa aberta sobre o mesmo assunto."
+        ],
+        nunca: [
+          "Responder só a última mensagem sem ler o histórico.",
+          "Pedir uma informação que o cliente já mandou."
+        ],
+        dica: "",
+        cta: "Li a conversa inteira",
+        why: "No WhatsApp o cliente costuma mandar o contexto em várias mensagens curtas."
+      },
+      {
+        id: "duvida",
+        titulo: "Entender a dúvida",
+        tipo: "par",
+        lead: "<strong>Rascunho a revisar.</strong> Separe o que o cliente pediu do que ele precisa.",
+        itens: [
+          "Confirme a dúvida em <strong>uma frase</strong> antes de agir.",
+          "Descubra <strong>em que tela da plataforma</strong> a dúvida acontece."
+        ],
+        nunca: [
+          "Começar a explicar antes de ter certeza do que ele quer."
+        ],
+        dica: "",
+        cta: "Entendi e confirmei com o cliente",
+        why: "Entender errado no WhatsApp custa mais: a conversa vira uma sequência de mal-entendidos."
+      },
+      {
+        id: "consultar",
+        titulo: "Consultar a documentação",
+        tipo: "doc",
+        lead: "",
+        itens: [],
+        nunca: [],
+        dica: "",
+        cta: "",
+        why: ""
+      },
+      {
+        id: "responder",
+        titulo: "Responder e confirmar",
+        tipo: "passos",
+        lead: "<strong>Rascunho a revisar.</strong> A entrega é dupla: resolver e mostrar o caminho.",
+        itens: [
+          "Use a resposta pronta das <strong>Respostas rápidas</strong> quando existir — ela já está no padrão.",
+          "Mande <strong>o caminho na plataforma</strong>, mesmo que você já tenha resolvido.",
+          "Pergunte se ficou claro e <strong>espere a confirmação</strong> antes de encerrar."
+        ],
+        nunca: [],
+        dica: "Se a dúvida se repetir com outros clientes, vale criar uma resposta rápida para ela.",
+        cta: "Cliente confirmou",
+        why: "Resolvido não é o mesmo que confirmado."
+      },
+      {
+        id: "fup",
+        titulo: "Follow-up e encerrar",
+        tipo: "fup",
+        lead: "",
+        itens: [],
+        nunca: [],
+        dica: "",
+        cta: "",
+        why: ""
+      }
+    ]
   }
 ];
+
+
 
 
 /* [4] ═══════════════════════════════════════════════════════════════════════
@@ -1035,6 +1176,28 @@ const TEXTOS = {
   guiaSemMudanca: "Nada mudou nesta etapa.",
   guiaErroSintaxe: "Eu montei o arquivo e ele não ficou válido, então NÃO publiquei. Nada foi alterado. Provável causa: uma tag <strong> aberta e não fechada em algum campo.",
   guiaSemToken: "Configure a publicação para poder editar o passo a passo.",
+
+  /* --- os dois modos de atendimento --- */
+  modoRotulo: "Modo de atendimento",
+  modoTrocar: "Trocar para {rot}",
+  guiaEtapaNova: "＋ Nova etapa",
+  guiaEtapaApagar: "Apagar esta etapa",
+  guiaEtapaApagarConfirma: "Apagar a etapa “{t}”? Isso muda o passo a passo para o time inteiro.",
+  guiaEtapaSubir: "Mover esta etapa para antes",
+  guiaEtapaDescer: "Mover esta etapa para depois",
+  guiaCampoTipo: "Formato da etapa",
+  guiaTipoPar: "Faça assim / Não faça",
+  guiaTipoPassos: "Passo a passo com dica",
+  guiaTipoTicket: "Classificar o ticket (natureza e módulo)",
+  guiaTipoGuia: "Guia do módulo (casos e documentação)",
+  guiaTipoDoc: "Consultar a documentação",
+  guiaTipoFup: "Follow-up cronometrado",
+  guiaCampoTipoDica: "Os quatro últimos formatos não têm texto próprio: o conteúdo vem de outras seções do conteudo.js.",
+  guiaCampoPassos: "Passo a passo",
+  guiaCampoPassosDica: "Um passo por linha, numerados automaticamente. Aceita <strong>negrito</strong>.",
+  guiaCampoDica: "Dica no fim da etapa",
+  guiaEtapaSemTexto: "Este formato monta o conteúdo sozinho. Só o título e o nome do botão são editáveis.",
+  guiaUltimaEtapa: "Não dá para apagar a única etapa do modo.",
 
   /* --- etapas ainda não liberadas ---
      Não existe atalho: o atendente passa por todas as etapas, em ordem. */

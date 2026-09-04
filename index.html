@@ -727,6 +727,66 @@
   .advance .btn { white-space: normal; text-align: center; }
   .why { font-size: var(--t-meta); color: var(--ink-3); line-height: var(--lh-ui); flex: 1 1 min(240px, 100%); }
 
+  /* ═══════════════ SUB-ABA DOS DOIS MODOS DE ATENDIMENTO ═══════════════
+     Cada modo tem o seu fluxo e o seu progresso. Fica no alto da barra, antes
+     das etapas, porque trocar de modo troca a lista inteira embaixo. */
+  .modos {
+    display: flex; gap: 2px; padding: var(--s1);
+    background: var(--surface-3); border: 1px solid var(--line); border-radius: var(--r-2);
+  }
+  .modo-aba {
+    flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 1px;
+    font: inherit; text-align: left; cursor: pointer;
+    background: transparent; border: 1px solid transparent; border-radius: var(--r-1);
+    padding: 6px var(--s2); color: var(--ink-2);
+    transition: background var(--dur-1), color var(--dur-1);
+  }
+  .modo-aba:hover { background: var(--surface); color: var(--ink); }
+  .modo-aba.on {
+    background: var(--surface); color: var(--accent-forte);
+    border-color: var(--accent-linha); box-shadow: var(--e1);
+  }
+  .modo-aba-rot {
+    font-size: var(--t-meta); font-weight: 650; line-height: var(--lh-tight);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .modo-aba.on .modo-aba-rot { font-weight: 700; }
+  .modo-aba-conta {
+    font-family: var(--font-mono); font-size: var(--t-tag); color: var(--ink-3);
+  }
+  .modo-aba.on .modo-aba-conta { color: var(--accent); }
+  .modo-dica {
+    margin: var(--s2) 0 0; padding: 0 var(--s2);
+    font-size: var(--t-meta); line-height: var(--lh-ui); color: var(--ink-3);
+  }
+  .nav-nova { color: var(--accent); font-weight: 650; border: 1px dashed var(--line-forte); }
+  .nav-nova:hover { border-color: var(--accent); background: var(--accent-suave); }
+
+  /* ═══════════════ ETAPA EM PASSO A PASSO ═══════════════
+     O outro formato de etapa: uma sequencia numerada, para quando o conteudo
+     nao e um par de contraste. A numeracao vem do counter, entao inserir um
+     passo no meio nao exige renumerar nada a mao. */
+  .st-passos {
+    list-style: none; margin: 0; padding: var(--s4);
+    display: flex; flex-direction: column; gap: var(--s3);
+    counter-reset: passo;
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--r-3);
+  }
+  .st-passos li {
+    position: relative; padding-left: var(--s6); counter-increment: passo;
+    font-size: var(--t-read); line-height: var(--lh-read); color: var(--ink-2);
+  }
+  .st-passos li strong { color: var(--ink); font-weight: 650; }
+  .st-passos li::before {
+    content: counter(passo); position: absolute; left: 0; top: 0;
+    width: 24px; height: 24px; display: grid; place-items: center;
+    font-family: var(--font-mono); font-size: var(--t-meta); font-weight: 700;
+    color: var(--accent-sobre); background: var(--accent); border-radius: var(--r-1);
+  }
+
+  /* etapa que so tem "faça" ou so tem "não faça" ocupa a largura toda */
+  .st-par.solo { grid-template-columns: 1fr; }
+
   /* ═══════════════ ESCOLHA DO TEMA, DENTRO DA ETAPA 3 ═══════════════ */
   .eixos {
     display: flex; flex-direction: column; gap: var(--s5);
@@ -1556,8 +1616,7 @@
 function conferirConteudo() {
   var faltando = [];
   if (typeof D === "undefined") faltando.push("D");
-  if (typeof ETAPAS === "undefined") faltando.push("ETAPAS");
-  if (typeof PORTOES === "undefined") faltando.push("PORTOES");
+  if (typeof MODOS === "undefined") faltando.push("MODOS");
   if (typeof TEMPOS === "undefined") faltando.push("TEMPOS");
   if (typeof CATEGORIAS === "undefined") faltando.push("CATEGORIAS");
   if (typeof MODULOS === "undefined") faltando.push("MODULOS");
@@ -1638,7 +1697,11 @@ function conferirConteudo() {
 /* ---------- estado ---------- */
 const state = {
   tempo:"novo",
-  feito:{ ia:false, problema:false, ticket:false },
+  /* O progresso e por MODO: concluir a etapa 2 do WhatsApp nao pode liberar
+     a etapa 3 da Internal. A chave e o id do modo, e dentro dela o id da
+     etapa — e por isso que o id da etapa nao pode mudar depois de criado. */
+  feito:{},
+  modo:null,            /* o modo escolhido; null = usa o guardado ou o primeiro */
   aba:1,
   cat:null, mod:null,
   secao:"guia",
@@ -1673,7 +1736,61 @@ const el = (t,c,h) => { const n = document.createElement(t); if (c) n.className 
 const src = (n,s) => { n.setAttribute("data-src", s); return n; };
 const cat = id => CATEGORIAS.find(c => c.id === id);
 const mod = id => MODULOS.find(m => m.id === id);
-const portoesOk = () => state.feito.ia && state.feito.problema && state.feito.ticket;
+/* ---------- os dois modos de atendimento ----------
+   O guia tem um fluxo por modo, e cada fluxo tem a sua lista de etapas. Todo
+   lugar que antes lia ETAPAS ou PORTOES passa por aqui. */
+const modoAtual = () => {
+  const m = MODOS.find(x => x.id === state.modo);
+  return m || MODOS[0];
+};
+const etapasDoModo = () => modoAtual().etapas || [];
+const etapaAtual = () => etapasDoModo()[state.aba - 1] || null;
+
+/* o progresso vive separado por modo */
+const feitoDoModo = () => {
+  const id = modoAtual().id;
+  if (!state.feito[id]) state.feito[id] = {};
+  return state.feito[id];
+};
+const etapaFeita = (e) => !!(e && feitoDoModo()[e.id]);
+
+/* Portao e a etapa que TEM botao de concluir: e o botao que registra o
+   progresso, entao sem botao nao ha o que confirmar. As etapas de conteudo
+   automatico — o guia do modulo, o follow-up, a consulta a documentacao —
+   nao travam a seguinte.
+
+   Sem essa distincao a etapa 4 da Internal, que nao tem botao, nunca ficava
+   "feita" e o follow-up ficava travado para sempre.
+
+   Antes eram tres portoes fixos nas posicoes 1-3; agora o fluxo tem o
+   tamanho que o dono quiser e a regra e por etapa. */
+const ehPortao = (e) => !!(e && e.cta);
+const etapaLiberada = (i) => etapasDoModo().slice(0, i).every(e => !ehPortao(e) || etapaFeita(e));
+
+/* a etapa de classificar o ticket so conclui com natureza E modulo */
+const etapaPodeConcluir = (e) => !(e && e.tipo === "ticket" && (!state.cat || !state.mod));
+
+/* o guia do modulo e o follow-up dependem do ticket estar classificado */
+const temTema = () => !!(state.cat && state.mod);
+
+/* Ha etapa de classificar o ticket neste modo? O WhatsApp nao cria ticket,
+   entao cobrar natureza e modulo lá deixaria o follow-up travado para sempre
+   com uma mensagem mandando ir a uma etapa que nao existe. */
+const modoTemTicket = () => etapasDoModo().some(e => e.tipo === "ticket");
+const temaOk = () => !modoTemTicket() || temTema();
+
+const CHAVE_MODO = "playbookModo";
+function poeModo(id) {
+  const m = MODOS.find(x => x.id === id);
+  state.modo = m ? m.id : MODOS[0].id;
+  state.aba = 1;
+  try { localStorage.setItem(CHAVE_MODO, state.modo); } catch (e) { /* modo privado: so nao lembra */ }
+}
+function lembraModo() {
+  let v = null;
+  try { v = localStorage.getItem(CHAVE_MODO); } catch (e) { /* sem storage: usa o primeiro */ }
+  state.modo = (MODOS.find(x => x.id === v) || MODOS[0]).id;
+}
 const hhmm = d => String(d.getHours()).padStart(2,"0") + ":" + String(d.getMinutes()).padStart(2,"0");
 
 /* Tem espaco para o print ficar ao lado do texto? O mesmo limite esta no CSS,
@@ -1795,9 +1912,9 @@ function renderMoldura() {
     voltar.textContent = TEXTOS.navVoltar;
     avancar.textContent = TEXTOS.navAvancar;
     voltar.disabled = state.aba <= 1;
-    avancar.disabled = state.aba >= ETAPAS.length;
+    avancar.disabled = state.aba >= etapasDoModo().length;
     document.getElementById("t-onde").textContent =
-      fmt(TEXTOS.navOnde, { atual: state.aba, total: ETAPAS.length });
+      fmt(TEXTOS.navOnde, { atual: state.aba, total: etapasDoModo().length });
   }
 }
 
@@ -1806,10 +1923,13 @@ function renderMoldura() {
    a tela inteira, entao a barra e o painel de leitura ficam parados. */
 function renderAbaVisivel() {
   const guia = state.secao === "guia";
+  const e = etapaAtual();
   const mapa = {
-    flow: guia && state.aba <= 3,
-    out:  guia && state.aba === 4,
-    fup:  guia && state.aba === 5,
+    /* antes era pela posicao (1-3, 4, 5); agora e pelo tipo da etapa, porque
+       o fluxo tem o tamanho e a ordem que o dono quiser */
+    flow: guia && !!e && (e.tipo === "par" || e.tipo === "passos" || e.tipo === "ticket" || e.tipo === "doc"),
+    out:  guia && !!e && e.tipo === "guia",
+    fup:  guia && !!e && e.tipo === "fup",
     aval: state.secao === "criterios",
     resp: state.secao === "respostas"
   };
@@ -1829,7 +1949,7 @@ function irParaSecao(secao, extra) {
 
 function irParaAba(n) {
   state.secao = "guia";
-  state.aba = Math.min(Math.max(n, 1), ETAPAS.length);
+  state.aba = Math.min(Math.max(n, 1), etapasDoModo().length);
   fecharMenu();
   render();
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -1983,20 +2103,51 @@ function renderSidebar() {
   const dentro = el("div","topico-dentro");
 
   if (state.secao === "guia") {
+    /* ---- a sub-aba dos dois modos de atendimento ----
+       Cada modo tem o seu fluxo e o seu progresso: concluir a etapa 2 do
+       WhatsApp nao libera a etapa 3 da Internal. */
+    dentro.append(el("span","nav-titulo", TEXTOS.modoRotulo));
+    const troca = el("div","modos");
+    troca.setAttribute("role","tablist");
+    troca.setAttribute("aria-label", TEXTOS.modoRotulo);
+    MODOS.forEach(m => {
+      const ativo = modoAtual().id === m.id;
+      const b = el("button","modo-aba" + (ativo ? " on" : ""));
+      b.type = "button";
+      b.setAttribute("role","tab");
+      b.setAttribute("aria-selected", String(ativo));
+      b.title = ativo ? m.dica : fmt(TEXTOS.modoTrocar, { rot: m.rot });
+      b.append(el("span","modo-aba-rot", m.rot), el("span","modo-aba-conta", String((m.etapas||[]).length)));
+      b.onclick = () => { if (!ativo) { poeModo(m.id); render(); window.scrollTo({ top: 0, behavior: "smooth" }); } };
+      troca.append(b);
+    });
+    dentro.append(troca);
+    const d = modoAtual().dica;
+    if (d) dentro.append(el("p","modo-dica", d));
+
     dentro.append(el("span","nav-titulo", TEXTOS.navEtapas));
-    ETAPAS.forEach((titulo, i) => {
-      const n = i + 1;
-      const concluida = n <= 3 && state.feito[PORTOES[n-1].id];
-      const atual = n === state.aba;
-      const trancada = n >= 4 && !portoesOk();
+    etapasDoModo().forEach((e, i) => {
+      const num = i + 1;
+      const concluida = etapaFeita(e);
+      const atual = num === state.aba;
+      const trancada = !etapaLiberada(i);
       const b = el("button","nav-item" + (atual ? " on" : "") + (concluida && !atual ? " ok" : ""));
       b.type = "button";
       b.disabled = trancada;
-      b.title = trancada ? titulo + " — " + TEXTOS.spineTrancada : titulo;
-      b.append(el("span","nav-n", concluida && !atual ? "✓" : String(n)), el("span","nav-txt", titulo));
-      b.onclick = () => { if (!trancada) irParaAba(n); };
+      b.title = trancada ? e.titulo + " — " + TEXTOS.spineTrancada : e.titulo;
+      b.append(el("span","nav-n", concluida && !atual ? "✓" : String(num)), el("span","nav-txt", e.titulo));
+      b.onclick = () => { if (!trancada) irParaAba(num); };
       dentro.append(b);
     });
+
+    /* criar etapa nova: so para quem publica */
+    if (temToken()) {
+      const nova = el("button","nav-item nav-nova");
+      nova.type = "button";
+      nova.append(el("span","nav-txt", TEXTOS.guiaEtapaNova));
+      nova.onclick = () => abrirEditorEtapa(null);
+      dentro.append(nova);
+    }
   }
 
   if (state.secao === "criterios") {
@@ -2295,17 +2446,23 @@ function limparEscopo() {
 function renderFlow() {
   const host = document.getElementById("flow");
   host.textContent = "";
-  if (state.aba > 3) return;
 
-  const i = state.aba - 1;
-  const p = PORTOES[i];
-  const feito = state.feito[p.id];
+  const e = etapaAtual();
+  if (!e) return;
+  if (e.tipo !== "par" && e.tipo !== "passos" && e.tipo !== "ticket" && e.tipo !== "doc") return;
 
-  const card = src(el("div", "stage is-active" + (feito ? " is-done" : "")), "[3] PORTOES");
+  /* portao: a etapa so abre quando as anteriores estao feitas */
+  if (!etapaLiberada(state.aba - 1)) {
+    host.append(el("div","empty", TEXTOS.abaTrancada));
+    return;
+  }
+
+  const feito = etapaFeita(e);
+  const card = src(el("div", "stage is-active" + (feito ? " is-done" : "")), "[2] MODOS");
 
   const head = el("div", "st-head");
-  head.append(el("span","st-n", feito ? "✓" : String(i+1)));
-  head.append(el("span","st-title", p.titulo));
+  head.append(el("span","st-n", feito ? "✓" : String(state.aba)));
+  head.append(el("span","st-title", e.titulo));
   head.append(el("span","st-sub", feito ? TEXTOS.etapaConcluida : ""));
 
   /* O lapis so existe para quem tem token com permissao de escrita. Quem abre
@@ -2314,45 +2471,77 @@ function renderFlow() {
   if (temToken()) {
     const lapis = el("button","st-editar", TEXTOS.guiaEditar);
     lapis.type = "button";
-    lapis.title = fmt(TEXTOS.guiaEditarTitulo, { n: i + 1 });
-    lapis.onclick = () => abrirEditorEtapa(i);
+    lapis.title = fmt(TEXTOS.guiaEditarTitulo, { n: state.aba });
+    lapis.onclick = () => abrirEditorEtapa(state.aba - 1);
     head.append(lapis);
   }
   card.append(head);
 
   const body = el("div","st-body");
-  body.append(el("p","lead", p.lead));
+  if (e.lead) body.append(el("p","lead", e.lead));
 
-  /* O par de contraste: faca e nao faca lado a lado, nao empilhados.
-     Empilhados, quem varre de cima para baixo le os dois como continuacao;
-     lado a lado, com familias de cor opostas, o par se le em um golpe. */
-  const par = el("div","st-par");
+  if (e.tipo === "par" || e.tipo === "ticket") {
+    /* O par de contraste: faca e nao faca lado a lado, nao empilhados.
+       Empilhados, quem varre de cima para baixo le os dois como continuacao;
+       lado a lado, com familias de cor opostas, o par se le em um golpe. */
+    const temItens = (e.itens || []).length, temNunca = (e.nunca || []).length;
+    if (temItens || temNunca) {
+      const par = el("div","st-par" + (temItens && temNunca ? "" : " solo"));
+      if (temItens) {
+        const ul = el("ul","checklist");
+        ul.dataset.rot = TEXTOS.etapaFaca;
+        e.itens.forEach(x => ul.append(el("li","",x)));
+        par.append(ul);
+      }
+      if (temNunca) {
+        const stop = el("div","callout c-stop");
+        stop.append(el("span","ch", TEXTOS.etapaNaoFaca));
+        const su = el("ul");
+        e.nunca.forEach(x => su.append(el("li","",x)));
+        stop.append(su);
+        par.append(stop);
+      }
+      body.append(par);
+    }
+  } else if (e.tipo === "passos") {
+    /* Passo a passo numerado: para etapa que e uma sequencia, nao um par de
+       contraste. A numeracao vem do CSS, com counter. */
+    if ((e.itens || []).length) {
+      const ol = el("ol","st-passos");
+      e.itens.forEach(x => ol.append(el("li","",x)));
+      body.append(ol);
+    }
+    if (e.dica) {
+      const d = el("div","callout c-say");
+      d.append(el("span","ch", TEXTOS.guiaCampoDica), el("p","", e.dica));
+      body.append(d);
+    }
+  }
 
-  const ul = el("ul","checklist");
-  ul.dataset.rot = TEXTOS.etapaFaca;
-  p.itens.forEach(x => ul.append(el("li","",x)));
-  par.append(ul);
+  /* a classificacao do ticket acontece na etapa que o dono marcou como tal */
+  if (e.tipo === "ticket") body.append(blocoEixos());
 
-  const stop = el("div","callout c-stop");
-  stop.append(el("span","ch", TEXTOS.etapaNaoFaca));
-  const su = el("ul");
-  p.nunca.forEach(x => su.append(el("li","",x)));
-  stop.append(su);
-  par.append(stop);
+  /* consultar a documentacao: o mesmo painel que existe no fim do guia */
+  if (e.tipo === "doc") body.append(blocoDuvida());
 
-  body.append(par);
-
-  /* a classificação do ticket acontece aqui, na etapa que cria o ticket */
-  if (p.id === "ticket") body.append(blocoEixos());
-
-  const adv = el("div","advance");
-  const temaFalta = p.id === "ticket" && (!state.cat || !state.mod);
-  const b = el("button","btn", (feito ? "✓ " : "") + p.cta);
-  b.type = "button";
-  b.disabled = temaFalta;
-  b.onclick = () => { state.feito[p.id] = true; irParaAba(state.aba + 1); };
-  adv.append(b, el("span","why", temaFalta ? TEXTOS.eixoFaltaBotao : p.why));
-  body.append(adv);
+  if (e.cta) {
+    const adv = el("div","advance");
+    const falta = !etapaPodeConcluir(e);
+    const b = el("button","btn", (feito ? "✓ " : "") + e.cta);
+    b.type = "button";
+    b.disabled = falta;
+    b.onclick = () => { feitoDoModo()[e.id] = true; irParaAba(state.aba + 1); };
+    adv.append(b, el("span","why", falta ? TEXTOS.eixoFaltaBotao : (e.why || "")));
+    body.append(adv);
+  } else if (e.tipo === "doc") {
+    /* etapa de consulta nao tem CTA propria: um botao simples segue adiante */
+    const adv = el("div","advance");
+    const b = el("button","btn", TEXTOS.navAvancar);
+    b.type = "button";
+    b.onclick = () => { feitoDoModo()[e.id] = true; irParaAba(state.aba + 1); };
+    adv.append(b);
+    body.append(adv);
+  }
 
   card.append(body);
   host.append(card);
@@ -2446,11 +2635,11 @@ function renderOut() {
   const host = document.getElementById("out");
   host.textContent = "";
 
-  if (!portoesOk()) {
+  if (!etapaLiberada(state.aba - 1)) {
     host.append(el("div","empty", TEXTOS.abaTrancada));
     return;
   }
-  if (!state.cat || !state.mod) {
+  if (!temTema()) {
     const falta = !state.cat && !state.mod ? "a natureza do ticket e o módulo"
                 : !state.cat ? "a natureza do ticket" : "o módulo";
     host.append(el("div","empty", fmt(TEXTOS.eixoVazio, { falta })));
@@ -2464,7 +2653,7 @@ function renderOut() {
   /* o tema vem escolhido da etapa anterior: aparece como identidade, nao como pergunta */
   const head = el("div","rhead");
   poeEyebrow(head, TEXTOS.resEyebrow);
-  head.append(el("h2","rtitle", ETAPAS[3]));
+  head.append(el("h2","rtitle", (etapaAtual() || {}).titulo || ""));
   wrap.append(head);
 
   const corpo = el("div","rsolo");
@@ -2520,8 +2709,8 @@ function resetFup() {
 function renderFup() {
   const host = document.getElementById("fup");
   host.textContent = "";
-  if (!portoesOk()) { host.append(el("div","empty", TEXTOS.abaTrancada)); return; }
-  if (!state.cat || !state.mod) { host.append(el("div","empty", TEXTOS.abaSemTema)); return; }
+  if (!etapaLiberada(state.aba - 1)) { host.append(el("div","empty", TEXTOS.abaTrancada)); return; }
+  if (!temaOk()) { host.append(el("div","empty", TEXTOS.abaSemTema)); return; }
 
   const wrap = el("div","result");
 
@@ -2918,14 +3107,16 @@ function arvoreOficial() {
 /* ═══════════════════════════════════════════════════════════════════════════
    EDITAR O PASSO A PASSO DO GUIA
 
-   O guia mora em PORTOES, no conteudo.js — e o conteudo.js e um arquivo bem
-   mais perigoso que o respostas.js: um erro de sintaxe ali derruba a pagina
-   inteira, nao so uma resposta. Ja aconteceu.
+   Criar, editar, apagar, reordenar e trocar o formato das etapas — de cada
+   modo, separadamente. O que se grava e o bloco MODOS do conteudo.js.
 
-   Por isso aqui NAO se regenera o arquivo todo, como o respostas.js faz.
-   Faz-se uma troca cirurgica: acha o bloco `const PORTOES = [ ... ];` no texto
-   que veio do repositorio, troca so ele, e mantem cada outro byte no lugar —
-   comentarios, indices, tudo.
+   E o conteudo.js e um arquivo bem mais perigoso que o respostas.js: um erro
+   de sintaxe ali derruba a pagina inteira, nao so uma resposta. Ja aconteceu.
+
+   Por isso aqui NAO se regenera o arquivo todo. Faz-se uma troca cirurgica:
+   acha o bloco `const MODOS = [ ... ];` no texto que veio do repositorio,
+   troca so ele, e mantem cada outro byte no lugar — comentarios, indices,
+   tudo.
 
    E antes de enviar, o arquivo montado passa por new Function(). Se nao for
    JavaScript valido, a publicacao e recusada e nada e alterado.
@@ -2935,33 +3126,54 @@ function arvoreOficial() {
    GitHub — sem permissao ele recusa a gravacao, venha de onde vier.
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/* serializa PORTOES de volta para JavaScript, no formato do arquivo */
-function serializarPortoes(portoes) {
+/* os formatos de etapa, e quais campos cada um usa */
+const TIPOS_ETAPA = [
+  { id: "par",    rot: () => TEXTOS.guiaTipoPar,    texto: true,  nunca: true  },
+  { id: "passos", rot: () => TEXTOS.guiaTipoPassos, texto: true,  dica: true   },
+  { id: "ticket", rot: () => TEXTOS.guiaTipoTicket, texto: true,  nunca: true  },
+  { id: "guia",   rot: () => TEXTOS.guiaTipoGuia,   texto: false },
+  { id: "doc",    rot: () => TEXTOS.guiaTipoDoc,    texto: false },
+  { id: "fup",    rot: () => TEXTOS.guiaTipoFup,    texto: false }
+];
+const tipoInfo = id => TIPOS_ETAPA.find(t => t.id === id) || TIPOS_ETAPA[0];
+
+/* serializa MODOS de volta para JavaScript, no formato do arquivo */
+function serializarModos(modos) {
   const asp = t => JSON.stringify(String(t));
-  const linhas = ["const PORTOES = ["];
-  portoes.forEach((p, i) => {
+  const lista = (arr, ind) => (arr && arr.length)
+    ? "[\n" + arr.map(x => ind + "  " + asp(x)).join(",\n") + "\n" + ind + "]"
+    : "[]";
+  const linhas = ["const MODOS = ["];
+  modos.forEach((m, im) => {
     linhas.push("  {");
-    linhas.push("    id: " + asp(p.id) + ",");
-    linhas.push("    titulo: " + asp(p.titulo) + ",");
-    linhas.push("    lead: " + asp(p.lead) + ",");
-    linhas.push("    itens: [");
-    linhas.push(p.itens.map(x => "      " + asp(x)).join(",\n"));
-    linhas.push("    ],");
-    linhas.push("    nunca: [");
-    linhas.push(p.nunca.map(x => "      " + asp(x)).join(",\n"));
-    linhas.push("    ],");
-    linhas.push("    cta: " + asp(p.cta) + ",");
-    linhas.push("    why: " + asp(p.why));
-    linhas.push("  }" + (i < portoes.length - 1 ? "," : ""));
+    linhas.push("    id: " + asp(m.id) + ",");
+    linhas.push("    rot: " + asp(m.rot) + ",");
+    linhas.push("    dica: " + asp(m.dica || "") + ",");
+    linhas.push("    etapas: [");
+    m.etapas.forEach((e, ie) => {
+      linhas.push("      {");
+      linhas.push("        id: " + asp(e.id) + ",");
+      linhas.push("        titulo: " + asp(e.titulo) + ",");
+      linhas.push("        tipo: " + asp(e.tipo) + ",");
+      linhas.push("        lead: " + asp(e.lead || "") + ",");
+      linhas.push("        itens: " + lista(e.itens, "        ") + ",");
+      linhas.push("        nunca: " + lista(e.nunca, "        ") + ",");
+      linhas.push("        dica: " + asp(e.dica || "") + ",");
+      linhas.push("        cta: " + asp(e.cta || "") + ",");
+      linhas.push("        why: " + asp(e.why || ""));
+      linhas.push("      }" + (ie < m.etapas.length - 1 ? "," : ""));
+    });
+    linhas.push("    ]");
+    linhas.push("  }" + (im < modos.length - 1 ? "," : ""));
   });
   linhas.push("];");
   return linhas.join("\n");
 }
 
-/* acha o bloco PORTOES no texto do arquivo e troca so ele */
-function trocarBlocoPortoes(texto, blocoNovo) {
-  const ini = texto.indexOf("const PORTOES = [");
-  if (ini === -1) throw new Error("nao achei o bloco PORTOES no conteudo.js");
+/* acha o bloco MODOS no texto do arquivo e troca so ele */
+function trocarBlocoModos(texto, blocoNovo) {
+  const ini = texto.indexOf("const MODOS = [");
+  if (ini === -1) throw new Error("nao achei o bloco MODOS no conteudo.js");
   /* anda ate o colchete que fecha, contando os de dentro e pulando strings */
   let d = 0, i = texto.indexOf("[", ini), fim = -1, aspas = null;
   for (; i < texto.length; i++) {
@@ -2971,8 +3183,7 @@ function trocarBlocoPortoes(texto, blocoNovo) {
     if (c === "[") d++;
     else if (c === "]") { d--; if (d === 0) { fim = i; break; } }
   }
-  if (fim === -1) throw new Error("nao achei o fim do bloco PORTOES");
-  /* engole o ponto e virgula logo depois do colchete */
+  if (fim === -1) throw new Error("nao achei o fim do bloco MODOS");
   let dep = fim + 1;
   while (dep < texto.length && /\s/.test(texto[dep])) dep++;
   if (texto[dep] === ";") dep++;
@@ -3004,16 +3215,54 @@ function publicarConteudo(textoNovo, mensagem) {
     }));
 }
 
-/* ---------- o formulario de uma etapa ---------- */
+/* monta a arvore de modos com uma alteracao aplicada e publica */
+function publicarModos(modosNovos, mensagem, aviso, botao) {
+  botao.disabled = true;
+  aviso.className = "modal-estado";
+  aviso.textContent = TEXTOS.guiaPublicando;
+  return textoConteudoAtual()
+    .then(texto => publicarConteudo(trocarBlocoModos(texto, serializarModos(modosNovos)), mensagem))
+    .then(() => {
+      aviso.className = "modal-estado ok";
+      aviso.textContent = TEXTOS.guiaPublicado;
+      setTimeout(() => { location.reload(); }, 2600);
+    })
+    .catch(err => {
+      botao.disabled = false;
+      aviso.className = "modal-estado ruim";
+      aviso.textContent = err.message;
+    });
+}
+
+/* copia rasa da arvore, para mexer sem tocar no que esta na tela */
+function copiaModos() {
+  return MODOS.map(m => ({
+    id: m.id, rot: m.rot, dica: m.dica || "",
+    etapas: m.etapas.map(e => ({
+      id: e.id, titulo: e.titulo, tipo: e.tipo, lead: e.lead || "",
+      itens: (e.itens || []).slice(), nunca: (e.nunca || []).slice(),
+      dica: e.dica || "", cta: e.cta || "", why: e.why || ""
+    }))
+  }));
+}
+
+/* ---------- o formulario de uma etapa ----------
+   indice null = criar uma etapa nova no fim do modo atual. */
 function abrirEditorEtapa(indice) {
-  const p = PORTOES[indice];
+  const modo = modoAtual();
+  const criando = indice === null || indice === undefined;
+  const e = criando
+    ? { id: "", titulo: "", tipo: "par", lead: "", itens: [], nunca: [], dica: "", cta: "", why: "" }
+    : modo.etapas[indice];
+  if (!e) return;
+
   const fundo = el("div","modal");
   const cx = el("form","modal-cx");
   cx.setAttribute("role","dialog");
   cx.setAttribute("aria-modal","true");
 
   const topo = el("header","modal-topo");
-  topo.append(el("h2","modal-titulo", fmt(TEXTOS.guiaEditarTitulo, { n: indice + 1 })));
+  topo.append(el("h2","modal-titulo", criando ? TEXTOS.guiaEtapaNova : fmt(TEXTOS.guiaEditarTitulo, { n: indice + 1 })));
   const xis = el("button","modal-x","×");
   xis.type = "button";
   topo.append(xis);
@@ -3023,19 +3272,60 @@ function abrirEditorEtapa(indice) {
   corpo.append(el("p","modal-nota", TEXTOS.guiaEditarNota));
 
   const cTitulo = campoTexto(TEXTOS.guiaCampoTitulo);
+  corpo.append(cTitulo.bloco);
+
+  /* o formato decide quais campos aparecem */
+  const bTipo = el("div","campo");
+  bTipo.append(el("label","", TEXTOS.guiaCampoTipo));
+  const selTipo = document.createElement("select");
+  TIPOS_ETAPA.forEach(t => {
+    const o = document.createElement("option");
+    o.value = t.id; o.textContent = t.rot();
+    selTipo.append(o);
+  });
+  selTipo.value = e.tipo;
+  bTipo.append(selTipo, el("span","campo-dica", TEXTOS.guiaCampoTipoDica));
+  corpo.append(bTipo);
+
   const cLead   = campoArea(TEXTOS.guiaCampoLead, TEXTOS.guiaCampoLeadDica);
   const cItens  = campoArea(TEXTOS.guiaCampoItens, TEXTOS.guiaCampoItensDica);
   const cNunca  = campoArea(TEXTOS.guiaCampoNunca, TEXTOS.guiaCampoNuncaDica);
+  const cDica   = campoArea(TEXTOS.guiaCampoDica);
   const cCta    = campoTexto(TEXTOS.guiaCampoCta);
   const cWhy    = campoArea(TEXTOS.guiaCampoWhy);
-  corpo.append(cTitulo.bloco, cLead.bloco, cItens.bloco, cNunca.bloco, cCta.bloco, cWhy.bloco);
+  const semTexto = el("p","modal-aviso", TEXTOS.guiaEtapaSemTexto);
+  corpo.append(cLead.bloco, cItens.bloco, cNunca.bloco, cDica.bloco, semTexto, cCta.bloco, cWhy.bloco);
 
-  cTitulo.poe(p.titulo);
-  cLead.poe(p.lead);
-  cItens.poe(p.itens.join("\n"));
-  cNunca.poe(p.nunca.join("\n"));
-  cCta.poe(p.cta);
-  cWhy.poe(p.why);
+  cTitulo.poe(e.titulo);
+  cLead.poe(e.lead || "");
+  cItens.poe((e.itens || []).join("\n"));
+  cNunca.poe((e.nunca || []).join("\n"));
+  cDica.poe(e.dica || "");
+  cCta.poe(e.cta || "");
+  cWhy.poe(e.why || "");
+
+  /* mostra so o que o formato usa */
+  const ajustaCampos = () => {
+    const t = tipoInfo(selTipo.value);
+    cLead.bloco.hidden  = !t.texto;
+    cItens.bloco.hidden = !t.texto;
+    cNunca.bloco.hidden = !t.nunca;
+    cDica.bloco.hidden  = !t.dica;
+    cWhy.bloco.hidden   = !t.texto;
+    semTexto.hidden     = !!t.texto;
+    /* o rotulo dos itens muda com o formato */
+    const lab = cItens.bloco.querySelector("label");
+    const dic = cItens.bloco.querySelector(".campo-dica");
+    if (selTipo.value === "passos") {
+      lab.textContent = TEXTOS.guiaCampoPassos;
+      if (dic) dic.textContent = TEXTOS.guiaCampoPassosDica;
+    } else {
+      lab.textContent = TEXTOS.guiaCampoItens;
+      if (dic) dic.textContent = TEXTOS.guiaCampoItensDica;
+    }
+  };
+  selTipo.addEventListener("change", ajustaCampos);
+  ajustaCampos();
 
   const situacao = el("p","modal-estado");
   corpo.append(situacao);
@@ -3044,59 +3334,99 @@ function abrirEditorEtapa(indice) {
   const pe = el("footer","modal-pe");
   const salvar = el("button","btn", TEXTOS.guiaSalvar);
   salvar.type = "submit";
+  pe.append(salvar);
+
+  /* mover e apagar so existem em etapa que ja existe */
+  if (!criando) {
+    const mover = (d) => {
+      const arv = copiaModos();
+      const m = arv.find(x => x.id === modo.id);
+      const j = indice + d;
+      if (j < 0 || j >= m.etapas.length) return;
+      const it = m.etapas.splice(indice, 1)[0];
+      m.etapas.splice(j, 0, it);
+      publicarModos(arv, "Move a etapa " + e.titulo + " no modo " + modo.rot, situacao, salvar);
+    };
+    const cima = el("button","btn ghost","⌃");
+    cima.type = "button"; cima.title = TEXTOS.guiaEtapaSubir;
+    cima.disabled = indice === 0;
+    cima.onclick = () => mover(-1);
+    const baixo = el("button","btn ghost","⌄");
+    baixo.type = "button"; baixo.title = TEXTOS.guiaEtapaDescer;
+    baixo.disabled = indice === modo.etapas.length - 1;
+    baixo.onclick = () => mover(1);
+    pe.append(cima, baixo);
+
+    const apagar = el("button","btn ghost", TEXTOS.guiaEtapaApagar);
+    apagar.type = "button";
+    apagar.onclick = () => {
+      if (modo.etapas.length <= 1) { alert(TEXTOS.guiaUltimaEtapa); return; }
+      if (!confirm(fmt(TEXTOS.guiaEtapaApagarConfirma, { t: e.titulo }))) return;
+      const arv = copiaModos();
+      const m = arv.find(x => x.id === modo.id);
+      m.etapas.splice(indice, 1);
+      publicarModos(arv, "Apaga a etapa " + e.titulo + " do modo " + modo.rot, situacao, salvar);
+    };
+    pe.append(apagar);
+  }
+
   const cancelar = el("button","btn ghost", TEXTOS.editorCancelar);
   cancelar.type = "button";
-  pe.append(salvar, cancelar);
+  pe.append(cancelar);
   cx.append(pe);
 
   const fechar = () => { fundo.remove(); document.body.classList.remove("gaveta-aberta"); };
   xis.onclick = fechar;
   cancelar.onclick = fechar;
-  fundo.onclick = (e) => { if (e.target === fundo) fechar(); };
+  fundo.onclick = (ev) => { if (ev.target === fundo) fechar(); };
 
   const linhas = t => t.split("\n").map(l => l.trim()).filter(Boolean);
 
-  cx.addEventListener("submit", (e) => {
-    e.preventDefault();
+  cx.addEventListener("submit", (ev) => {
+    ev.preventDefault();
+    const t = tipoInfo(selTipo.value);
+    const titulo = cTitulo.valor().trim();
+    if (!titulo) { alert(TEXTOS.guiaFalta); return; }
+
     const novo = {
-      id: p.id,
-      titulo: cTitulo.valor().trim(),
-      lead: cLead.valor().trim(),
-      itens: linhas(cItens.valor()),
-      nunca: linhas(cNunca.valor()),
+      /* o id nao muda depois de criado: e ele que guarda o progresso */
+      id: criando ? idUnicoDeEtapa(modo, titulo) : e.id,
+      titulo: titulo,
+      tipo: selTipo.value,
+      lead: t.texto ? cLead.valor().trim() : "",
+      itens: t.texto ? linhas(cItens.valor()) : [],
+      nunca: t.nunca ? linhas(cNunca.valor()) : [],
+      dica: t.dica ? cDica.valor().trim() : "",
       cta: cCta.valor().trim(),
-      why: cWhy.valor().trim()
+      why: t.texto ? cWhy.valor().trim() : ""
     };
-    if (!novo.titulo || !novo.lead || !novo.cta) { alert(TEXTOS.guiaFalta); return; }
-    if (JSON.stringify(novo) === JSON.stringify({
-      id: p.id, titulo: p.titulo, lead: p.lead, itens: p.itens, nunca: p.nunca, cta: p.cta, why: p.why
+
+    if (!criando && JSON.stringify(novo) === JSON.stringify({
+      id: e.id, titulo: e.titulo, tipo: e.tipo, lead: e.lead || "",
+      itens: (e.itens||[]).slice(), nunca: (e.nunca||[]).slice(),
+      dica: e.dica || "", cta: e.cta || "", why: e.why || ""
     })) { situacao.className = "modal-estado"; situacao.textContent = TEXTOS.guiaSemMudanca; return; }
 
-    salvar.disabled = true;
-    situacao.className = "modal-estado";
-    situacao.textContent = TEXTOS.guiaPublicando;
-
-    const todos = PORTOES.map((x, i) => i === indice ? novo : x);
-
-    textoConteudoAtual()
-      .then(texto => publicarConteudo(trocarBlocoPortoes(texto, serializarPortoes(todos)),
-                                      "Edita a etapa " + (indice + 1) + " do guia: " + novo.titulo))
-      .then(() => {
-        situacao.className = "modal-estado ok";
-        situacao.textContent = TEXTOS.guiaPublicado;
-        setTimeout(() => { location.reload(); }, 2600);
-      })
-      .catch(err => {
-        salvar.disabled = false;
-        situacao.className = "modal-estado ruim";
-        situacao.textContent = err.message;
-      });
+    const arv = copiaModos();
+    const m = arv.find(x => x.id === modo.id);
+    if (criando) m.etapas.push(novo); else m.etapas[indice] = novo;
+    publicarModos(arv, (criando ? "Cria" : "Edita") + " a etapa " + titulo + " no modo " + modo.rot, situacao, salvar);
   });
 
   fundo.append(cx);
   document.body.append(fundo);
   document.body.classList.add("gaveta-aberta");
   setTimeout(() => cTitulo.foco(), 30);
+}
+
+/* id curto tirado do titulo, sem repetir os que o modo ja tem */
+function idUnicoDeEtapa(modo, titulo) {
+  const base = idDe(titulo).slice(0, 20) || "etapa";
+  const usados = modo.etapas.map(x => x.id);
+  if (usados.indexOf(base) === -1) return base;
+  let i = 2;
+  while (usados.indexOf(base + "-" + i) !== -1) i++;
+  return base + "-" + i;
 }
 
 /* ---------- reordenar abas e sub-abas ----------
@@ -4339,6 +4669,7 @@ function iniciar() {
   if (!conferirConteudo()) return;
 
   /* o que o time fixou e o que copiou ha pouco vive neste navegador */
+  lembraModo();
   state.fixados = leGuardado(CH_FIX);
   state.recentes = leGuardado(CH_REC);
 
@@ -4502,7 +4833,7 @@ document.getElementById("btn-voltar").addEventListener("click", () => irParaAba(
 document.getElementById("btn-avancar").addEventListener("click", () => irParaAba(state.aba + 1));
 
 document.getElementById("reset").addEventListener("click", () => {
-  state.feito = { ia:false, problema:false, ticket:false };
+  state.feito = {};
   state.secao = "guia";
   state.aba = 1;
   state.cat = null; state.mod = null;
