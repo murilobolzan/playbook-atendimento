@@ -173,6 +173,22 @@ const RESPOSTAS = [
               "Essa é uma regra da própria Meta, criada para evitar que empresas enviem mensagens não solicitadas para os usuários.",
               "Então, mesmo que vocês já tenham conversado anteriormente com o cliente, caso tenham passado mais de 24 horas desde a última mensagem dele, será necessário utilizar um template aprovado para iniciar uma nova interação."
             ]
+          },
+          {
+            titulo: "Verificar Business Manager",
+            tags: ["BM", "Portifólio", "Empresarial", "Business Manager", "Erro", "Meta", "Conexão", "WhatsApp"],
+            imagem: "img/captura-de-tela-2026-09-04-100248.png",
+            resposta: [
+              "Para realizar a verificação do Business Manager, siga este passo a passo:",
+              "1. Acesse o Business Manager pelo endereço business.facebook.com utilizando uma conta com acesso de administrador.",
+              "2. No menu lateral, acesse “Configurações”.",
+              "3. Dentro das configurações, procure a seção “Informações da Empresa”, localizada na parte superior da tela.",
+              "4. Acesse “Detalhes da Empresa”. Nessa área, ficarão disponíveis os dados cadastrais da empresa.",
+              "5. Clique em “Editar” para habilitar a edição das informações.",
+              "6. Preencha todas as informações solicitadas, como nome legal da empresa, CNPJ, endereço, telefone e site. É importante que todos os dados estejam completos e corretos.",
+              "7. Após preencher as informações, solicite a verificação do negócio. Para isso, clique em “Iniciar verificação”.",
+              "A verificação do negócio é obrigatória para registrar números e enviar templates. Por isso, recomendamos preencher todas as informações corretamente para evitar que a solicitação seja reprovada."
+            ]
           }
         ]
       },
