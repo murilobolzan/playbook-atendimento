@@ -109,6 +109,23 @@ const MODOS = [
     dica: "O ticket chegou pela IA de CS. Você entra no meio de uma conversa que já começou.",
     etapas: [
       {
+        id: "problema",
+        titulo: "Entender o problema do cliente",
+        tipo: "par",
+        lead: "O cliente descreve uma solução. Você precisa achar a solução para o problema",
+        itens: [
+          "Separe <strong>a solução que ele apresentou</strong> do <strong>problema</strong>",
+          "Caso não tenha 100% de certeza da solução, confirme o ajuste em <strong>uma frase</strong> e espere o cliente confirmar antes de agir",
+          "A entrega é sempre dupla: <strong>resolver</strong> e <strong>mostrar ao cliente como se faz</strong> — o caminho na plataforma faz parte da resposta."
+        ],
+        nunca: [
+          "Começar a resolver antes de entender 100% a dor do cliente"
+        ],
+        dica: "",
+        cta: "Entendi e confirmei com o cliente",
+        why: "Entendimento equivocado do problema do cliente = solução errada = cliente insatisfeito"
+      },
+      {
         id: "ia",
         titulo: "Ler a conversa do Cliente",
         tipo: "par",
@@ -127,23 +144,6 @@ const MODOS = [
         dica: "",
         cta: "Li a conversa inteira",
         why: "Caso não tenha entendido o que o cliente falou, pergunte de forma respeitosa tentando entender a fundo o contexto."
-      },
-      {
-        id: "problema",
-        titulo: "Entender o problema do cliente",
-        tipo: "par",
-        lead: "O cliente descreve uma solução. Você precisa achar a solução para o problema",
-        itens: [
-          "Separe <strong>a solução que ele apresentou</strong> do <strong>problema</strong>",
-          "Caso não tenha 100% de certeza da solução, confirme o ajuste em <strong>uma frase</strong> e espere o cliente confirmar antes de agir",
-          "A entrega é sempre dupla: <strong>resolver</strong> e <strong>mostrar ao cliente como se faz</strong> — o caminho na plataforma faz parte da resposta."
-        ],
-        nunca: [
-          "Começar a resolver antes de entender 100% a dor do cliente"
-        ],
-        dica: "",
-        cta: "Entendi e confirmei com o cliente",
-        why: "Entendimento equivocado do problema do cliente = solução errada = cliente insatisfeito"
       },
       {
         id: "ticket",
@@ -190,12 +190,6 @@ const MODOS = [
     id: "whatsapp",
     rot: "WhatsApp",
     dica: "A gente responde direto pelo WhatsApp, sem passar pela Internal.",
-
-    /* ─────────────────────────────────────────────────────────────────────
-       RASCUNHO — este fluxo não existia em lugar nenhum, então foi montado
-       como ponto de partida, não como processo aprovado. Edite cada etapa
-       pelo lápis: dá para trocar o texto, mudar o tipo, apagar e criar.
-       ───────────────────────────────────────────────────────────────────── */
     etapas: [
       {
         id: "ler",
