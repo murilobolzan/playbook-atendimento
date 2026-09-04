@@ -102,6 +102,20 @@ const RESPOSTAS = [
             ]
           }
         ]
+      },
+      {
+        id: "reservas-calendario",
+        sub: "Calendário",
+        itens: [
+          {
+            titulo: "Visualizar reservas canceladas",
+            tags: ["Reservas", "canceladas", "histórico", "calendário", "cliente"],
+            imagem: "img/captura-de-tela-2026-09-04-135445.png",
+            resposta: [
+              "Dentro da aba \"Reservas > Calendário\", no lado direito da tela, você pode aplicar filtros pelos status das reservas. Dessa forma, consegue verificar, em dias específicos, quais reservas foram canceladas, tanto pelo estabelecimento quanto pelo próprio cliente."
+            ]
+          }
+        ]
       }
     ]
   },
