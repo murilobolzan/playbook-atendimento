@@ -73,13 +73,19 @@
 
     /* --- raio: container mais redondo que o conteúdo lê como profundidade ---
        r-1 abaixo de 24px de altura · r-2 controle · r-3 container */
-    --r-1: 3px; --r-2: 6px; --r-3: 10px;
+    /* Subiu de 3/6/10 para 4/8/14: a referencia visual passou a ser o
+       proprio painel Dionisio, que e mais arredondado que um console. */
+    --r-1: 4px; --r-2: 8px; --r-3: 14px;
 
     /* --- elevação: o degrau zero é borda, não sombra ---
        três colunas de cards sombreados numa tela densa viram lama */
     --e1: 0 1px 2px rgba(27,20,33,.05), 0 6px 16px -12px rgba(27,20,33,.20);
     --e2: 0 2px 6px rgba(27,20,33,.08), 0 20px 48px -24px rgba(27,20,33,.34);
     --veu: rgba(20,12,28,.52);
+    /* botao: repouso, hover levantado, e o clique afundando de volta */
+    --e-btn:       0 1px 2px rgba(27,20,33,.10);
+    --e-btn-hover: 0 3px 8px -2px rgba(109,61,147,.34), 0 1px 2px rgba(27,20,33,.10);
+    --e-btn-press: 0 1px 1px rgba(27,20,33,.14);
 
     /* --- foco: um token, um seletor, toda a tela.
        O vão de 2px na cor da superfície é o que faz o anel aparecer também
@@ -117,6 +123,10 @@
       --e1: 0 1px 2px rgba(0,0,0,.5), 0 6px 16px -12px rgba(0,0,0,.8);
       --e2: 0 2px 6px rgba(0,0,0,.55), 0 20px 48px -24px rgba(0,0,0,.9);
       --veu: rgba(0,0,0,.66);
+      /* no escuro o relevo vem do brilho por cima, nao da sombra por baixo */
+      --e-btn:       0 1px 2px rgba(0,0,0,.5);
+      --e-btn-hover: 0 3px 10px -2px rgba(201,166,222,.30), inset 0 1px 0 rgba(255,255,255,.10);
+      --e-btn-press: inset 0 1px 2px rgba(0,0,0,.4);
     }
   }
   :root[data-theme="dark"] {
@@ -134,6 +144,10 @@
     --e1: 0 1px 2px rgba(0,0,0,.5), 0 6px 16px -12px rgba(0,0,0,.8);
     --e2: 0 2px 6px rgba(0,0,0,.55), 0 20px 48px -24px rgba(0,0,0,.9);
     --veu: rgba(0,0,0,.66);
+    /* no escuro o relevo vem do brilho por cima, nao da sombra por baixo */
+    --e-btn:       0 1px 2px rgba(0,0,0,.5);
+    --e-btn-hover: 0 3px 10px -2px rgba(201,166,222,.30), inset 0 1px 0 rgba(255,255,255,.10);
+    --e-btn-press: inset 0 1px 2px rgba(0,0,0,.4);
   }
   :root[data-theme="light"] {
     color-scheme: light;
@@ -150,6 +164,10 @@
     --e1: 0 1px 2px rgba(27,20,33,.05), 0 6px 16px -12px rgba(27,20,33,.20);
     --e2: 0 2px 6px rgba(27,20,33,.08), 0 20px 48px -24px rgba(27,20,33,.34);
     --veu: rgba(20,12,28,.52);
+    /* botao: repouso, hover levantado, e o clique afundando de volta */
+    --e-btn:       0 1px 2px rgba(27,20,33,.10);
+    --e-btn-hover: 0 3px 8px -2px rgba(109,61,147,.34), 0 1px 2px rgba(27,20,33,.10);
+    --e-btn-press: 0 1px 1px rgba(27,20,33,.14);
   }
 
   /* ═══════════════════════════════ BASE ═══════════════════════════════ */
@@ -197,9 +215,11 @@
     color: var(--accent-sobre); background: var(--accent);
     padding: var(--s1) var(--s2); border-radius: var(--r-1); letter-spacing: .05em;
   }
+  /* O topo e moldura, nao conteudo: recuou de 19px para 15px. Antes ele tinha
+     exatamente o mesmo peso do titulo da resposta e os dois disputavam. */
   h1 {
-    font-size: var(--t-title); font-weight: 650; margin: 0;
-    letter-spacing: -.015em; line-height: var(--lh-tight);
+    font-size: var(--t-read); font-weight: 650; margin: 0;
+    letter-spacing: -.01em; line-height: var(--lh-tight); color: var(--ink-2);
   }
   .topbar .sub {
     color: var(--ink-3); font-size: var(--t-meta); margin-left: auto;
@@ -231,7 +251,14 @@
     display: flex; flex-direction: column; gap: var(--s3);
     padding-top: var(--s5);
   }
-  .side-nav { overflow-y: auto; overscroll-behavior: contain; padding-right: var(--s1); }
+  /* O seletor de topico gruda no alto e a lista rola por baixo dele. Meia
+     linha de texto aparecendo na borda lia como bug; a mascara faz o texto
+     desaparecer antes de encostar, em vez de ser cortado no meio. */
+  .side-nav {
+    overflow-y: auto; overscroll-behavior: contain; padding-right: var(--s1);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 10px);
+    mask-image: linear-gradient(to bottom, transparent 0, #000 10px);
+  }
 
   .side-topo { display: flex; align-items: center; gap: var(--s2); padding: 0 var(--s2) var(--s2); }
   .side-rot {
@@ -307,10 +334,7 @@
     background: var(--surface); border: 1px solid var(--line-forte);
     border-radius: var(--r-3); box-shadow: var(--e1);
   }
-  .busca-rot {
-    flex: 0 0 auto; white-space: nowrap;
-    font-size: var(--t-ui); font-weight: 650; color: var(--ink); letter-spacing: -.01em;
-  }
+  .busca-rot:empty { display: none; }
   .lupa { position: relative; display: flex; align-items: center; flex: 1 1 260px; min-width: 0; }
   .lupa-icone {
     position: absolute; left: 11px; width: 16px; height: 16px; pointer-events: none;
@@ -587,31 +611,63 @@
   /* ═══════════════════════════ BOTÕES ═══════════════════════════
      Tres variantes: cheio (primário), fantasma e ícone.
      Peso visual separa o que é rotina do que não volta atrás. */
+  /* O botao reage em tres tempos: repouso, hover levantado 1px com a sombra
+     crescendo, e o clique afundando de volta ao chao. E o 1px que faz o
+     clique parecer que aconteceu de verdade.
+
+     O deslocamento e minimo de proposito: alvo que salta em tela densa faz o
+     ponteiro perder o alvo no meio do movimento. */
   .btn {
     display: inline-flex; align-items: center; justify-content: center; gap: 6px;
     font: inherit; font-size: var(--t-ui); font-weight: 600; line-height: 1;
     cursor: pointer; text-decoration: none; white-space: nowrap;
     padding: 9px 15px; border-radius: var(--r-2);
     border: 1px solid var(--accent); background: var(--accent); color: var(--accent-sobre);
-    transition: background var(--dur-1), border-color var(--dur-1), color var(--dur-1);
+    box-shadow: var(--e-btn);
+    transition: background var(--dur-1), border-color var(--dur-1), color var(--dur-1),
+                box-shadow var(--dur-1), transform var(--dur-1);
   }
-  .btn:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
-  .btn:active { background: var(--accent-press); border-color: var(--accent-press); }
+  .btn:hover {
+    background: var(--accent-hover); border-color: var(--accent-hover);
+    box-shadow: var(--e-btn-hover); transform: translateY(-1px);
+  }
+  .btn:active {
+    background: var(--accent-press); border-color: var(--accent-press);
+    box-shadow: var(--e-btn-press); transform: translateY(0);
+  }
   .btn.ghost {
     background: var(--surface); color: var(--ink-2); border-color: var(--line-forte); font-weight: 500;
   }
-  .btn.ghost:hover { background: var(--surface); color: var(--accent); border-color: var(--accent); }
+  .btn.ghost:hover {
+    background: var(--surface); color: var(--accent); border-color: var(--accent);
+    box-shadow: var(--e-btn-hover); transform: translateY(-1px);
+  }
+  .btn.ghost:active { background: var(--accent-suave); box-shadow: var(--e-btn-press); transform: translateY(0); }
   .btn.sm { font-size: var(--t-meta); padding: 6px var(--s3); }
   .btn.cheio { width: 100%; }
-  .btn[disabled] { opacity: .42; cursor: not-allowed; }
-  .btn[disabled]:hover { background: var(--accent); border-color: var(--accent); }
-  .btn.ghost[disabled]:hover { background: var(--surface); color: var(--ink-2); border-color: var(--line-forte); }
+  .btn[disabled] { opacity: .42; cursor: not-allowed; box-shadow: none; }
+  .btn[disabled]:hover {
+    background: var(--accent); border-color: var(--accent);
+    box-shadow: none; transform: none;
+  }
+  .btn.ghost[disabled]:hover {
+    background: var(--surface); color: var(--ink-2); border-color: var(--line-forte);
+    box-shadow: none; transform: none;
+  }
+  /* quem pediu menos movimento nao recebe movimento — so a cor muda */
+  @media (prefers-reduced-motion: reduce) {
+    .btn:hover, .btn:active, .btn.ghost:hover, .btn.ghost:active { transform: none; }
+  }
 
   /* ═══════════════════════════ PAINEL ═══════════════════════════
      O container base do sistema. Todas as caixas de conteúdo saem daqui. */
-  .stage, .result, .panel, .modo-cards, .case, .fnode, .crit {
+  /* Dois mecanismos de profundidade ao mesmo tempo, porque nao se sabe o tema
+     do time: a SUPERFICIE mais clara que o chao e a BORDA funcionam no claro
+     e no escuro; a sombra e reforco e desaparece no escuro sem perda. */
+  .stage, .result, .panel, .modo-cards, .case, .fnode, .crit, .rleitura, .rbusca {
     background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-3);
   }
+  .stage, .result, .rleitura { box-shadow: var(--e1); }
 
   /* ═══════════════════════ ETAPAS 1 A 3 ═══════════════════════ */
   .stage { overflow: hidden; }
@@ -1104,7 +1160,7 @@
      da barra, que agora chega até a resposta, e procurar acontece na busca,
      cujos resultados aparecem logo abaixo dela e só enquanto há pergunta.
      O resto do tempo a tela é a resposta que está sendo lida. */
-  #resp { display: flex; flex-direction: column; gap: var(--s4); min-width: 0; }
+  #resp { display: flex; flex-direction: column; gap: var(--s5); min-width: 0; }
 
   /* ---- resultados da busca ---- */
   .rbusca {
@@ -1142,7 +1198,7 @@
      continua existindo. */
   .rlinha {
     display: flex; align-items: center; gap: var(--s2);
-    min-height: 52px; padding: 0 var(--s2) 0 0;
+    min-height: 56px; padding: 0 var(--s2) 0 0;
     border-bottom: 1px solid var(--line);
     transition: background var(--dur-1);
   }
@@ -1185,6 +1241,8 @@
     transition: background var(--dur-1), color var(--dur-1), border-color var(--dur-1);
   }
   .ricone:hover { color: var(--accent); border-color: var(--accent-linha); background: var(--accent-suave); }
+  .ricone:active { transform: scale(.92); }
+  @media (prefers-reduced-motion: reduce) { .ricone:active { transform: none; } }
   .ricone.fixo { color: var(--accent); }
   .ricone.feito { color: var(--calm); border-color: var(--calm-linha); background: var(--calm-bg); }
   .ricone.sm { font-size: var(--t-meta); padding: 3px 5px; }
@@ -1206,9 +1264,9 @@
   }
 
   .rleitura-topo {
-    padding: var(--s4) var(--s5);
+    padding: var(--s5) var(--s5) var(--s4);
     border-bottom: 1px solid var(--line); background: var(--surface-2);
-    display: flex; flex-direction: column; gap: var(--s2);
+    display: flex; flex-direction: column; gap: var(--s3);
   }
   .rleitura-caminho { display: flex; align-items: center; gap: var(--s2); flex-wrap: wrap; }
   .rleitura-caminho > span:first-child {
@@ -1216,9 +1274,10 @@
     letter-spacing: .11em; text-transform: uppercase; color: var(--ink-3);
     min-width: 0; overflow-wrap: anywhere;
   }
+  /* e o titulo da resposta subiu de 19px para 24px: e ele o assunto da tela */
   .rleitura-tit {
-    margin: 0; font-size: var(--t-title); font-weight: 650;
-    letter-spacing: -.015em; line-height: var(--lh-tight); overflow-wrap: anywhere;
+    margin: 0; font-size: 24px; font-weight: 650;
+    letter-spacing: -.02em; line-height: 1.2; overflow-wrap: anywhere; color: var(--ink);
   }
   .rleitura-acoes {
     display: flex; align-items: center; gap: var(--s2); flex-wrap: wrap;
@@ -1791,6 +1850,10 @@ function lembraModo() {
   try { v = localStorage.getItem(CHAVE_MODO); } catch (e) { /* sem storage: usa o primeiro */ }
   state.modo = (MODOS.find(x => x.id === v) || MODOS[0]).id;
 }
+/* "Membros › Membros" nao diz nada duas vezes: quando a sub-aba repete o nome
+   da aba, o caminho mostra uma vez so. */
+const caminhoDe = x => norm(x.aba) === norm(x.sub) ? x.aba : x.aba + " › " + x.sub;
+
 const hhmm = d => String(d.getHours()).padStart(2,"0") + ":" + String(d.getMinutes()).padStart(2,"0");
 
 /* Tem espaco para o print ficar ao lado do texto? O mesmo limite esta no CSS,
@@ -1890,7 +1953,10 @@ function renderMoldura() {
   document.getElementById("t-titulo").textContent = TEXTOS.titulo;
   document.getElementById("t-sub").textContent = TEXTOS.subtitulo;
   document.getElementById("q").title = TEXTOS.buscaGlobalDica;
-  document.getElementById("t-busca-rot").textContent = TEXTOS.buscaRotulo;
+  /* O rotulo dizia a mesma coisa que o placeholder e custava 22px de altura.
+     Sobrou como rotulo acessivel do campo, para quem usa leitor de tela. */
+  document.getElementById("t-busca-rot").textContent = "";
+  document.getElementById("q").setAttribute("aria-label", TEXTOS.buscaRotulo);
   document.getElementById("t-side-rot").textContent = TEXTOS.sideRotulo;
   document.getElementById("q").placeholder = TEXTOS.buscaColePergunta;
   document.getElementById("q").setAttribute("aria-label", TEXTOS.buscaColePergunta);
@@ -2210,7 +2276,7 @@ function renderSidebar() {
       achados.forEach(x => {
         const b = el("button","nav-item" + (x.chave === state.escolhida ? " on" : ""));
         b.type = "button";
-        b.title = x.aba + " › " + x.sub;
+        b.title = caminhoDe(x);
         b.append(el("span","nav-txt", x.item.titulo));
         b.onclick = () => { limparEscopo(); escolher(x.chave); };
         dentro.append(b);
@@ -4334,9 +4400,9 @@ function linhaResposta(x, termo, topoPontos) {
 
   const txt = el("button","rlinha-txt");
   txt.type = "button";
-  txt.title = it.titulo + " — " + x.aba + " › " + x.sub;
+  txt.title = it.titulo + " — " + caminhoDe(x);
   txt.append(el("span","rlinha-tit", realce(it.titulo, termo)));
-  txt.append(el("span","rlinha-onde", x.aba + " › " + x.sub));
+  txt.append(el("span","rlinha-onde", caminhoDe(x)));
   txt.onclick = () => escolher(x.chave);
   linha.append(txt);
 
@@ -4391,7 +4457,7 @@ function colunaLeitura(x, termo) {
 
   const topo = el("header","rleitura-topo");
   const cam = el("div","rleitura-caminho");
-  cam.append(el("span","", x.aba + " › " + x.sub));
+  cam.append(el("span","", caminhoDe(x)));
   if (it.interno) cam.append(el("span","rcard-interno", TEXTOS.respInterno));
   topo.append(cam);
   topo.append(el("h2","rleitura-tit", realce(it.titulo, termo)));
