@@ -189,6 +189,49 @@
 
   ::selection { background: var(--accent-suave); color: var(--accent-forte); }
 
+  /* ═══════════════════ BARRAS DE ROLAGEM ═══════════════════
+     A barra do sistema tem 15px, cinza, com o visual do Windows — e cortava a
+     lateral da navegacao em quatro areas de rolagem diferentes. Era a coisa
+     mais datada da tela.
+
+     Fina, sem setas, na cor da linha, e escurece quando o ponteiro chega.
+     Sai dos tokens, entao acompanha o tema sozinha. */
+  * { scrollbar-width: thin; scrollbar-color: var(--line-forte) transparent; }
+  ::-webkit-scrollbar { width: 9px; height: 9px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: var(--line-forte); border-radius: 99px;
+    border: 2px solid transparent; background-clip: content-box;
+  }
+  ::-webkit-scrollbar-thumb:hover { background: var(--ink-3); background-clip: content-box; }
+  ::-webkit-scrollbar-corner { background: transparent; }
+
+  /* ═══════════════════ MOVIMENTO ═══════════════════
+     Tres animacoes, todas curtas e todas desligadas por prefers-reduced-motion
+     na regra global la de cima. */
+
+  /* o visto verde do copiado pulsa uma vez: sem isso a troca de icone passa
+     despercebida quando o olho esta na conversa do cliente, nao no botao */
+  @keyframes pulso {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.28); }
+    100% { transform: scale(1); }
+  }
+  .ricone.feito { animation: pulso 320ms ease-out; }
+
+  /* o conteudo que abre entra deslizando de leve, em vez de aparecer de um
+     quadro para o outro */
+  @keyframes entra {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .crit-corpo, .nav-filhos, .rbusca, .rcard-img { animation: entra 160ms ease-out; }
+
+  /* a barra de relevancia cresce a partir do zero quando o resultado aparece */
+  @keyframes cresce { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  .rlinha-rel-barra { transform-origin: left center; animation: cresce 280ms ease-out; }
+
+
   /* o realce da busca: legível nos dois temas, ao contrário do amarelo padrão */
   mark {
     background: var(--accent-suave); color: var(--accent-forte);
@@ -201,10 +244,16 @@
   }
 
   /* ═══════════════════════════ CABEÇALHO ═══════════════════════════ */
+  /* O topo fica raso enquanto a pagina esta no comeco e ganha sombra quando
+     ha conteudo passando por baixo. Sombra permanente num cabecalho de 52px
+     pesa a tela toda sem dizer nada; sombra que aparece diz "tem mais coisa
+     acima". A classe vem do listener de scroll. */
   .topbar {
     border-bottom: 1px solid var(--line); background: var(--surface);
     position: sticky; top: 0; z-index: 40;
+    transition: box-shadow var(--dur-2), border-color var(--dur-2);
   }
+  body.rolou .topbar { box-shadow: 0 1px 0 var(--line), var(--e1); border-color: transparent; }
   .topbar-in {
     max-width: 1560px; margin: 0 auto; padding: var(--s3) var(--s5);
     display: flex; align-items: center; gap: var(--s3); flex-wrap: wrap;
@@ -333,7 +382,9 @@
     padding: var(--s3) var(--s4);
     background: var(--surface); border: 1px solid var(--line-forte);
     border-radius: var(--r-3); box-shadow: var(--e1);
+    transition: border-color var(--dur-1), box-shadow var(--dur-1);
   }
+  .side-busca:focus-within { border-color: var(--accent-linha); box-shadow: var(--e2); }
   .busca-rot:empty { display: none; }
   .lupa { position: relative; display: flex; align-items: center; flex: 1 1 260px; min-width: 0; }
   .lupa-icone {
@@ -350,7 +401,18 @@
   }
   .lupa input::placeholder { color: var(--ink-3); font-weight: 400; }
   .lupa input:focus { background: var(--surface); }
-  .lupa input:focus-visible { border-color: var(--accent); box-shadow: var(--foco); }
+  /* Dois sinais separados, de proposito:
+       :focus         halo suave — aparece tambem para quem clicou no campo
+       :focus-visible anel de foco — so para quem chegou pelo teclado
+     Se o halo usasse focus-visible, quem clica nunca o veria. */
+  .lupa input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px var(--accent-suave);
+  }
+  .lupa input:focus-visible {
+    border-color: var(--accent);
+    box-shadow: var(--foco), 0 0 0 8px var(--accent-suave);
+  }
   .lupa:focus-within .lupa-icone { stroke: var(--accent); }
   /* o atalho aparece escrito no campo: atalho que ninguém vê ninguém usa */
   .lupa::after {
@@ -1060,6 +1122,14 @@
     text-align: center; max-width: 68ch; margin: 0 auto;
   }
 
+  /* Estado vazio com icone grande e apagado: texto solto no meio de uma area
+     em branco parece pagina quebrada, o icone diz "e assim mesmo". */
+  .vazio-ico {
+    width: 44px; height: 44px; color: var(--line-forte);
+    fill: none; stroke: currentColor; stroke-width: 1.4;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
+
   /* ═══════════════════ RÉGUA DE AVALIAÇÃO ═══════════════════
      Antes: os 4 critérios abertos ao mesmo tempo, cada régua 0–5 como lista
      vertical de frases inteiras — 24 blocos de texto numa tela.
@@ -1186,8 +1256,8 @@
   }
   .rbusca-fechar:hover { color: var(--accent); border-color: var(--accent-linha); }
   .rbusca-nada {
-    padding: var(--s4); display: flex; flex-direction: column;
-    gap: var(--s3); align-items: flex-start;
+    padding: var(--s6) var(--s4); display: flex; flex-direction: column;
+    gap: var(--s3); align-items: center; text-align: center;
   }
   .rbusca-nada p { margin: 0; font-size: var(--t-ui); color: var(--ink-2); line-height: var(--lh-read); max-width: 62ch; }
 
@@ -2090,7 +2160,8 @@ const ICONES = {
   play:       '<circle cx="9" cy="9" r="6.4"/><path d="M7.3 6.1l4.5 2.9-4.5 2.9z"/>',
   fila:       '<path d="M2.8 5h12.4M2.8 9h12.4M2.8 13h7.4"/>',
   cardapio:   '<path d="M3 3.6h4.2A1.8 1.8 0 0 1 9 5.4v9.8a1.4 1.4 0 0 0-1.4-1.4H3z"/><path d="M15 3.6h-4.2A1.8 1.8 0 0 0 9 5.4v9.8a1.4 1.4 0 0 1 1.4-1.4H15z"/>',
-  padrao:     '<rect x="3.6" y="3.6" width="10.8" height="10.8" rx="2.4"/><path d="M6.6 9h4.8"/>'
+  padrao:     '<rect x="3.6" y="3.6" width="10.8" height="10.8" rx="2.4"/><path d="M6.6 9h4.8"/>',
+  semNada:    '<circle cx="7.8" cy="7.8" r="4.9"/><path d="M11.4 11.4 15.6 15.6"/><path d="M5.9 5.9 9.7 9.7"/>'
 };
 
 /* chevron do que abre e fecha, e a alça de arrastar */
@@ -4375,6 +4446,7 @@ function painelResultados(dados) {
 
   if (!dados.itens.length) {
     const nada = el("div","rbusca-nada");
+    nada.append(icone("semNada", "vazio-ico"));
     nada.append(el("p","", TEXTOS.buscaSemRelevante));
     const b = el("button","btn sm", TEXTOS.buscaBotao);
     b.type = "button";
@@ -4740,6 +4812,14 @@ function iniciar() {
   state.recentes = leGuardado(CH_REC);
 
 window.addEventListener("resize", medirTopo);
+
+/* marca quando a pagina saiu do topo, para o cabecalho ganhar sombra.
+   Sem listener em cada pixel: passive, e so escreve quando o estado vira. */
+let jaRolou = false;
+window.addEventListener("scroll", () => {
+  const agora = window.scrollY > 4;
+  if (agora !== jaRolou) { jaRolou = agora; document.body.classList.toggle("rolou", agora); }
+}, { passive: true });
 
 /* O print muda de lugar e de estado padrao ao cruzar o limite de largura.
    Sem isto o rotulo do botao ficaria mentindo depois de redimensionar. */
