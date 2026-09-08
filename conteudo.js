@@ -215,7 +215,7 @@ const MODOS = [
         lead: "<strong>Rascunho a revisar.</strong> Separe o que o cliente pediu do que ele precisa.",
         itens: [
           "Confirme a dúvida em <strong>uma frase</strong> antes de agir.",
-          "Descubra <strong>em que tela da plataforma</strong> a dúvida acontece."
+          "Confirmar se o ajuste que o cliente quer é possível realizar na plataforma."
         ],
         nunca: [
           "Começar a explicar antes de ter certeza do que ele quer."
