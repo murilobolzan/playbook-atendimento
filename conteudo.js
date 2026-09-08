@@ -197,7 +197,6 @@ const MODOS = [
         tipo: "par",
         lead: "<strong>Rascunho a revisar.</strong> Aqui você é o primeiro a falar com o cliente — não há resumo de IA para se apoiar.",
         itens: [
-          "Identifique <strong>qual loja</strong> e <strong>quem</strong> está falando.",
           "Leia a conversa do <strong>início</strong>, inclusive o que ficou de atendimentos anteriores.",
           "Veja se já existe conversa aberta sobre o mesmo assunto."
         ],
