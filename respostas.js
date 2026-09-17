@@ -169,6 +169,14 @@ const RESPOSTAS = [
               "O atendimento pode ser realizado tanto pela própria rede social quanto diretamente pela plataforma.",
               "Obs.: dentro da plataforma, os clientes encaminhados para Atendimento Humano ficam identificados e direcionados para a fila de atendimento, facilitando a visualização e o acompanhamento dessas conversas."
             ]
+          },
+          {
+            titulo: "Atalhos",
+            tags: ["Atalhos", "Conversa", "Barra"],
+            imagem: "img/captura-de-tela-2026-09-17-092820.png",
+            resposta: [
+              "Na aba WhatsApp > Conversas, clicando no ícone de raio no canto superior direito, você consegue criar e adicionar atalhos para utilizar durante os atendimentos dentro da Dionísio."
+            ]
           }
         ]
       },
